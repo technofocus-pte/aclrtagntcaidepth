@@ -52,9 +52,10 @@ incorrect.](./media/image4.png)
     the **applications** directory and install all required dependencies
     from the **pyproject.toml / uv.lock** file.
 
-> cd agentic_ai/applications
->
-> uv sync
+```
+cd agentic_ai/applications
+uv sync
+```
 
 ![A screenshot of a computer AI-generated content may be
 incorrect.](./media/image5.png)
@@ -123,9 +124,10 @@ incorrect.](./media/image4.png)
 
 8.  Run the below command.
 
-> cd mcp
->
-> uv run python mcp_service.py
+```
+cd mcp
+uv run python mcp_service.py
+```
 
 9.  Let the command run, open a new terminal.
 
@@ -135,9 +137,10 @@ incorrect.](./media/image4.png)
 10. Enter the command given below to run the Workflow with the command
     line.
 
-> cd agentic_ai/workflow/fraud_detection
->
-> uv run python fraud_detection_workflow.py
+```
+cd agentic_ai/workflow/fraud_detection
+uv run python fraud_detection_workflow.py
+```
 >
 > ![A black screen with white text AI-generated content may be
 > incorrect.](./media/image12.png)
@@ -231,25 +234,28 @@ incorrect.](./media/image4.png)
 
     - Terminal 1 - MCP Server:
 
-> cd mcp
->
-> uv run mcp_service.py
+```
+cd mcp
+uv run mcp_service.py 
+```
 
 - Terminal 2 - FastAPI Backend:
 
-> cd agentic_ai/workflow/fraud_detection
->
-> uv run --prerelease allow backend.py
->
+```
+cd agentic_ai/workflow/fraud_detection
+uv run --prerelease allow backend.py
+```
+
 > ![A screen shot of a computer program AI-generated content may be
 > incorrect.](./media/image17.png)
 
 - Terminal 3 - React Frontend:
 
-> cd agentic_ai/workflow/fraud_detection/ui
->
-> npm run dev
->
+```
+cd agentic_ai/workflow/fraud_detection/ui
+npm run dev
+```
+
 > **Note**: If you get any error, execute the +++npm install+++ command
 > and then rerun the +++npm run dev+++ command.
 >
@@ -327,3 +333,4 @@ fraud detection using the Azure Agent Framework. You explored how AI
 agents analyze suspicious activity, route high-risk cases to human
 analysts, and interact with a real-time React + FastAPI dashboard to
 monitor workflow execution and submit decisions.
+
