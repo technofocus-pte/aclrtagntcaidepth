@@ -170,39 +170,35 @@ incorrect.](./media/image7.png)
 13. In the Visual Studio Code pane, select the **.env** file, as you
     have to add AI Search keys for connection.
 
-> \# Azure AI Search (MCP)
->
-> AZURE_SEARCH_ENDPOINT=https://ai-knowledge--@lab.LabInstance.Id.search.windows.net/
->
-> AZURE_SEARCH_API_KEY=\[Query_Key\]
->
-> AZURE_SEARCH_INDEX=\[Index_Name\]
+```
+# Azure AI Search (MCP)
+AZURE_SEARCH_ENDPOINT=https://ai-knowledge--@lab.LabInstance.Id.search.windows.net/
+AZURE_SEARCH_API_KEY=[Query_Key]
+AZURE_SEARCH_INDEX=[Index_Name]
+```
 
 **Note:** Please replace the Query_Key and Index_Name values with the
 ones you have copied earlier.
 
 14. Add the content of the .env file with the below content.
 
-> AZURE_OPENAI_ENDPOINT=https://agentic-
-> @lab.LabInstance.Id.cognitiveservices.azure.com/
->
-> AZURE_OPENAI_API_KEY=\<Replace with Azure OpenAI key\>
->
-> AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
->
-> AZURE_OPENAI_API_VERSION=2025-03-01-preview
+```
+AZURE_OPENAI_ENDPOINT=https://agentic- @lab.LabInstance.Id.cognitiveservices.azure.com/
+AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
+AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
+AZURE_OPENAI_API_VERSION=2025-03-01-preview
+```
 
 15. Add the following Foundry project key variables to the .env file.
 
-> \# Azure AI Project Configuration
->
-> AZURE_AI_PROJECT_ENDPOINT=**\<Microsoft Foundry endpoint\>**
->
-> AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
->
-> Find the Microsoft Foundry project endpoint from the Overview page and
-> replace **\<Microsoft Foundry endpoint\>** with that value.
->
+```
+# Azure AI Project Configuration
+AZURE_AI_PROJECT_ENDPOINT=<Microsoft Foundry endpoint>
+AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+```
+
+Find the Microsoft Foundry project endpoint from the Overview page and replace **\<Microsoft Foundry endpoint\>** with that value.
+
 > ![A screenshot of a computer AI-generated content may be
 > incorrect.](./media/image8.png)
 
@@ -211,29 +207,28 @@ ones you have copied earlier.
 16. Once done, add the following App Insights variables to the same
     file.
 
-> \# Observability and Monitoring Configuration
->
-> APPLICATIONINSIGHTS_CONNECTION_STRING=**\<Connection string\>**
->
-> ENABLE_OTEL=true
->
-> ENABLE_SENSITIVE_DATA=true
->
-> Open the Application insight resource from the Azure portal, copy the
-> connection string and replace **\<Connection string\>** with the value
-> copied.
->
+```
+# Observability and Monitoring Configuration
+APPLICATIONINSIGHTS_CONNECTION_STRING=<Connection string>
+ENABLE_OTEL=true
+ENABLE_SENSITIVE_DATA=true
+
+```
+
+Open the Application insight resource from the Azure portal, copy the connection string and replace **< Connection string >** with the value copied.
+
 > ![A screenshot of a computer AI-generated content may be
 > incorrect.](./media/image10.png)
 
 17. In the .env file, add the following content and add the API key and
     Account URL of Freshdesk that you copied earlier.
 
-> \# Freshdesk Configuration
->
-> FRESHDESK_DOMAIN=\[Domain_URL\]
->
-> FRESHDESK_API_KEY=\[API_Key\]
+    ```
+    # Freshdesk Configuration
+    FRESHDESK_DOMAIN=[Domain_URL]
+    FRESHDESK_API_KEY=[API_Key]
+    
+    ```
 
 18. Final .env file should look like the given image.
 
@@ -605,3 +600,4 @@ metrics and agent health.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
