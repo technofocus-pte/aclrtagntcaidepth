@@ -92,14 +92,12 @@ incorrect.](./media/image6.png)
 
 8.  Replace the content of the .env file with the below content.
 
-> AZURE_OPENAI_ENDPOINT=https://agentic-
-> @lab.LabInstance.Id.cognitiveservices.azure.com/
->
-> AZURE_OPENAI_API_KEY=**\<Replace with Azure OpenAI key\>**
->
-> AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
->
-> AZURE_OPENAI_API_VERSION=2025-03-01-preview
+```
+AZURE_OPENAI_ENDPOINT=https://agentic- @lab.LabInstance.Id.cognitiveservices.azure.com/
+AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
+AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
+AZURE_OPENAI_API_VERSION=2025-03-01-preview
+```
 
 From the Microsoft Foundry Overview page, copy the API Key and replace
 the
@@ -132,126 +130,67 @@ incorrect.](./media/image10.png)
 
 2.  Add the following Python code to configure the planner agent.
 
-> import os
->
-> import asyncio
->
-> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
-> ignore
->
-> async def build_planner_agent():
->
-> client = AzureOpenAIResponsesClient(
->
-> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
->
-> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
->
-> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
->
-> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
->
-> )
->
-> return client.create_agent(
->
-> name="PlannerAgent",
->
-> instructions=(
->
-> "You are an intelligent routing agent. Analyze user queries and route
-> them to the appropriate specialist. "
->
-> "Available specialists:\n"
->
-> "- HR: Employee policies, leave, benefits, working hours, performance,
-> hiring\n"
->
-> "- FINANCE: Reimbursements, expenses, budgets, travel costs, meal
-> allowances, equipment purchases\n"
->
-> "- COMPLIANCE: GDPR, data privacy, regulatory requirements, legal
-> compliance, audits\n\n"
->
-> "Return exactly one word: HR, FINANCE, or COMPLIANCE. "
->
-> "Consider keywords like: money, cost, budget, reimburse, expense,
-> payment, allowance → FINANCE\n"
->
-> "Keywords like: leave, sick, vacation, policy, employee, benefits →
-> HR\n"
->
-> "Keywords like: GDPR, privacy, compliance, legal, audit, regulation →
-> COMPLIANCE"
->
-> ),
->
-> )
->
-> async def classify_target(planner_agent, user_query: str) -\> str:
->
-> result = await planner_agent.run(
->
-> "Analyze and route this query:\n\n"
->
-> f"User query: {user_query}\n\n"
->
-> "Return exactly one word: HR, FINANCE, or COMPLIANCE."
->
-> )
->
-> \# Extract the text content from the AgentRunResponse object
->
-> text = str(result).strip().lower()
->
-> \# Advanced classification with fallback logic
->
-> if "finance" in text or "financial" in text:
->
-> return "FINANCE"
->
-> elif "hr" in text or "human" in text:
->
-> return "HR"
->
-> elif "compliance" in text or "legal" in text:
->
-> return "COMPLIANCE"
->
-> else:
->
-> \# Fallback keyword analysis if agent response is unclear
->
-> query_lower = user_query.lower()
->
-> finance_keywords = \["reimburs", "expense", "cost", "budget", "money",
-> "payment", "allowance", "travel", "meal", "flight", "hotel"\]
->
-> hr_keywords = \["leave", "sick", "vacation", "employee", "benefit",
-> "policy", "hire", "performance", "work"\]
->
-> compliance_keywords = \["gdpr", "privacy", "compliance", "legal",
-> "audit", "regulation", "data protection"\]
->
-> finance_score = sum(1 for keyword in finance_keywords if keyword in
-> query_lower)
->
-> hr_score = sum(1 for keyword in hr_keywords if keyword in query_lower)
->
-> compliance_score = sum(1 for keyword in compliance_keywords if keyword
-> in query_lower)
->
-> if finance_score \> hr_score and finance_score \> compliance_score:
->
-> return "FINANCE"
->
-> elif hr_score \> compliance_score:
->
-> return "HR"
->
-> else:
->
-> return "COMPLIANCE"
+```
+import os
+import asyncio
+from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
+
+async def build_planner_agent():
+   client = AzureOpenAIResponsesClient(
+      api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+      endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+      deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+      api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+   )
+   return client.create_agent(
+      name="PlannerAgent",
+      instructions=(
+            "You are an intelligent routing agent. Analyze user queries and route them to the appropriate specialist. "
+            "Available specialists:\n"
+            "- HR: Employee policies, leave, benefits, working hours, performance, hiring\n"
+            "- FINANCE: Reimbursements, expenses, budgets, travel costs, meal allowances, equipment purchases\n"
+            "- COMPLIANCE: GDPR, data privacy, regulatory requirements, legal compliance, audits\n\n"
+            "Return exactly one word: HR, FINANCE, or COMPLIANCE. "
+            "Consider keywords like: money, cost, budget, reimburse, expense, payment, allowance → FINANCE\n"
+            "Keywords like: leave, sick, vacation, policy, employee, benefits → HR\n"
+            "Keywords like: GDPR, privacy, compliance, legal, audit, regulation → COMPLIANCE"
+      ),
+   )
+
+async def classify_target(planner_agent, user_query: str) -> str:
+   result = await planner_agent.run(
+      "Analyze and route this query:\n\n"
+      f"User query: {user_query}\n\n"
+      "Return exactly one word: HR, FINANCE, or COMPLIANCE."
+   )
+   # Extract the text content from the AgentRunResponse object
+   text = str(result).strip().lower()
+   
+   # Advanced classification with fallback logic
+   if "finance" in text or "financial" in text:
+      return "FINANCE"
+   elif "hr" in text or "human" in text:
+      return "HR"
+   elif "compliance" in text or "legal" in text:
+      return "COMPLIANCE"
+   else:
+      # Fallback keyword analysis if agent response is unclear
+      query_lower = user_query.lower()
+      finance_keywords = ["reimburs", "expense", "cost", "budget", "money", "payment", "allowance", "travel", "meal", "flight", "hotel"]
+      hr_keywords = ["leave", "sick", "vacation", "employee", "benefit", "policy", "hire", "performance", "work"]
+      compliance_keywords = ["gdpr", "privacy", "compliance", "legal", "audit", "regulation", "data protection"]
+      
+      finance_score = sum(1 for keyword in finance_keywords if keyword in query_lower)
+      hr_score = sum(1 for keyword in hr_keywords if keyword in query_lower)
+      compliance_score = sum(1 for keyword in compliance_keywords if keyword in query_lower)
+      
+      if finance_score > hr_score and finance_score > compliance_score:
+            return "FINANCE"
+      elif hr_score > compliance_score:
+            return "HR"
+      else:
+            return "COMPLIANCE"
+```
 
 ![A screen shot of a computer program AI-generated content may be
 incorrect.](./media/image11.png)
@@ -302,61 +241,35 @@ communication.
     the following Python code to configure hr agent. Add the following
     Python code to configure hr agent.
 
-> import os
->
-> import asyncio
->
-> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
-> ignore
->
-> async def build_hr_agent():
->
-> client = AzureOpenAIResponsesClient(
->
-> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
->
-> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
->
-> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
->
-> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
->
-> )
->
-> return client.create_agent(
->
-> name="HRAgent",
->
-> instructions=(
->
-> "You are an expert HR policy specialist with deep knowledge of
-> employment law and best practices. "
->
-> "Answer questions about:\n"
->
-> "- Leave policies (sick, vacation, parental, bereavement)\n"
->
-> "- Employee benefits (health insurance, retirement, wellness
-> programs)\n"
->
-> "- Performance management and reviews\n"
->
-> "- Hiring, onboarding, and termination procedures\n"
->
-> "- Working hours, overtime, and flexible work arrangements\n"
->
-> "- Employee relations and conflict resolution\n"
->
-> "- Training and development programs\n\n"
->
-> "Provide specific, actionable guidance with policy references where
-> applicable. "
->
-> "Be empathetic and professional in your responses."
->
-> ),
->
-> )
+```
+import os
+import asyncio
+from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
+
+async def build_hr_agent():
+   client = AzureOpenAIResponsesClient(
+      api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+      endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+      deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+      api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+   )
+   return client.create_agent(
+      name="HRAgent",
+      instructions=(
+            "You are an expert HR policy specialist with deep knowledge of employment law and best practices. "
+            "Answer questions about:\n"
+            "- Leave policies (sick, vacation, parental, bereavement)\n"
+            "- Employee benefits (health insurance, retirement, wellness programs)\n" 
+            "- Performance management and reviews\n"
+            "- Hiring, onboarding, and termination procedures\n"
+            "- Working hours, overtime, and flexible work arrangements\n"
+            "- Employee relations and conflict resolution\n"
+            "- Training and development programs\n\n"
+            "Provide specific, actionable guidance with policy references where applicable. "
+            "Be empathetic and professional in your responses."
+      ),
+   )
+```
 
 ![A screen shot of a computer AI-generated content may be
 incorrect.](./media/image12.png)
@@ -402,47 +315,28 @@ incorrect.](./media/image8.png)
     and add the following Python code to configure the compliance agent.
     Add the following Python code to configure the finance agent.
 
-> import os
->
-> import asyncio
->
-> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
-> ignore
->
-> async def build_finance_agent():
->
-> client = AzureOpenAIResponsesClient(
->
-> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
->
-> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
->
-> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
->
-> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
->
-> )
->
-> return client.create_agent(
->
-> name="FinanceAgent",
->
-> instructions=(
->
-> "You are a finance and reimbursement specialist. Answer questions
-> about "
->
-> "expense policies, reimbursement limits, budget approvals, travel
-> expenses, "
->
-> "meal allowances, equipment purchases, and financial procedures.
-> Provide "
->
-> "specific amounts, policies, and actionable guidance."
->
-> ),
->
-> )
+```
+import os
+import asyncio
+from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
+
+async def build_finance_agent():
+   client = AzureOpenAIResponsesClient(
+      api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+      endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+      deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+      api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+   )
+   return client.create_agent(
+      name="FinanceAgent",
+      instructions=(
+            "You are a finance and reimbursement specialist. Answer questions about "
+            "expense policies, reimbursement limits, budget approvals, travel expenses, "
+            "meal allowances, equipment purchases, and financial procedures. Provide "
+            "specific amounts, policies, and actionable guidance."
+      ),
+   )
+```
 
 ![A computer screen shot of a program AI-generated content may be
 incorrect.](./media/image13.png)
@@ -487,63 +381,36 @@ incorrect.](./media/image8.png)
     and add the following Python code to configure the compliance agent.
     Add the following Python code to configure the compliance agent.
 
-> import os
->
-> import asyncio
->
-> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
-> ignore
->
-> async def build_compliance_agent():
->
-> client = AzureOpenAIResponsesClient(
->
-> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
->
-> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
->
-> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
->
-> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
->
-> )
->
-> return client.create_agent(
->
-> name="ComplianceAgent",
->
-> instructions=(
->
-> "You are a senior compliance and legal specialist with expertise in
-> multiple jurisdictions. "
->
-> "Provide authoritative guidance on:\n"
->
-> "- GDPR and data protection regulations (EU, UK, US state laws)\n"
->
-> "- Privacy policies and data processing agreements\n"
->
-> "- Regulatory compliance (SOX, HIPAA, PCI-DSS, ISO standards)\n"
->
-> "- Risk assessment and audit requirements\n"
->
-> "- Contract law and vendor agreements\n"
->
-> "- Information security policies\n"
->
-> "- Cross-border data transfers and adequacy decisions\n"
->
-> "- Breach notification requirements\n\n"
->
-> "Always provide factual, well-researched answers with relevant legal
-> citations. "
->
-> "Include practical implementation steps and potential risks. Use
-> formal, professional tone."
->
-> ),
->
-> )
+```
+import os
+import asyncio
+from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
+
+async def build_compliance_agent():
+   client = AzureOpenAIResponsesClient(
+      api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+      endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+      deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+      api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+   )
+   return client.create_agent(
+      name="ComplianceAgent", 
+      instructions=(
+            "You are a senior compliance and legal specialist with expertise in multiple jurisdictions. "
+            "Provide authoritative guidance on:\n"
+            "- GDPR and data protection regulations (EU, UK, US state laws)\n"
+            "- Privacy policies and data processing agreements\n"
+            "- Regulatory compliance (SOX, HIPAA, PCI-DSS, ISO standards)\n"
+            "- Risk assessment and audit requirements\n"
+            "- Contract law and vendor agreements\n"
+            "- Information security policies\n"
+            "- Cross-border data transfers and adequacy decisions\n"
+            "- Breach notification requirements\n\n"
+            "Always provide factual, well-researched answers with relevant legal citations. "
+            "Include practical implementation steps and potential risks. Use formal, professional tone."
+      ),
+   )
+```
 
 ![A screen shot of a computer AI-generated content may be
 incorrect.](./media/image14.png)
@@ -598,301 +465,185 @@ query intent. This establishes true multi-agent collaboration.
     following Python code to configure the A2A communication flow agent.
     Add the following Python code to configure agent routing logic.
 
-> import asyncio
->
-> import time
->
-> import logging
->
-> from typing import Dict, Any
->
-> from utils.env import load_env
->
-> from agents.planner_agent import build_planner_agent, classify_target
->
-> from agents.hr_agent import build_hr_agent
->
-> from agents.compliance_agent import build_compliance_agent
->
-> from agents.finance_agent import build_finance_agent
->
-> \# Configure logging
->
-> logging.basicConfig(level=logging.INFO, format='%(asctime)s -
-> %(levelname)s - %(message)s')
->
-> async def run_multi_agent(query: str, agents: Dict\[str, Any\]) -\>
-> Dict\[str, Any\]:
->
-> """
->
-> Advanced multi-agent system with routing, timing, and comprehensive
-> response handling.
->
-> """
->
-> start_time = time.time()
->
-> try:
->
-> \# Step 1: Route the query
->
-> logging.info(f"Routing query: {query\[:50\]}...")
->
-> target = await classify_target(agents\["planner"\], query)
->
-> logging.info(f"Query routed to: {target}")
->
-> \# Step 2: Get response from appropriate agent
->
-> agent_mapping = {
->
-> "HR": ("hr", "HRAgent"),
->
-> "FINANCE": ("finance", "FinanceAgent"),
->
-> "COMPLIANCE": ("compliance", "ComplianceAgent")
->
-> }
->
-> if target in agent_mapping:
->
-> agent_key, agent_name = agent_mapping\[target\]
->
-> answer = await agents\[agent_key\].run(query)
->
-> else:
->
-> \# Fallback to HR if routing unclear
->
-> logging.warning(f"Unknown target '{target}', falling back to HR")
->
-> answer = await agents\["hr"\].run(query)
->
-> target = "HR"
->
-> agent_name = "HRAgent"
->
-> \# Step 3: Process response
->
-> response_time = time.time() - start_time
->
-> return {
->
-> "query": query,
->
-> "routed_to": target,
->
-> "agent_name": agent_name,
->
-> "answer": str(answer),
->
-> "response_time": round(response_time, 2),
->
-> "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
->
-> "success": True
->
-> }
->
-> except Exception as e:
->
-> logging.error(f"Error processing query: {e}")
->
-> return {
->
-> "query": query,
->
-> "routed_to": "ERROR",
->
-> "agent_name": "ErrorHandler",
->
-> "answer": f"I apologize, but I encountered an error processing your
-> request: {str(e)}",
->
-> "response_time": round(time.time() - start_time, 2),
->
-> "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
->
-> "success": False
->
-> }
->
-> def format_response(result: Dict\[str, Any\]) -\> str:
->
-> """Format the agent response for display."""
->
-> status_icon = "✅" if result\["success"\] else "❌"
->
-> formatted = f"""
->
-> {status_icon} Agent Response Summary:
->
-> ┌─ Routed to: {result\['routed_to'\]} ({result\['agent_name'\]})
->
-> ├─ Response time: {result\['response_time'\]}s
->
-> ├─ Timestamp: {result\['timestamp'\]}
->
-> └─ Status: {'Success' if result\['success'\] else 'Error'}
->
-> 💬 Answer:
->
-> {result\['answer'\]}
->
-> """
->
-> return formatted
->
-> async def run_interactive_mode(agents: Dict\[str, Any\]):
->
-> """Interactive mode for real-time queries."""
->
-> print("\n🤖 Enterprise Agent System - Interactive Mode")
->
-> print("Available agents: HR, Finance, Compliance")
->
-> print("Type 'quit' to exit, 'help' for commands\n")
->
-> while True:
->
-> try:
->
-> query = input("Enter your question: ").strip()
->
-> if query.lower() in \['quit', 'exit', 'q'\]:
->
-> print("👋 Goodbye!")
->
-> break
->
-> elif query.lower() == 'help':
->
-> print("""
->
-> 📋 Available Commands:
->
-> \- Ask any question about HR, Finance, or Compliance
->
-> \- 'quit' or 'exit' - Exit the system
->
-> \- 'help' - Show this help message
->
-> 🎯 Example questions:
->
-> \- "What's the travel reimbursement limit for meals?"
->
-> \- "How many vacation days do employees get?"
->
-> \- "Do we need GDPR compliance for EU customers?"
->
-> """)
->
-> continue
->
-> elif not query:
->
-> continue
->
-> result = await run_multi_agent(query, agents)
->
-> print(format_response(result))
->
-> except KeyboardInterrupt:
->
-> print("\n👋 Goodbye!")
->
-> break
->
-> except Exception as e:
->
-> logging.error(f"Interactive mode error: {e}")
->
-> print(f"❌ Error: {e}")
->
-> async def run_batch_tests(agents: Dict\[str, Any\]):
->
-> """Run predefined test queries."""
->
-> test_queries = \[
->
-> "How much reimbursement is allowed for international flights?",
->
-> "Is employee data protected under GDPR?",
->
-> "How many sick leave days do employees get?"
->
-> \]
->
-> print("🧪 Running batch tests...\n")
->
-> for i, query in enumerate(test_queries, 1):
->
-> print(f"{'='\*80}")
->
-> print(f"TEST {i}/{len(test_queries)}: {query}")
->
-> print(f"{'='\*80}")
->
-> result = await run_multi_agent(query, agents)
->
-> print(format_response(result))
->
-> \# Small delay between queries for better readability
->
-> if i \< len(test_queries):
->
-> await asyncio.sleep(0.5)
->
-> async def main():
->
-> """Main application entry point with enhanced features."""
->
-> print("🚀 Initializing Enterprise Agent System...")
->
-> try:
->
-> \# Load environment and build agents
->
-> load_env()
->
-> logging.info("Building agent network...")
->
-> agents = {
->
-> "planner": await build_planner_agent(),
->
-> "hr": await build_hr_agent(),
->
-> "compliance": await build_compliance_agent(),
->
-> "finance": await build_finance_agent()
->
-> }
->
-> logging.info("✅ All agents initialized successfully")
->
-> \# Check if running interactively or in batch mode
->
-> import sys
->
-> if len(sys.argv) \> 1 and sys.argv\[1\] == "--interactive":
->
-> await run_interactive_mode(agents)
->
-> else:
->
-> await run_batch_tests(agents)
->
-> except Exception as e:
->
-> logging.error(f"System initialization failed: {e}")
->
-> print(f"❌ Failed to start system: {e}")
->
-> if \_\_name\_\_ == "\_\_main\_\_":
->
-> asyncio.run(main())
+```
+import asyncio
+import time
+import logging
+from typing import Dict, Any
+from utils.env import load_env
+from agents.planner_agent import build_planner_agent, classify_target
+from agents.hr_agent import build_hr_agent
+from agents.compliance_agent import build_compliance_agent
+from agents.finance_agent import build_finance_agent
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+async def run_multi_agent(query: str, agents: Dict[str, Any]) -> Dict[str, Any]:
+   """
+   Advanced multi-agent system with routing, timing, and comprehensive response handling.
+   """
+   start_time = time.time()
+   
+   try:
+      # Step 1: Route the query
+      logging.info(f"Routing query: {query[:50]}...")
+      target = await classify_target(agents["planner"], query)
+      logging.info(f"Query routed to: {target}")
+      
+      # Step 2: Get response from appropriate agent
+      agent_mapping = {
+            "HR": ("hr", "HRAgent"),
+            "FINANCE": ("finance", "FinanceAgent"), 
+            "COMPLIANCE": ("compliance", "ComplianceAgent")
+      }
+      
+      if target in agent_mapping:
+            agent_key, agent_name = agent_mapping[target]
+            answer = await agents[agent_key].run(query)
+      else:
+            # Fallback to HR if routing unclear
+            logging.warning(f"Unknown target '{target}', falling back to HR")
+            answer = await agents["hr"].run(query)
+            target = "HR"
+            agent_name = "HRAgent"
+      
+      # Step 3: Process response
+      response_time = time.time() - start_time
+      
+      return {
+            "query": query,
+            "routed_to": target,
+            "agent_name": agent_name,
+            "answer": str(answer),
+            "response_time": round(response_time, 2),
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "success": True
+      }
+      
+   except Exception as e:
+      logging.error(f"Error processing query: {e}")
+      return {
+            "query": query,
+            "routed_to": "ERROR",
+            "agent_name": "ErrorHandler",
+            "answer": f"I apologize, but I encountered an error processing your request: {str(e)}",
+            "response_time": round(time.time() - start_time, 2),
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "success": False
+      }
+
+def format_response(result: Dict[str, Any]) -> str:
+   """Format the agent response for display."""
+   status_icon = "✅" if result["success"] else "❌"
+   
+   formatted = f"""
+{status_icon} Agent Response Summary:
+┌─ Routed to: {result['routed_to']} ({result['agent_name']})
+├─ Response time: {result['response_time']}s
+├─ Timestamp: {result['timestamp']}
+└─ Status: {'Success' if result['success'] else 'Error'}
+
+💬 Answer:
+{result['answer']}
+"""
+   return formatted
+
+async def run_interactive_mode(agents: Dict[str, Any]):
+   """Interactive mode for real-time queries."""
+   print("\n🤖 Enterprise Agent System - Interactive Mode")
+   print("Available agents: HR, Finance, Compliance")
+   print("Type 'quit' to exit, 'help' for commands\n")
+   
+   while True:
+      try:
+            query = input("Enter your question: ").strip()
+            
+            if query.lower() in ['quit', 'exit', 'q']:
+               print("👋 Goodbye!")
+               break
+            elif query.lower() == 'help':
+               print("""
+📋 Available Commands:
+- Ask any question about HR, Finance, or Compliance
+- 'quit' or 'exit' - Exit the system
+- 'help' - Show this help message
+
+🎯 Example questions:
+- "What's the travel reimbursement limit for meals?"
+- "How many vacation days do employees get?"  
+- "Do we need GDPR compliance for EU customers?"
+""")
+               continue
+            elif not query:
+               continue
+               
+            result = await run_multi_agent(query, agents)
+            print(format_response(result))
+            
+      except KeyboardInterrupt:
+            print("\n👋 Goodbye!")
+            break
+      except Exception as e:
+            logging.error(f"Interactive mode error: {e}")
+            print(f"❌ Error: {e}")
+
+async def run_batch_tests(agents: Dict[str, Any]):
+   """Run predefined test queries."""
+   test_queries = [
+            "How much reimbursement is allowed for international flights?",
+            "Is employee data protected under GDPR?",
+            "How many sick leave days do employees get?"
+
+   ]
+   
+   print("🧪 Running batch tests...\n")
+   
+   for i, query in enumerate(test_queries, 1):
+      print(f"{'='*80}")
+      print(f"TEST {i}/{len(test_queries)}: {query}")
+      print(f"{'='*80}")
+      
+      result = await run_multi_agent(query, agents)
+      print(format_response(result))
+      
+      # Small delay between queries for better readability
+      if i < len(test_queries):
+            await asyncio.sleep(0.5)
+
+async def main():
+   """Main application entry point with enhanced features."""
+   print("🚀 Initializing Enterprise Agent System...")
+   
+   try:
+      # Load environment and build agents
+      load_env()
+      logging.info("Building agent network...")
+      
+      agents = {
+            "planner": await build_planner_agent(),
+            "hr": await build_hr_agent(), 
+            "compliance": await build_compliance_agent(),
+            "finance": await build_finance_agent()
+      }
+      
+      logging.info("✅ All agents initialized successfully")
+      
+      # Check if running interactively or in batch mode
+      import sys
+      if len(sys.argv) > 1 and sys.argv[1] == "--interactive":
+            await run_interactive_mode(agents)
+      else:
+            await run_batch_tests(agents)
+            
+   except Exception as e:
+      logging.error(f"System initialization failed: {e}")
+      print(f"❌ Failed to start system: {e}")
+
+if __name__ == "__main__":
+   asyncio.run(main())
+
+```
 
 ![A screen shot of a computer program AI-generated content may be
 incorrect.](./media/image15.png)
@@ -945,11 +696,7 @@ telemetry in Microsoft Foundry.
     planner agent and worker agents. Now, you'll test the working of
     this multi-agent system.
 
-> **Note:** Although the multi-agent system is now configured with LLM
-> capabilities, it does not yet have MCP integration or access to
-> external knowledge sources such as datasets or Azure AI Search
-> indexes. At this stage, the agents will rely solely on their general
-> model intelligence to answer questions.
+> **Note:** Although the multi-agent system is now configured with LLM capabilities, it does not yet have MCP integration or access to external knowledge sources such as datasets or Azure AI Search indexes. At this stage, the agents will rely solely on their general model intelligence to answer questions.
 
 2.  Select the **... (1)** option from the top menu to extend the menu.
     Select **Terminal (2)** and click on **New Terminal (3)**.
@@ -1008,3 +755,4 @@ using the Microsoft Agent Framework SDK and registered them. You built a
 routing workflow to delegate user queries via Agent-to-Agent calls. You
 tested a multi-agent scenario and inspected logs to confirm correct
 message routing and execution flow.
+
