@@ -59,9 +59,10 @@ incorrect.](./media/image4.png)
     the **applications** directory and install all required dependencies
     from the **requirements.txt** file.
 
-> cd agentic_ai/applications
->
-> pip install -r requirements.txt
+```
+cd agentic_ai/applications
+pip install -r requirements.txt
+```
 
 ![A screen shot of a computer AI-generated content may be
 incorrect.](./media/image5.png)
@@ -129,62 +130,42 @@ incorrect.](./media/image13.png)
 
 10. Copy and paste the following code into the file.
 
-> import asyncio
->
-> import os
->
-> from dotenv import load_dotenv
->
-> from agent_framework.azure import AzureOpenAIChatClient
->
-> from azure.identity import AzureCliCredential
->
-> \# Load .env file (same folder or specify full path)
->
-> load_dotenv(dotenv_path=".env")
->
-> \# Retrieve values from .env
->
-> endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
->
-> deployment_name = os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT")
->
-> api_version = os.getenv("AZURE_OPENAI_API_VERSION")
->
-> print("Using Azure OpenAI endpoint:", endpoint)
->
-> print("Deployment name:", deployment_name)
->
-> print("API version:", api_version)
->
-> \# ✅ Correct parameter name is deployment_name (not deployment)
->
-> agent = AzureOpenAIChatClient(
->
-> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
->
-> endpoint=endpoint,
->
-> deployment_name=deployment_name,
->
-> api_version=api_version
->
-> ).create_agent(
->
-> instructions="You are a helpful and funny assistant who tells short
-> jokes.",
->
-> name="Joker"
->
-> )
->
-> async def main():
->
-> result = await agent.run("Tell me a joke about the cloud.")
->
-> print("\nAgent response:\n", result.text)
->
-> asyncio.run(main())
+```
+import asyncio
+import os
+from dotenv import load_dotenv
+from agent_framework.azure import AzureOpenAIChatClient
+from azure.identity import AzureCliCredential
+
+# Load .env file (same folder or specify full path)
+load_dotenv(dotenv_path=".env")
+
+# Retrieve values from .env
+endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+deployment_name = os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT")
+api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+
+print("Using Azure OpenAI endpoint:", endpoint)
+print("Deployment name:", deployment_name)
+print("API version:", api_version)
+
+# ✅ Correct parameter name is deployment_name (not deployment)
+agent = AzureOpenAIChatClient(
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    endpoint=endpoint,
+    deployment_name=deployment_name,
+    api_version=api_version
+).create_agent(
+    instructions="You are a helpful and funny assistant who tells short jokes.",
+    name="Joker"
+)
+
+async def main():
+    result = await agent.run("Tell me a joke about the cloud.")
+    print("\nAgent response:\n", result.text)
+
+asyncio.run(main())
+```
 
 ![A computer screen shot of a program AI-generated content may be
 incorrect.](./media/image14.png)
@@ -257,8 +238,6 @@ incorrect.](./media/image18.png)
 - It allows the agent to make HTTP calls to external services (through
   MCP) as part of its workflow.
 
-&nbsp;
-
 - The tool is passed to the ChatAgent during initialization:
 
 > ![A screen shot of a computer AI-generated content may be
@@ -311,9 +290,10 @@ incorrect.](./media/image4.png)
       APIs that agents can call as tools. (Server runs
       on [http://localhost:8000](http://localhost:8000/))
 
-> cd mcp
->
-> uv run python mcp_service.py
+```
+cd mcp
+uv run python mcp_service.py
+```
 >
 > ![A screenshot of a computer program AI-generated content may be
 > incorrect.](./media/image21.png)
@@ -334,9 +314,10 @@ incorrect.](./media/image4.png)
     - Run the below command to start the backend server that hosts your
       agent workflows, session management, and API endpoints.
 
-> cd agentic_ai/applications
->
-> uv run python backend.py
+```
+cd agentic_ai/applications
+uv run python backend.py
+```
 
 ![A screen shot of a computer AI-generated content may be
 incorrect.](./media/image22.png)
@@ -498,9 +479,10 @@ incorrect.](./media/image4.png)
       APIs that agents can call as tools. (Server runs
       on [http://localhost:8000](http://localhost:8000/))
 
-> cd mcp
->
-> uv run python mcp_service.py
+```
+cd mcp
+uv run python mcp_service.py
+```
 
 7.  Let the command run, open a new terminal.
 
@@ -512,9 +494,10 @@ incorrect.](./media/image4.png)
     - Run the below command to start the backend server that hosts your
       agent workflows, session management, and API endpoints.
 
-> cd agentic_ai/applications
->
-> uv run python backend.py
+```
+cd agentic_ai/applications
+uv run python backend.py
+```
 
 - This is the core application logic that the frontend will communicate
   with. Make sure the **Connection is open**.
@@ -770,3 +753,4 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
