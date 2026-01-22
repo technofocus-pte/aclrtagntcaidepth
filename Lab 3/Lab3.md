@@ -1,3 +1,4 @@
+
 # Lab 3: Build a Health Insurance Plans Analyser AI Agent
 
 **Overview**
@@ -24,50 +25,50 @@ In this task, you will build a simple AI Agent that processes data and
 generates a bar chart comparing different health benefit plans using
 Azure AI services for analysis and visualization.
 
-1.  Open the **Lab 2 - Create A Simple AI Agent.ipynb** file. This **Lab
-    2 - Create A Simple AI Agent.ipynb** notebook guides you through how
+1.  Open the **Lab 2 - Create A Simple AI Agent.ipynb** file. This **Lab
+    2 - Create A Simple AI Agent.ipynb** notebook guides you through how
     to build a simple AI Agent that processes data and generates a bar
     chart comparing different health benefit plans.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image1.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image1.png)
 
-2.  Select the **Select kernel** setting available in the top right
-    corner. Select **venv (Python 3.x.x)** from the list.
+2.  Select the **Select kernel** setting available in the top right
+    corner. Select **venv (Python 3.x.x)** from the list.
 
-![A blue and red rectangle with white text AI-generated content may be
-incorrect.](./media/image2.png)
+    ![A blue and red rectangle with white text AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image2.png)
 
 3.  Run the below cell to import necessary libraries and load
     environment variables for working with Azure AI Projects. This setup
     enables secure authentication and interaction with Azure AI
     services.
 
-![A screenshot of a computer program AI-generated content may be
-incorrect.](./media/image3.png)
+    ![A screenshot of a computer program AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image3.png)
 
 4.  Run the below cell to connect to your Microsoft Foundry project and
-    access the deployed **gpt-4o** model. This establishes a secure
+    access the deployed **gpt-4o** model. This establishes a secure
     connection using the project connection string and Azure
     credentials.
 
-![A screen shot of a computer AI-generated content may be
-incorrect.](./media/image4.png)
+    ![A screen shot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image4.png)
 
-5.  Run this cell to create a **simple AI Agent** that processes data
+5.  Run this cell to create a **simple AI Agent** that processes data
     and generates a bar chart comparing different health benefit plans
     using Microsoft Foundry.This script initializes the AI agent, sends
     a prompt containing health plan data, and requests a bar chart. The
     agent processes the request, generates the chart, saves the image
     file, and then cleans up by deleting the agent.
 
-![A screen shot of a computer program AI-generated content may be
-incorrect.](./media/image5.png)
+    ![A screen shot of a computer program AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image5.png)
 
 6.  Finally observe the output.
 
-![A screenshot of a computer program AI-generated content may be
-incorrect.](./media/image6.png)
+    ![A screenshot of a computer program AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image6.png)
 
 **Summary**
 
@@ -85,3 +86,4 @@ their health insurance options.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
