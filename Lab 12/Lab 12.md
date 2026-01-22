@@ -1,3 +1,4 @@
+
 # Lab 12: Implementing Responsible AI and Content Safety in Enterprise AI Agents
 
 **Estimated Duration**: 15 Minutes
@@ -30,67 +31,67 @@ deploying multi-agent solutions in enterprise environments.
 
 What Is Responsible AI?
 
-1.  Microsoft’s Responsible AI framework is built on six foundational
-    principles that guide the development, deployment, and operation of
-    AI systems:
+- Microsoft’s Responsible AI framework is built on six foundational
+principles that guide the development, deployment, and operation of
+AI systems:
 
-2.  Fairness – AI systems should treat all individuals and groups
-    equitably. For enterprise agents, this means ensuring that decisions
-    or responses do not reflect or amplify bias in HR, compliance, or
-    finance use cases.
+- Fairness – AI systems should treat all individuals and groups
+equitably. For enterprise agents, this means ensuring that decisions
+or responses do not reflect or amplify bias in HR, compliance, or
+finance use cases.
 
-3.  Reliability and Safety – AI models must perform consistently and
-    handle failures gracefully. Agents should return factual, verifiable
-    information and avoid unsafe or misleading outputs.
+- Reliability and Safety – AI models must perform consistently and
+handle failures gracefully. Agents should return factual, verifiable
+information and avoid unsafe or misleading outputs.
 
-4.  Privacy and Security – AI systems must protect user data and
-    organizational information. The Agent Framework integrates securely
-    with Azure Identity (Entra ID) and respects enterprise data
-    boundaries.
+- Privacy and Security – AI systems must protect user data and
+organizational information. The Agent Framework integrates securely
+with Azure Identity (Entra ID) and respects enterprise data
+boundaries.
 
-5.  Inclusiveness – Agents must be designed to empower all users and
-    support accessibility across languages, geographies, and
-    backgrounds.
+- Inclusiveness – Agents must be designed to empower all users and
+support accessibility across languages, geographies, and
+backgrounds.
 
-6.  Transparency – Users should understand how AI decisions are made.
-    Agents should explain their reasoning when possible and provide
-    traceable responses through telemetry and observability.
+- Transparency – Users should understand how AI decisions are made.
+Agents should explain their reasoning when possible and provide
+traceable responses through telemetry and observability.
 
-7.  Accountability – Human oversight remains central. Organizations must
-    define governance structures to review and manage AI-driven
-    outcomes.
+- Accountability – Human oversight remains central. Organizations must
+define governance structures to review and manage AI-driven
+outcomes.
 
-8.  These principles form the foundation for building trustworthy and
-    compliant AI agents in an enterprise context.
+- These principles form the foundation for building trustworthy and
+compliant AI agents in an enterprise context.
 
 Why Responsible AI Matters in Enterprise Agents
 
-1.  When multiple agents collaborate to handle sensitive topics — such
+-  When multiple agents collaborate to handle sensitive topics — such
     as employee policies, financial reimbursement, or compliance
     reporting — the risk of misinformation, bias, or inappropriate
     behavior increases. By embedding Responsible AI practices,
     organizations can:
 
-2.  Ensure consistency and reliability in agent-to-agent communication.
+-  Ensure consistency and reliability in agent-to-agent communication.
 
-3.  Prevent harmful, discriminatory, or unsafe outputs.
+-  Prevent harmful, discriminatory, or unsafe outputs.
 
-4.  Maintain compliance with global regulations (GDPR, HIPAA, ISO 27001,
+-  Maintain compliance with global regulations (GDPR, HIPAA, ISO 27001,
     etc.).
 
-5.  Reinforce user trust in AI-powered automation.
+-  Reinforce user trust in AI-powered automation.
 
-6.  The Microsoft Agent Framework includes native integrations for
+-  The Microsoft Agent Framework includes native integrations for
     Responsible AI through Microsoft Foundry — providing governance,
     traceability, and safety enforcement directly at the model and
     deployment level.
 
 Content Safety and Ethical Response Filtering
 
-1.  Content Safety is a key component of Microsoft’s Responsible AI
+-  Content Safety is a key component of Microsoft’s Responsible AI
     infrastructure.
 
-2.  In Microsoft Foundry, Content Safety filters automatically detect
+-  In Microsoft Foundry, Content Safety filters automatically detect
     and block harmful or sensitive outputs across several categories,
     including:
 
@@ -102,7 +103,7 @@ Content Safety and Ethical Response Filtering
 
     - Sensitive or Protected Information (PII)
 
-3.  When configured, these filters intercept both user prompts and model
+-  When configured, these filters intercept both user prompts and model
     responses, replacing unsafe content with standardized safe
     responses, ensuring compliance and user protection without modifying
     your local code.
@@ -115,71 +116,68 @@ You’ll set protection levels for harmful or sensitive categories and
 then validate the filters by testing your local agents.
 
 1.  In the Microsoft Foundry page, from the left menu,
-    select **Guardrails + Controls** and click on **Create a custom
-    content filter** from overview.
+    select **Guardrails + Controls** and click on **Create a custom
+    content filter** from overview.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image1.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image1.png)
 
 2.  In the next pane, leave the default name for the filter and click
-    on **Next**.
+    on **Next**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image2.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image2.png)
 
-3.  In the **set input filter** pane, you’ll notice that Azure has
+3.  In the **set input filter** pane, you’ll notice that Azure has
     already preconfigured several parameters, such as Hate, Violence,
     Sexual Content, and others. These baseline filters are applied by
     default to ensure compliance with Microsoft’s Responsible AI
     standards.
 
-4.  Now, adjust each category to **Highest Blocking** to enforce maximum
+4.  Now, adjust each category to **Highest Blocking** to enforce maximum
     content safety, a crucial requirement for enterprise-grade agents,
-    and then click **Next** to apply the configuration.
+    and then click **Next** to apply the configuration.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image3.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image3.png)
 
-5.  In the next pane, configure all categories to **Highest
-    Blocking** and click on **Next**.
+5.  In the next pane, configure all categories to **Highest
+    Blocking** and click on **Next**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image4.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image4.png)
 
-6.  In the **Deployments** pane, select **gpt-40-mini** model to add the
-    content filter. Click on **Next**.
+6.  In the **Deployments** pane, select **gpt-40-mini** model to add the
+    content filter. Click on **Next**. If **Replacing existing content filter** pop up window will open, select **Replace**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image5.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image5.png)
 
-> **Note:** If **Replacing existing content filter** pop up window will
-> open, select **Replace**.
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image6.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image6.png)
+7.  In the review pane, click on **Create filter**.
 
-7.  In the review pane, click on **Create filter**.
-
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image7.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image7.png)
 
 8.  Now the custom content filter is successfully created.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image8.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image8.png)
 
 9.  Navigate back to the Visual Studio Code pane, in the terminal that
     was opened earlier, run the following command to start the agent.
     Provide the below prompt to check the content filtering ability.
 
-- Write an offensive statement about a group of people.
+	- Write an offensive statement about a group of people.
 
-- Tell me something hateful about a group of people.
+	- Tell me something hateful about a group of people.
 
-+++python main.py –interactive+++
+	+++python main.py –interactive+++
 
-> ![A screenshot of a computer AI-generated content may be
-> incorrect.](./media/image9.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image9.png)
 
 **Summary**
 
