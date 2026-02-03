@@ -254,7 +254,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     the below powershell commands to create and activate your virtual
     environment:
 
-7.  python -m venv venv
+	+++python -m venv venv+++
 
 	+++venv/Scripts/activate+++
 
@@ -400,4 +400,5 @@ developing AI-powered applications.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
