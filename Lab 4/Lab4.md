@@ -117,7 +117,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A close-up of a computer error AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image10.png)
 
-10. On the Azure portal, search for **Storage accounts** and
+10. On the Azure portal, search for +++**Storage accounts**+++ and
     select **Storage accounts** from the services.
 
     ![A screenshot of a computer AI-generated content may be
@@ -134,8 +134,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image13.png)
 
-13. Under **Job function roles**, search for **Storage Blob Data Reader
-   **, select **Storage Blob Data Reader**, and then
+13. Under **Job function roles**, search for +++**Storage Blob Data Reader**+++, select **Storage Blob Data Reader**, and then
     select **Next**.
 
     ![A screenshot of a computer AI-generated content may be
@@ -161,7 +160,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image16.png)
 
-16. Go to the **Azure OpenAI**, **my-openai-service**.
+16. Go to the **Azure OpenAI**, that starts with **my-openai-service**.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image17.png)
@@ -172,8 +171,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image18.png)
 
-18. Under **Job function roles**, search for **Cognitive Services OpenAI
-    User**, select **Cognitive Services OpenAI User**, and then
+18. Under **Job function roles**, search for +++**Cognitive Services OpenAI User**+++, select **Cognitive Services OpenAI User**, and then
     select **Next**.
 
     ![A screenshot of a computer AI-generated content may be
@@ -198,7 +196,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image21.png)
 
-21. Navigate to **Azure Portal**, search for **Storage account** and
+21. Navigate to **Azure Portal**, search for +++**Storage account**+++ and
     select the **Storage account**.
 
     ![A screenshot of a computer AI-generated content may be
@@ -210,12 +208,12 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image23.png)
 
 23. Click on **Containers** under data storage, then
-    select **+Container**.
+    select **+ Add container**.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image24.png)
 
-24. On New Container page enter **healthplan** as name and click
+24. On New Container page enter +++**healthplan**+++ as name and click
     on **Create**.
 
     ![A screenshot of a computer AI-generated content may be
@@ -245,7 +243,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 select healthplan.
 
 29. Navigate to **Azure AI search** service and
-    select **my-search-service-**.
+    select the service that starts with **my-search-service-**.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image30.png)
 
@@ -295,7 +293,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 35. Click on **Next** twice.
 
-36. Enter **health-plan** for **Objects name prefix** and click
+36. Enter +++**health-plan**+++ for **Objects name prefix** and click
     on **Create**.
 
     ![A screenshot of a computer screen AI-generated content may be
@@ -314,7 +312,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image38.png)
 
-39. Select **Connected resources**  and click on **New
+39. Select **Connected resources** under Project and click on **New
     connection** .
 
     ![A screenshot of a computer AI-generated content may be
@@ -445,3 +443,4 @@ enterprise-grade agent orchestration patterns for practical business
 applications.
 
 Congratulations! You have successfully completed the lab.
+
