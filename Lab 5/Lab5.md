@@ -183,7 +183,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image2.png)
 
 3.  Enter the below details and select **Review + create**. Select
-    Create in the next screen.
+    **Create** in the next screen.
 
 	- Storage account name - +++aistorage@lab.LabInstance.Id+++
 
@@ -617,4 +617,5 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
+
 
