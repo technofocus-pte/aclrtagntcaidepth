@@ -1,4 +1,5 @@
-# Manage, Securing, and Monitoring AI Agents at Scale
+
+# Lab 10: Manage, Securing, and Monitoring AI Agents at Scale
 
 **Overview**
 
@@ -130,54 +131,56 @@ to perform this lab.
 1.  Login to the Azure portal at +++https://portal.azure.com+++ using
     the below credentials and select Storage accounts.
 
-- Username - +++@lab.CloudPortalCredential(User1).Username+++
+	- Username - +++@lab.CloudPortalCredential(User1).Username+++
 
-- TAP - <+++@lab.CloudPortalCredential(User1).TAP>+++
+	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
 
-> ![A screenshot of a computer AI-generated content may be
-> incorrect.](./media/image1.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image1.png)
 
-2.  Select **Create**.
+2.  Select for **Storage Accounts** and Select **Create**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image2.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image2.png)
 
 3.  Enter the below details and select **Review + create**. Select
     Create in the next screen.
 
-- Storage account name - +++aistorage@lab.LabInstance.Id+++
+	- Storage account name - +++aistorage@lab.LabInstance.Id+++
 
-- Preferred storage type – Select **Azure Blob Storage or Azure Data
-  Lake Storage Gen2**
+    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
 
-> ![A screenshot of a computer AI-generated content may be
-> incorrect.](./media/image3.png)
->
-> ![A screenshot of a computer AI-generated content may be
-> incorrect.](./media/image4.png)
+	- Preferred storage type – Select **Azure Blob Storage or Azure Data
+	  Lake Storage Gen2**
+
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image3.png)
+
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image4.png)
 
 4.  Once the resource is created, select **Go to resource**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image5.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image5.png)
 
 5.  Select **Upload**, select **Create new** to create a new container.
     Name it as +++**datasets**+++ and then select **Ok**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image6.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image6.png)
 
-![A screenshot of a login box AI-generated content may be
-incorrect.](./media/image7.png)
+    ![A screenshot of a login box AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image7.png)
 
 6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 2** and click **Upload**.
+    **C:\Labfiles\Day 3** and click **Upload**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image8.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image8.png)
 
-![A screenshot of a upload box AI-generated content may be
-incorrect.](./media/image9.png)
+    ![A screenshot of a upload box AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image9.png)
 
 Now, the Storage account is create successfully and loaded with the
 policy documents.
@@ -188,69 +191,73 @@ In this task, you will create a Foundry resource which is required to
 access the Microsoft Foundry.
 
 1.  From the Home page of the Azure
-    portal(+++https://portal.azure.com+++), select **Foundry**.
+    portal (+++https://portal.azure.com+++), select **Foundry**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image10.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image10.png)
 
 2.  Select **Foundry** from the left pane, and then select **Create** to
     create the Foundry resource.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image11.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image11.png)
 
 3.  Enter the below details and select **Review + create**.
 
-- Name – <+++agentic-@lab.LabInstance.Id>+++
+	- Resource Group - **@lab.CloudResourceGroup(AgenticAI).Name**
+    
+    - Name – +++agentic-@lab.LabInstance.Id+++
 
-- Default project name – <+++agentic-ai-project-@lab.LabInstance.Id>+++
+    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image12.png)
+	- Default project name – +++agentic-ai-project-@lab.LabInstance.Id+++
+
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image12.png)
 
 4.  Select **Create** once validated.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image13.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image13.png)
 
 5.  Ensure that the resource is created.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image14.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image14.png)
 
-6.  Open the **<agentic-ai-project-@lab.LabInstance.Id>** and select
+6.  Open the **agentic-ai-project-@lab.LabInstance.Id** and select
     **Go to Foundry portal**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image15.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image15.png)
 
-> ![A screenshot of a computer AI-generated content may be
-> incorrect.](./media/image16.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image16.png)
 
 7.  In the Microsoft Foundry, select Models + endpoints from the left
-    pane. Select + **Deploy model** -\> **Deploy base model**.
+    pane. Select + **Deploy model** -\+ **Deploy base model**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image17.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image17.png)
 
 8.  Search for +++gpt-4o-mini+++, select it and click on Confirm to
     deploy the model.
 
-![A screenshot of a chat AI-generated content may be
-incorrect.](./media/image18.png)
+    ![A screenshot of a chat AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image18.png)
 
 9.  Select **Deploy** in the deployment window.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image19.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image19.png)
 
 10. Similarly, search for +++text-embedding-ada-002+++ and deploy it.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image20.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image20.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image21.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image21.png)
 
 In this task, you have successfully created the Foundry resource and
 deployed a chat and an embedding model in it.
@@ -260,43 +267,43 @@ deployed a chat and an embedding model in it.
 In this task, you will create an Application insights resource, which is
 required for monitoring.
 
-1.  From the Home page of the Azure portal, select **Subscriptions** and
+1.  From the Home page of the Azure portal (+++https://portal.azure.com+++), select **Subscriptions** and
     select the assigned subscription.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image22.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image22.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image23.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image23.png)
 
 2.  Select **Resource providers** from the left pane.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image24.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image24.png)
 
 3.  Search for +++Operational+++, select the 3 dots next to
     **Microsoft.OperationalInsights** and click **Register**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image25.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image25.png)
 
 4.  From the left pane of the Microsoft Foundry, select **Monitoring**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image26.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image26.png)
 
-5.  Select **Create New** -\> provide the name as
-    <+++agent-insights-@lab.LabInstance.Id>+++ and then select
+5.  Select **Create New** -\+ provide the name as
+    +++agent-insights-@lab.LabInstance.Id+++ and then select
     **Create**.
 
-![A screenshot of a application AI-generated content may be
-incorrect.](./media/image27.png)
+    ![A screenshot of a application AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image27.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image28.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image28.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image29.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image29.png)
 
 In this task, you have created the Application Insight resource.
 
@@ -314,102 +321,105 @@ create a searchable knowledge base.
 
 1.  From the Home page of the Azure portal, select **Foundry**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image30.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image30.png)
 
 2.  Select **AI Search** from the left pane and then select **+
     Create.**
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image31.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image31.png)
 
 3.  Enter the below details, select **Review + create**.
 
-- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
+    - Resource Group - **@lab.CloudResourceGroup(AgenticAI).Name**
 
-- Region - East US2
+	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
 
-> ![A screenshot of a computer AI-generated content may be
-> incorrect.](./media/image32.png)
+	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+
+    - Pricing Tier - **Standard**
+
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image32.png)
 
 4.  Select **Create** once the validation passes. Select Go to resource
     once the resource is created.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image33.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image33.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image34.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image34.png)
 
 5.  Select **Import data (new)**.
 
-![A screenshot of a search engine AI-generated content may be
-incorrect.](./media/image35.png)
+    >[!Alert] If instructed to try the **New** import data wizard, select **try now**.
+
+    ![A screenshot of a search engine AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image35.png)
 
 6.  Select the **Azure Blob Storage** under **Choose data source**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image36.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image36.png)
 
-7.  In the next pane, select the **RAG** option as we are building a
+7.  In the next pane, select the **RAG** option as we are building a
     retrieval-based agent.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image37.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image37.png)
 
-> Here is what each of these options for -
+	- Here is what each of these options for:
 
-1.  **Keyword Search:** Used for traditional search experiences based on
-    exact keywords. It indexes text so users can find information
-    through keyword matching, without AI reasoning.
+	1.  **Keyword Search:** Used for traditional search experiences based on
+		exact keywords. It indexes text so users can find information
+		through keyword matching, without AI reasoning.
 
-2.  **RAG (Retrieval-Augmented Generation):** Combines document
-    retrieval with AI generation.It ingests text (and simple OCR images)
-    so an AI agent can provide grounded, context-aware answers.
+	2.  **RAG (Retrieval-Augmented Generation):** Combines document
+		retrieval with AI generation.It ingests text (and simple OCR images)
+		so an AI agent can provide grounded, context-aware answers.
 
-3.  **Multimodal RAG:** Extends RAG to handle complex visual content
-    like diagrams, tables, workflows, or charts. It enables AI to
-    interpret both text and visual elements for richer, insight-based
-    responses.
+	3.  **Multimodal RAG:** Extends RAG to handle complex visual content
+		like diagrams, tables, workflows, or charts. It enables AI to
+		interpret both text and visual elements for richer, insight-based
+		responses.
 
-&nbsp;
+8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
+    and **datasets** **under Blob container, Acknowledge the addditional costs  and select **Next**.
 
-8.  Select the <aistorage@lab.LabInstance.Id> under **Storage account**
-    and **datasets** **under Blob containe**r and select **Next**.
-
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image38.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image38.png)
 
 9.  Select the below details and select **Next**.
 
-- Kind – Azure AI Foundry (Preview)
+	- Kind – Azure AI Foundry (Preview)
 
-- Azure AI Foundry/Hub project –
-  <agentic-ai-project-@lab.LabInstance.Id>
+	- Azure AI Foundry/Hub project – **agentic-ai-project-@lab.LabInstance.Id**
 
-- Model deployment – text-embedding-002-ada
+	- Model deployment – **text-embedding-002-ada**
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image39.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image39.png)
 
 10. Select **Next** in the next screens until the **Review and create**
     screen appears.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image40.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image40.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image41.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image41.png)
 
 11. Select **Create** in the **Review and create** screen.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image42.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image42.png)
 
 12. Select **Close** in the Create succeeded dialog.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image43.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image43.png)
 
 You’ve successfully ingested the dataset into Azure AI Search and
 created a searchable index. In the next task, you’ll create an AI agent
@@ -420,7 +430,7 @@ and connect this index as its knowledge source.
 In this task, you will set up and configure Freshworks to enable ticket
 management and an enterprise integration for your multi-agent system.
 
-**Freshworks** is a cloud-based customer service and engagement platform
+**Freshworks** is a cloud-based customer service and engagement platform
 designed to improve customer support operations and enhance user
 satisfaction. It offers a suite of tools for ticket management, live
 chat, help center creation, and customer self-service. Freshworks
@@ -431,121 +441,108 @@ workflows, assign tickets, and provide analytics for performance
 tracking. Now you will set up the Freshworks account.
 
 1.  Copy the URL and paste it in a new tab in your browser inside the VM
-    to open the **Freshworks** portal.
+    to open the **Freshworks** portal.
 
-    - URL:
+    - URL: +++https://www.freshworks.com/freshdesk/lp/home/?tactic_id=3387224&utm_source=google-adwords&utm_medium=FD-Search-Brand-India&utm_campaign=FD-Search-Brand-India&utm_term=freshdesk&device=c&matchtype=e&network=g&gclid=EAIaIQobChMIuOK90qvLjQMV_dQWBR3JAi9VEAAYASAAEgK87_D_BwE&audience=kwd-30002131023&ad_id=282519464145&gad_source=1&gad_campaignid=671502402+++
 
-> +++https://www.freshworks.com/freshdesk/lp/home/?tactic_id=3387224&utm_source=google-adwords&utm_medium=FD-Search-Brand-India&utm_campaign=FD-Search-Brand-India&utm_term=freshdesk&device=c&matchtype=e&network=g&gclid=EAIaIQobChMIuOK90qvLjQMV_dQWBR3JAi9VEAAYASAAEgK87_D_BwE&audience=kwd-30002131023&ad_id=282519464145&gad_source=1&gad_campaignid=671502402+++
+2.  In the portal, select **Start free trial** to start the free trial.
 
-2.  In the portal, select **Start free trial** to start the free trial.
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image44.png)
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image44.png)
+3.  In the next pane, provide these details and click on **Try it free
+   **:
 
-3.  In the next pane, provide these details and click on **Try it free
-    (6)**:
+    - **First name:** +++LODS+++
 
-    - **First name:** LODS
+    - **Last name:** +++User1+++
 
-    - **Last name:** User1
+    - **Work email:** +++@lab.CloudPortalCredential(User1).Username+++
+    
+    - **Company name:** +++Zava+++
 
-    &nbsp;
+    - **Organization size:** Select **1-10**
 
-    - **Work
-      email:** **+++@lab.CloudPortalCredential(User1).Username+++**
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image45.png)
 
-    &nbsp;
+4.  In the next pane, provide these details and click on **Next**:
 
-    - **Company name:** Zava
+    - **What industry are you from ?:** from the list, select **Software and internet**
 
-    - **Organization size:** Select **1-10**
+    - **How many employees are there in your company?:** select **1-10**
 
-> ![A screenshot of a computer AI-generated content may be
-> incorrect.](./media/image45.png)
+    - select **I'm trying customer service software for the first time**
 
-4.  In the next pane, provide these details and click on **Next (4)**:
-
-    - **What industry are you from ?:** from the list, select **Software
-      and internet (1)**
-
-    - **How many employees are there in your company?:** select **1-10
-      (2)**
-
-    - select **I'm trying customer service software for the first time
-      (3)**
-
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image46.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image46.png)
 
 5.  Once done, copy the URL given and paste it in a new tab in your
-    browser inside VM to open **Outlook**.
+    browser inside VM to open **Outlook**.
 
-    - URL:
-
-> +++https://go.microsoft.com/fwlink/p/?LinkID=2125442&clcid=0x409&culture=en-us&country=us+++
+    - URL: +++https://go.microsoft.com/fwlink/p/?LinkID=2125442&clcid=0x409&culture=en-us&country=us+++
 
 6.  In the pick an account pane, select the account that you are
     assigned for this lab.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image47.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image47.png)
 
-7.  In the Freshworks verification email, open and click on **Activate
+7.  In the Freshworks verification email, open and click on **Activate
     Account**.
 
-> ![A screenshot of a computer screen AI-generated content may be
-> incorrect.](./media/image48.png)
+    ![A screenshot of a computer screen AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image48.png)
 
-**Note:** If you're unable to locate the activation email from
-Freshworks, please wait a few minutes, as there might be a delay in
-email delivery. If the email doesn't arrive after some time, consider
-reinitiating the steps to activate your free trial in a new
-private/incognito window. Additionally, check your spam or junk folder,
-as the email might have been filtered there.
+	>[!Note]: If you're unable to locate the activation email from
+	Freshworks, please wait a few minutes, as there might be a delay in
+	email delivery. If the email doesn't arrive after some time, consider
+	reinitiating the steps to activate your free trial in a new
+	private/incognito window. Additionally, check your spam or junk folder,
+	as the email might have been filtered there.
 
-8.  In the next pane, provide as **Enter password (1)** and provide the
-    same password for **Confirm password (2)**. Click on **Activate your
-    account (3)**.
+8.  In the next pane, provide **password** as +++@lab.VirtualMachine(DPAI-061-VM).Password+++ and provide the
+    same password for **Confirm password**. Click on **Activate your account**.
 
-> ![A screenshot of a login screen AI-generated content may be
-> incorrect.](./media/image49.png)
+    ![A screenshot of a login screen AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image49.png)
 
-9.  Once you are in the portal, click on the **Profile (1)** icon in the
-    top right corner and select **Profile settings (2)**.
+9.  Once you are in the portal, click on the **Profile** icon in the
+    top right corner and select **Profile settings**.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image50.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image50.png)
 
-10. In the profile page, click on **View API Key** to get the API Keys.
+10. In the profile page, click on **View API Key** to get the API Keys.
 
-![A screenshot of a web page AI-generated content may be
-incorrect.](./media/image51.png)
+    ![A screenshot of a web page AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image51.png)
 
-**Note:** If you are unable to find this option, please minimize the
-screen size using **CTRL + -**.
+    >[!Note]: If you are unable to find this option, please minimize the
+screen size using **CTRL -**.
 
-11. In the next pane, complete the **CAPTCHA**.
+11. In the next pane, complete the **CAPTCHA**.
 
-![A screenshot of a chat AI-generated content may be
-incorrect.](./media/image52.png)
+    ![A screenshot of a chat AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image52.png)
 
 12. Please copy the API Key to a notepad, you will be using this
     further.
 
-![A screenshot of a computer AI-generated content may be
-incorrect.](./media/image53.png)
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image53.png)
 
-13. From the browser tab, please copy the **Account URL** as shown and
+13. From the browser tab, please copy the **Account URL** as shown and
     copy the value to Notepad. You will be using this further.
 
-![](./media/image54.png)
+    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image54.png)
 
 **Summary**
 
 By completing this prerequisite lab, you have set up the essential
 foundation for an end-to-end agent workflow. You prepared a searchable
 knowledge index, enabled agents to query that data through an MCP tool
-built on **Azure AI Search**, and integrated **Freshworks** for
+built on **Azure AI Search**, and integrated **Freshworks** for
 automated ticket management.
 
 This foundation ensures that agents can retrieve accurate context, make
@@ -553,5 +550,4 @@ informed decisions, and escalate issues efficiently preparing the
 environment for more advanced agent-driven scenarios in the upcoming
 labs.
 
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further
+You have successfully completed this lab. 
