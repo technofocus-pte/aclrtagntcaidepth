@@ -31,7 +31,7 @@ for deploying AI models. By the end of this task, you will have a fully
 initialized AI Project, serving as the foundation for further
 development and experimentation.
 
-1.  On the Azure Portal page (+++Portal.azure.com+++), in the Search resources box at the top of
+1.  On the Azure Portal page (+++https://portal.azure.com+++), in the Search resources box at the top of
     the portal, enter +++Microsoft Foundry+++, and then
     select **Microsoft Foundry** under Services.
 
@@ -233,7 +233,7 @@ configuration settings for your AI project.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image26.png)
 
-3.  Navigate to C:\LabFiles\Day-1 \\, select
+3.  Navigate to C:\LabFiles\Day-1, select
     the **azure-ai-agents-labs** folder and then click
     on **Select folder** .
 
@@ -400,3 +400,4 @@ developing AI-powered applications.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
