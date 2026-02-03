@@ -260,10 +260,9 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image30.png)
 
-8.  Run the below powershell command. This installs all the required
-    packages:
+8.  Run the below powershell command. This installs all the required packages:
 
-9.  pip install -r requirements.txt
+    +++pip install -r requirements.txt+++
 
 	+++pip install azure-ai-ml azure-identity+++
 
@@ -295,8 +294,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	- Navigate to Microsoft foundry portal, click
 	  on **gpt-4o** model from the **Models + endpoints(1)** section
-	  under My assets, copy the under **Endpoint** from right pane, copy and
-	  paste the **Target URI** and **Key** in a notepad
+	  under My assets, copy and paste the **Target URI** and **Key** in a notepad
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image35.png)
 
@@ -305,7 +303,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 15. On the **Sample.env** file,
 
     - AIPROJECT_CONNECTION_STRING: Provide **Project connection
-      string** value you have copied in step 9 of Task 1
+      string** value you have copied in Task 1
 
     - CHAT_MODEL_ENDPOINT: Provide the **Target
       URI** of **gpt-4o** model you have copied in the previous step
@@ -400,5 +398,6 @@ developing AI-powered applications.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
 
