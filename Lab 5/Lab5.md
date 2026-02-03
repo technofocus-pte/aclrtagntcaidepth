@@ -168,7 +168,7 @@ to perform this lab.
 ### Task 1.1: Create Storage account
 
 1.  Login to the Azure portal at +++https://portal.azure.com+++ using
-    the below credentials and select Storage accounts.
+    the below credentials and select **Storage accounts**.
 
 	- Username - +++@lab.CloudPortalCredential(User1).Username+++
 
@@ -617,3 +617,4 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
+
