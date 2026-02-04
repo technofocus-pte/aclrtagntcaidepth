@@ -1,4 +1,3 @@
-
 # Lab 5 Design Scalable AI Agents with Microsoft Foundry and Agent Framework
 
 **Overview**
@@ -462,7 +461,7 @@ configure its core purpose, instructions, and model using the Microsoft
 Agent Framework interface.
 
 1.  Navigate back to your resource group, from the resource list,
-    select **agentic-** foundry resource.
+    select **agentic--@lab.LabInstance.Id** foundry resource.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image44.png)
@@ -532,15 +531,12 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 5.  In the **Adding Azure AI Search** step, configure the following
     details and click on **Connect** once completed.
 
-	
-	
-
 	| **Detail** | **Value** |
 	| -------- | -------- |
 	| **Azure AI Search resource connection**   |     **AIknowledge@lab.LabInstance.Id**     |
-	| **Azure AI Search index ** |    **rag index **     |
+	| **Azure AI Search index** |    **rag index**     |
 	| **Display name**   |    +++**knowledge-index**+++      |
-	| S**earch type **   |    **Hybrid (vector + keword )**      |
+	| **Search type**   |    **Hybrid (vector + keword )**      |
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image52.png)
