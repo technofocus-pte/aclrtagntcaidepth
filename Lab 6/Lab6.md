@@ -84,7 +84,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer program AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image5.png)
 
-7.  Once done, rename the file from **.env.example** --\**.env** to
+7.  Once done, rename the file from **.env.example** -- **.env** to
     make this environment file active for this agent.
 
     ![A screen shot of a computer AI-generated content may be
@@ -93,7 +93,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 8.  Replace the content of the .env file with the below content.
 
 	```
-	AZURE_OPENAI_ENDPOINT=https://agentic- @lab.LabInstance.Id.cognitiveservices.azure.com/
+	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
 	AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
 	AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
 	AZURE_OPENAI_API_VERSION=2025-03-01-preview
@@ -102,7 +102,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	From the Microsoft Foundry Overview page, copy the API Key and replace
 	the
 
-	place holder **\<Replace with Azure OpenAI key\>** in the env file.
+	place holder **< Replace with Azure OpenAI key >** in the env file.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image7.png)
@@ -123,7 +123,7 @@ queries and decides which specialist agent to delegate tasks to. You
 will configure the agent using the Agent Framework SDK with
 role-specific instructions.
 
-1.  From the list, select **planner_agent.py** under the agent folder.
+1.  From the list, select **planner_agent.py** under the **agents** folder.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image10.png)
@@ -698,13 +698,38 @@ telemetry in Microsoft Foundry.
 
 	****Note:**** Although the multi-agent system is now configured with LLM capabilities, it does not yet have MCP integration or access to external knowledge sources such as datasets or Azure AI Search indexes. At this stage, the agents will rely solely on their general model intelligence to answer questions.
 
-2.  Select the **...** option from the top menu to extend the menu.
+2.	Rename the **requirements.txt.txt** to **requirements.txt**.
+
+3.	Replace the existing content in the file with the below content and **Save** it.
+
+	```
+	python-dotenv
+	a2a-sdk==0.3.9
+	agent-framework==1.0.0b251016
+	agent-framework-a2a==1.0.0b251016
+	agent-framework-azure-ai==1.0.0b251016
+	agent-framework-copilotstudio==1.0.0b251016
+	agent-framework-core==1.0.0b251016
+	agent-framework-devui==1.0.0b251016
+	agent-framework-mem0==1.0.0b251016
+	agent-framework-purview==1.0.0b251016
+	agent-framework-redis==1.0.0b251016
+	azure-ai-agents==1.2.0b5
+	azure-ai-projects==1.1.0b4
+	azure-core==1.37.0
+	azure-core-tracing-opentelemetry==1.0.0b12
+	azure-identity==1.25.1
+	azure-monitor-opentelemetry==1.8.3
+	azure-monitor-opentelemetry-exporter==1.0.0b46
+	```
+
+4.  Select the **...** option from the top menu to extend the menu.
     Select **Terminal** and click on **New Terminal**.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image16.png)
 
-3.  Once the terminal is open, execute the command,
+5.  Once the terminal is open, execute the command,
 
 	+++pip install -r requirements.txt+++ to install all the required
 	packages.
@@ -715,7 +740,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screen shot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image18.png)
 
-4.  Once the installation is completed successfully, run the following
+6.  Once the installation is completed successfully, run the following
     command to run the agent and review the responses for the test
     prompts provided in the code file.
 
@@ -727,13 +752,13 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	Check the **Routed to** parameter and review how the agent is
 determining and routing the requests to respective worker agents.
 
-5.  Now, run the agent again in interactive mode by adding
+7.  Now, run the agent again in interactive mode by adding
     the --interactive flag. This lets you input the question and get the
     response back. Provide the below prompt as a question once it asks.
 
     - Command:
 
-	+++python main.py -interactive+++
+	+++python main.py --interactive+++
 
 	- Prompt:
 
@@ -742,7 +767,7 @@ determining and routing the requests to respective worker agents.
     ![A screen shot of a computer program AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image20.png)
 
-6.  Once after getting the response, in the next prompt, add q to quit
+8.  Once after getting the response, in the next prompt, add q to quit
     the agent or stop the agent.
 
     ![A black screen with white text AI-generated content may be
@@ -755,3 +780,4 @@ using the Microsoft Agent Framework SDK and registered them. You built a
 routing workflow to delegate user queries via Agent-to-Agent calls. You
 tested a multi-agent scenario and inspected logs to confirm correct
 message routing and execution flow.
+
