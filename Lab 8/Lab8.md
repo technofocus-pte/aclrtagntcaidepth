@@ -1129,5 +1129,6 @@ In this lab, you successfully deployed your locally built multi-agent
 system into the Microsoft Foundry Agent Service.
 
 You have successfully completed this lab.
-===
+
+
 
