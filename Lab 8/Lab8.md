@@ -65,7 +65,7 @@ standalone model.
     AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
     
     ```
-    Find the Microsoft Foundry project endpoint from the Overview page and replace **\<Microsoft Foundry endpoint\>** with that value.
+    Find the Microsoft Foundry project endpoint from the Overview page and replace **< Microsoft Foundry endpoint >** with that value.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%208/media/image1.png)
@@ -1080,7 +1080,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer error AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%208/media/image13.png)
 
-21. When prompted to select a subscription and tenant, type **1** and
+21. If prompted to select a subscription and tenant, type **1** and
     press **Enter** to continue.
 
     ![A screenshot of a computer AI-generated content may be
@@ -1128,7 +1128,6 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 In this lab, you successfully deployed your locally built multi-agent
 system into the Microsoft Foundry Agent Service.
 
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
+You have successfully completed this lab.
 ===
+
