@@ -190,8 +190,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image16.png)
 
 14. Let's modify the instruction to observe how the agent responds.
-    Provide the instruction as Tell me a joke about the
-    Earth  (line no. 31), then **Save** the file. Then run the
+    Provide the instruction as +++Tell me a joke about the Earth+++  (line no. 31), then **Save** the file. Then run the
     command below , and review the agent's response .
 
 	+++python simple_agent_test.py+++
@@ -211,7 +210,7 @@ You'll configure environment variables, run the MCP server, backend, and
 frontend locally, and observe how the agent leverages MCP tools to
 process user queries and deliver intelligent, context-aware responses.
 
-1.  On the Visual Studio Code, expand **agents** **agent_framework** **single_agent**  and
+1.  On the Visual Studio Code, expand **agents** **agent_framework** **single_agent.py**  and
     view the Single-Agent Workflow with MCPStreamableHTTPTool tool
     integrated .
 
