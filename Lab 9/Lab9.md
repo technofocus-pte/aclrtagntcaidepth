@@ -42,8 +42,8 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image2.png)
 
-4.  Navigate to C:\Labfiles\Day 2\\**OpenAIWorkshop-Framework** path,
-    select **OpenAIWorkshop-Framework**  and then **Select Folder**.
+4.  Navigate to C:\Labfiles\Day 2\OpenAIWorkshop-Framework path,
+    select **OpenAIWorkshop-Framework** and then **Select Folder**.
 
 5.  Select **Yes, I trust the authors**.
 
@@ -754,4 +754,5 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
