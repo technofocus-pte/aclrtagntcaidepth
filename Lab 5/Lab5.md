@@ -268,7 +268,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image16.png)
 
 7.  In the Microsoft Foundry, select Models + endpoints from the left
-    pane. Select + **Deploy model** -\ **Deploy base model**.
+    pane. Select + **Deploy model** -> **Deploy base model**.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image17.png)
@@ -325,7 +325,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image26.png)
 
-5.  Select **Create New** -\ provide the name as
+5.  Select **Create New** -> provide the name as
     +++agent-insights-@lab.LabInstance.Id+++ and then select
     **Create**.
 
@@ -415,7 +415,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     responses.
 
 8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
-    and **datasets** **under Blob containe**r and select **Next**.
+    and **datasets** **under Blob container** and select **Next**.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image38.png)
@@ -617,5 +617,6 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
+
 
 
