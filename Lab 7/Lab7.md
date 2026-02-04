@@ -67,7 +67,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     you have copied earlier.
 
     ```
-    AZURE_SEARCH_ENDPOINT=https://ai-knowledge--@lab.LabInstance.Id.search.windows.net/
+    AZURE_SEARCH_ENDPOINT=https://ai-knowledge-@lab.LabInstance.Id.search.windows.net/
     AZURE_SEARCH_API_KEY=[Query_Key]
     AZURE_SEARCH_INDEX=[Index_Name]
     ```
@@ -79,7 +79,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%207/media/image4.png)
 
 7.  Once done, click on the **Create Folder** option as shown and when
-    it prompts, provide the folder name as tools. Please create a new
+    it prompts, provide the folder name as +++tools+++. Please create a new
     folder in the root.
 
     ![A screenshot of a computer AI-generated content may be
@@ -97,7 +97,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%207/media/image7.png)
 
-10. Provide the name for the file as azure_search_tool.py.
+10. Provide the name for the file as +++azure_search_tool.py+++.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%207/media/image8.png)
@@ -598,7 +598,7 @@ getting the context from the grounded data.
     the --interactive flag. This lets you input the question and get the
     response back. Provide the below prompt as a question once it asks.
 
-	+++python main.py -interactive+++
+	+++python main.py --interactive+++
 
 	+++Is employee data protected under GDPR?+++
 
@@ -688,9 +688,8 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	private/incognito window. Additionally, check your spam or junk
 	folder, as the email might have been filtered there.
 
-8.  In the next pane, provide as **Enter password** and provide the
-    same password for **Confirm password**. Click on **Activate your
-    account**.
+8.  In the next pane, provide +++Uslopwd@lab.LabInstance.Id+++ (You can also give a password of your choice) in **Enter password** field and provide the
+    same password for **Confirm password**. Click on **Activate your account**.
 
     ![A screenshot of a login screen AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%207/media/image21.png)
@@ -734,8 +733,9 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 15. Once done, navigate to the Visual Studio Code pane and open
     the .env file.
 
-16. In the .env file, add the following content and add the key and
-    domain URL that you copied earlier.
+16. In the .env file, add the following content. Replace [API_Key] with the copied Key.
+    In the value of FRESHDESK_DOMAIN, replace [Domain_URL] with the domain part of the url copied.
+    If the url is **https://lodsprodmcaonmicrosoftxxxx.freshdesk.com/helpdesk/tickets/**, then paste only 		 		**lodsprodmcaonmicrosoftxxxx.freshdesk.com** in the env file.
 
     ```
     # Freshdesk Configuration
@@ -749,7 +749,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A computer screen shot of a program AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%207/media/image29.png)
 
-17. Once done, select **File**  and then
+18. Once done, select **File**  and then
     click **Save**  to save the file.
 
     ![A screenshot of a computer menu AI-generated content may be
@@ -772,7 +772,7 @@ policy clarification
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%207/media/image30.png)
 
-3.  Provide the file name as freshdesk_tool.py.
+3.  Provide the file name as +++freshdesk_tool.py+++.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%207/media/image31.png)
@@ -1498,12 +1498,9 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     the --interactive flag. This lets you input the question and get the
     response back. Provide the below prompt as a question once it asks.
 
-	+++I need to create a ticket for my travel reimbursement request. 
-	I traveled to New York City from October 15-18, 2025, for the annual client conference. 
-	The purpose was to present our new product line to key stakeholders and attend strategic planning sessions. My expenses include flights ($650), hotel accommodation ($480 for 3 nights), meals ($320), local transportation ($85), 
-	and conference materials ($45). The total reimbursement amount is $1,580. 
-	I have all receipts ready for submission.+++
-
+	```
+	I need to create a ticket for my travel reimbursement request.  I traveled to New York City from October 15-18, 2025, for the annual client conference. The purpose was to present our new product line to key stakeholders and attend strategic planning sessions. My expenses include flights ($650), hotel accommodation ($480 for 3 nights), meals ($320), local transportation ($85), and conference materials ($45). The total reimbursement amount is $1,580. I have all receipts ready for submission.
+	```
 
 20. Navigate back to Freshworks and check the new ticket created, and
     review how the agent added the details using the given details.
@@ -1535,4 +1532,5 @@ efficient and practical for enterprise workflows.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
