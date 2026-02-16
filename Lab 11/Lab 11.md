@@ -146,45 +146,37 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screen shot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image4.png)
 
-9.  Now, select the .env file and paste the content that you've copied
-    earlier.
-
 10. In the Azure Portal, navigate to **agenticai** resource group, and
     from the resource list select **ai-knowledge-** Search service.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image5.png)
-
+ 
 11. Select **Keys** from the left menu, under Settings, and copy
-    the **Query key** using the copy option as shown.
+    the **Query key** using the copy option as shown. Save it in a notepad.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image6.png)
 
 12. Once copied, paste it safely in a notepad, select **Indexes** from
-    the left menu under Search Management, and copy the **Index Name
-   **.
+    the left menu under Search Management, and copy the **Index Name**. Save it in a notepad.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image7.png)
 
-13. In the Visual Studio Code pane, select the **.env** file, as you
-    have to add AI Search keys for connection.
+13. Populate the **.env** file, with the below content, replace the place holders of the Query_Key and the Index_name with the values copied and saved above.
 
 	```
 	# Azure AI Search (MCP)
-	AZURE_SEARCH_ENDPOINT=https://ai-knowledge--@lab.LabInstance.Id.search.windows.net/
+	AZURE_SEARCH_ENDPOINT=https://ai-knowledge-@lab.LabInstance.Id.search.windows.net/
 	AZURE_SEARCH_API_KEY=[Query_Key]
 	AZURE_SEARCH_INDEX=[Index_Name]
 	```
 
-    >[!Note]: Please replace the Query_Key and Index_Name values with the
-ones you have copied earlier.
-
 14. Add the content of the .env file with the below content.
 
 	```
-	AZURE_OPENAI_ENDPOINT=https://agentic- @lab.LabInstance.Id.cognitiveservices.azure.com/
+	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
 	AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
 	AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
 	AZURE_OPENAI_API_VERSION=2025-03-01-preview
@@ -234,7 +226,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 18. Final .env file should look like the given image.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image11.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/im4.png)
 
 19. Once done, select **File**  and then
     click **Save**  to save the file.
@@ -599,3 +591,4 @@ metrics and agent health.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
