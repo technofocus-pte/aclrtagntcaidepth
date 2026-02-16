@@ -164,7 +164,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 3.  Navigate to the .env file , add the following Environment
     variable to your .env file to specify **Single agent workflow** to
-    run :
+    run (at around line 46 just before which the AGENT_MODULE varialbe is commented out):
 
 	+++AGENT_MODULE=agents.agent_framework.single_agent+++
 
@@ -667,6 +667,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
