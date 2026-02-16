@@ -368,7 +368,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	+++AGENT_MODULE=agents.agent_framework.multi_agent.magentic_group+++
 
     ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image29.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im8.png)
 
 3.  Select **File** and then **Save**.
 
@@ -433,7 +433,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	  agent UI. Provides a user interface to interact with the agents and
 	  see their responses in real time.
 
-	+++npm start+++
+	+++npm run dev+++
 
 	- Once the **webpack compiled successfully**, Agent application runs
 	  locally at: [http://localhost:3000](http://localhost:3000/).
@@ -452,7 +452,12 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     make this decision.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image30.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im9.png)
+
+13. Select the **Handoff Multi Domain Agent** option in the drop down availble in the top menu.
+
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im10.png)
 
 13. Orchestrator assigns the task to a domain agent. The orchestrator
     sends the query to one of these internal agents:
@@ -467,7 +472,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     to **crm_billing**.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image31.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im11.png)
 
 	- The domain agent uses connected tools. Each agent has access to
 	  specific tools (APIs) via the MCP server.
@@ -528,7 +533,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	+++HANDOFF_CONTEXT_TRANSFER_TURNS=-1+++
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image33.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im14.png)
 
 3.  Select **File** and then **Save**.
 
@@ -593,7 +598,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	  agent UI. Provides a user interface to interact with the agents and
 	  see their responses in real time.
 
-	+++npm start+++
+    +++npm run dev+++
 
 	- Once the **webpack compiled successfully**, Agent application runs
 	  locally at: [http://localhost:3000](http://localhost:3000/).
@@ -616,10 +621,10 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 12. You can provide the following query for continuation with respect to
     billing:
 
-	+++Yes, I would like to view the invoice details+++
+	+++I would like to view the invoice details+++
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image35.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im13.png)
 
     **Note:** If you get a response as I was unable to retrieve the invoice
 details because the referenced numbers are invoice IDs, not subscription
@@ -627,7 +632,7 @@ IDs. Please provide the subscription ID, or let me know if you need
 details for a specific invoice so I can assist you correctly. Provide
 the following prompt.
 
-	+++Yes, I would like to view the invoice details for customer 251+++
+	+++I would like to view the invoice details for customer 251+++
 
 13. Let's now try a query related to another domain to test how the
     handoff works.
@@ -667,6 +672,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
