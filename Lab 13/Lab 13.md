@@ -251,6 +251,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	```
 	cd agentic_ai/workflow/fraud_detection/ui
+ 	npm install
 	npm run dev
 	```
 
@@ -329,6 +330,7 @@ fraud detection using the Azure Agent Framework. You explored how AI
 agents analyze suspicious activity, route high-risk cases to human
 analysts, and interact with a real-time React + FastAPI dashboard to
 monitor workflow execution and submit decisions.
+
 
 
 
