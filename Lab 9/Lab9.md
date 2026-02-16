@@ -89,12 +89,12 @@ responses based on different prompts.
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image6.png)
 
 3.  From the **Explorer**, expand **agentic_ai** **applications** . Right click
-    on .env.sample  and the **Rename** .
+    on **.env.sample**  and the **Rename** .
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image7.png)
 
-4.  Rename the file to .env and click on it to open the file.
+4.  Rename the file to **.env** and click on it to open the file.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image8.png)
@@ -107,10 +107,8 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image9.png)
 
-6.  Add the AZURE_OPENAI_CHAT_DEPLOYMENT as **gpt-4o-mini**
-
     ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image10.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im1.png)
 
 7.  Select **File** and then **Save**.
 
@@ -177,7 +175,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	+++DISABLE_AUTH=true+++
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image20.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im2.png)
 
 4.  Select **File** and then **Save**.
 
@@ -204,19 +202,14 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
       APIs that agents can call as tools. (Server runs
       on [http://localhost:8000](http://localhost:8000/))
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+	+++cd mcp+++
+
+    +++pip install uv+++
+    
+	+++uv run python mcp_service.py+++
 
     ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image21.png)
-
-    **Note:** If you face any error, please run the below given commands:
-
-	+++pip install uv+++
-
-	+++uv run python mcp_service.py+++
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im3.png)
 
 9.  Let the command run, open a new terminal.
 
@@ -256,11 +249,13 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	+++cd agentic_ai/applications/react-frontend+++
 
-	- Enter the below command to launch the **React frontend** for your
+	- Execute the below commands to launch the **React frontend** for your
 	  agent UI. Provides a user interface to interact with the agents and
 	  see their responses in real time.
 
-	+++npm start+++
+	+++npm install+++
+
+    +++npm run dev+++
 
 	- Compilation may take some time. Please ignore the warnings and wait
 	  until it completes. Once the **webpack compiled successfully**, the
@@ -268,32 +263,35 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	  at: [http://localhost:3000](http://localhost:3000/).
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image24.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im4.png)
 
-13. Once all three terminals are running, the agent application will
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im5.png)
+
+14. Once all three terminals are running, the agent application will
     launch in your browser, which you can use to interact with the agent
     and test its capabilities.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image25.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im6.png)
 
     **Note:** Ensure all three terminals are running. If any of them stop,
 please rerun the respective command. If all three aren't active, you may
 encounter a connection error.
 
-14. Send the below prompt in the chat  and view the
+15. Send the below prompt in the chat  and view the
     response :
 
 	+++Customer 251, what's my billing summary?+++
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image26.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im7.png)
 
     **Note:** Ensure all three terminals are running. If any of them stop,
 please rerun the respective command. If all three aren't active, you may
 encounter a connection error.
 
-15. View the output, It was the ChatAgent (self.\_agent) that
+16. View the output, It was the ChatAgent (self.\_agent) that
     interpreted the prompt, possibly called the **MCP tool**, and
     generated the output.
 
@@ -305,7 +303,7 @@ encounter a connection error.
     - The agent is working as intended - it dynamically integrates tool
       outputs and AI reasoning to answer user-specific questions.
 
-16. After completing your testing, return to VS Code and terminate all
+17. After completing your testing, return to VS Code and terminate all
     running terminal sessions. This ensures that the upcoming
     multi-agent workflow runs without any interference.
 
@@ -669,6 +667,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
