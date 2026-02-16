@@ -1,0 +1,12 @@
+pytest
+pytest-asyncio
+pytest-anyio
+pytest-timeout
+requests
+azure-identity
+azure-keyvault-secrets
+fastmcp
+
+# Agent Evaluation dependencies
+azure-ai-evaluation
+python-dotenv

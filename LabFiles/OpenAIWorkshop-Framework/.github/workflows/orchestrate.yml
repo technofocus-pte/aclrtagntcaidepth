@@ -1,0 +1,334 @@
+name: CI/CD Pipeline
+
+# ─────────────────────────────────────────────────────────────────────
+# Pipeline modes:
+#   PR → main                ➜  tests-only  (validate against existing env)
+#   Push → main              ➜  full deploy  (deploy to production)
+#   Push → *-dev             ➜  full deploy  (deploy to integration-<name>)
+#   Manual dispatch          ➜  full deploy  (chosen environment)
+#
+# Promotion flow:
+#   *-dev push → full pipeline → auto-merge PR to int-agentic
+#   int-agentic push → promote-to-main.yml → creates/updates PR to main
+#   main PR → human review + tests-only → merge → full deploy to production
+#
+# Per-developer environments:
+#   Each developer pushes to their own <name>-dev branch.
+#   The pipeline maps <name>-dev → integration-<name> environment,
+#   which contains that developer's own Azure subscription credentials.
+# ─────────────────────────────────────────────────────────────────────
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_env:
+        type: string
+        description: "Environment to deploy (e.g. integration-james, production)"
+        required: true
+
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.github/workflows/readme.md'
+
+  push:
+    branches:
+      - main
+      - '*-dev'
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.github/workflows/readme.md'
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+
+jobs:
+  # ────────────────────────────────────────────────────────────────────
+  # Step 0: Determine pipeline mode and target environment
+  # ────────────────────────────────────────────────────────────────────
+  pipeline-config:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.config.outputs.environment }}
+      full_deploy: ${{ steps.config.outputs.full_deploy }}
+    steps:
+      - name: Determine pipeline mode
+        id: config
+        run: |
+          EVENT="${{ github.event_name }}"
+
+          # ── Resolve target environment ──
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            ENV="${{ inputs.target_env }}"
+          elif [ "$EVENT" = "pull_request" ]; then
+            # PRs: resolve from the target (base) branch
+            case "${{ github.base_ref }}" in
+              main)         ENV="production" ;;
+              *)            ENV="integration" ;;
+            esac
+          elif [ "$EVENT" = "push" ]; then
+            BRANCH="${{ github.ref_name }}"
+            case "$BRANCH" in
+              main)
+                ENV="production" ;;
+              *-dev)
+                # Extract developer name: james-dev → integration-james
+                DEV_NAME="${BRANCH%-dev}"
+                ENV="integration-${DEV_NAME}" ;;
+              *)
+                ENV="integration" ;;
+            esac
+          else
+            ENV="integration"
+          fi
+
+          # ── Resolve pipeline mode ──
+          # PRs only run integration tests against the existing environment.
+          # Pushes and manual dispatches do a full deploy + build + test.
+          if [ "$EVENT" = "pull_request" ]; then
+            FULL_DEPLOY="false"
+          else
+            FULL_DEPLOY="true"
+          fi
+
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "full_deploy=$FULL_DEPLOY" >> $GITHUB_OUTPUT
+          echo "──────────────────────────────────────"
+          echo "Event:       $EVENT"
+          echo "Environment: $ENV"
+          echo "Full deploy: $FULL_DEPLOY"
+          echo "──────────────────────────────────────"
+
+  # ────────────────────────────────────────────────────────────────────
+  # Step 1: Preflight – unlock Terraform state storage (full deploy only)
+  # ────────────────────────────────────────────────────────────────────
+  preflight:
+    needs: pipeline-config
+    if: needs.pipeline-config.outputs.full_deploy == 'true'
+    runs-on: ubuntu-latest
+    environment: ${{ needs.pipeline-config.outputs.environment }}
+    steps:
+      - name: Azure OIDC Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - run: |
+          echo "Full orchestrated run through. Should add unit testing and validation here later."
+          echo "MCAPS sub disables storage account networking, run a command to ensure the account is reachable."
+          if az group show --name "$TFSTATE_RG" > /dev/null 2>&1; then
+            az storage account update --resource-group "$TFSTATE_RG" --name "$TFSTATE_ACCOUNT" --default-action Allow
+            az storage account update --resource-group "$TFSTATE_RG" --name "$TFSTATE_ACCOUNT" --public-network-access Enabled
+          else
+            echo "::warning::Terraform state resource group '${TFSTATE_RG}' not found - skipping storage account network unlock"
+          fi
+        env:
+          TFSTATE_RG: ${{ vars.TFSTATE_RG }}
+          TFSTATE_ACCOUNT: ${{ vars.TFSTATE_ACCOUNT }}
+          
+
+  # ────────────────────────────────────────────────────────────────────
+  # Step 2: Deploy infrastructure (full deploy only)
+  # ────────────────────────────────────────────────────────────────────
+  deploy-infrastructure:
+    needs: [pipeline-config, preflight]
+    if: needs.pipeline-config.outputs.full_deploy == 'true'
+    uses: ./.github/workflows/infrastructure.yml
+    with:
+      environment: ${{ needs.pipeline-config.outputs.environment }}
+    secrets: inherit
+
+  # ────────────────────────────────────────────────────────────────────
+  # Step 3: Build containers (full deploy only)
+  # ────────────────────────────────────────────────────────────────────
+  build-application-container:
+    needs: [pipeline-config, deploy-infrastructure]
+    if: needs.pipeline-config.outputs.full_deploy == 'true'
+    uses: ./.github/workflows/docker-application.yml
+    with:
+      environment: ${{ needs.pipeline-config.outputs.environment }}
+    secrets: inherit
+
+  build-mcp-container:
+    needs: [pipeline-config, deploy-infrastructure]
+    if: needs.pipeline-config.outputs.full_deploy == 'true'
+    uses: ./.github/workflows/docker-mcp.yml
+    with:
+      environment: ${{ needs.pipeline-config.outputs.environment }}
+    secrets: inherit
+
+  # ────────────────────────────────────────────────────────────────────
+  # Step 4: Update Container Apps with new images (full deploy only)
+  # ────────────────────────────────────────────────────────────────────
+  update-containers:
+    needs: [pipeline-config, build-application-container, build-mcp-container]
+    if: >-
+      always()
+      && needs.pipeline-config.outputs.full_deploy == 'true'
+      && (needs.build-application-container.result == 'success' || needs.build-mcp-container.result == 'success')
+    uses: ./.github/workflows/update-containers.yml
+    with:
+      environment: ${{ needs.pipeline-config.outputs.environment }}
+    secrets: inherit
+
+  # ────────────────────────────────────────────────────────────────────
+  # Resolve endpoints from existing environment (PR / tests-only path)
+  # Looks up Container App FQDNs via az cli instead of deploying infra.
+  # ────────────────────────────────────────────────────────────────────
+  resolve-endpoints:
+    needs: pipeline-config
+    if: needs.pipeline-config.outputs.full_deploy == 'false'
+    runs-on: ubuntu-latest
+    environment: ${{ needs.pipeline-config.outputs.environment }}
+    outputs:
+      backend_endpoint: ${{ steps.lookup.outputs.backend_endpoint }}
+      mcp_endpoint: ${{ steps.lookup.outputs.mcp_endpoint }}
+      deployed: ${{ steps.lookup.outputs.deployed }}
+    steps:
+      - name: Azure OIDC Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Look up Container App endpoints
+        id: lookup
+        run: |
+          PROJECT="${{ vars.PROJECT_NAME || 'OpenAIWorkshop' }}"
+          ENV="${{ needs.pipeline-config.outputs.environment }}"
+          ITERATION="${{ vars.ITERATION || '002' }}"
+          RG="rg-${PROJECT}-${ENV}-${ITERATION}"
+
+          echo "Looking up endpoints in resource group: $RG"
+
+          BE_FQDN=$(az containerapp show \
+            --name "ca-be-${ITERATION}" \
+            --resource-group "$RG" \
+            --query "properties.configuration.ingress.fqdn" -o tsv 2>/dev/null || echo "")
+
+          MCP_FQDN=$(az containerapp show \
+            --name "ca-mcp-${ITERATION}" \
+            --resource-group "$RG" \
+            --query "properties.configuration.ingress.fqdn" -o tsv 2>/dev/null || echo "")
+
+          if [ -n "$BE_FQDN" ]; then
+            echo "backend_endpoint=https://${BE_FQDN}" >> $GITHUB_OUTPUT
+            echo "deployed=true" >> $GITHUB_OUTPUT
+            echo "✅ Backend: https://${BE_FQDN}"
+          else
+            echo "::warning::Backend Container App not found in $RG – environment not yet deployed. Skipping PR tests."
+            echo "backend_endpoint=" >> $GITHUB_OUTPUT
+            echo "deployed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if [ -n "$MCP_FQDN" ]; then
+            echo "mcp_endpoint=https://${MCP_FQDN}" >> $GITHUB_OUTPUT
+            echo "✅ MCP: https://${MCP_FQDN}"
+          else
+            echo "::warning::MCP Container App not found in $RG – MCP tests will be skipped"
+            echo "mcp_endpoint=" >> $GITHUB_OUTPUT
+          fi
+
+  # ────────────────────────────────────────────────────────────────────
+  # Step 5: Run integration tests
+  #   Full deploy path  → endpoints come from Terraform outputs
+  #   Tests-only path   → endpoints come from resolve-endpoints
+  # ────────────────────────────────────────────────────────────────────
+  integration-tests:
+    needs: [pipeline-config, deploy-infrastructure, update-containers, resolve-endpoints]
+    if: >-
+      always() && (
+        needs.update-containers.result == 'success'
+        || (needs.resolve-endpoints.result == 'success' && needs.resolve-endpoints.outputs.deployed == 'true')
+      )
+    uses: ./.github/workflows/integration-tests.yml
+    with:
+      environment: ${{ needs.pipeline-config.outputs.environment }}
+      backend_endpoint: ${{ needs.deploy-infrastructure.outputs.backend_endpoint || needs.resolve-endpoints.outputs.backend_endpoint }}
+      mcp_endpoint: ${{ needs.deploy-infrastructure.outputs.mcp_endpoint || needs.resolve-endpoints.outputs.mcp_endpoint }}
+      mcp_internal_only: true
+    secrets: inherit
+
+  # ────────────────────────────────────────────────────────────────────
+  # Step 6: Agent quality evaluation (full deploy only)
+  #   Runs a subset of agent eval test cases against the deployed backend
+  #   and logs results to an independent AI Foundry project for trending.
+  # ────────────────────────────────────────────────────────────────────
+  agent-evaluation:
+    needs: [pipeline-config, deploy-infrastructure, update-containers, integration-tests]
+    if: >-
+      always()
+      && needs.pipeline-config.outputs.full_deploy == 'true'
+      && needs.integration-tests.result == 'success'
+    uses: ./.github/workflows/agent-evaluation.yml
+    with:
+      environment: ${{ needs.pipeline-config.outputs.environment }}
+      backend_endpoint: ${{ needs.deploy-infrastructure.outputs.backend_endpoint }}
+      eval_limit: 5
+    secrets: inherit
+
+  # ────────────────────────────────────────────────────────────────────
+  # Step 7: Auto-merge dev branch PR into int-agentic
+  #   After a successful full deploy from a *-dev branch, automatically
+  #   merge the open PR from that branch into int-agentic. This triggers
+  #   the promote-to-main workflow which creates/updates a PR to main.
+  # ────────────────────────────────────────────────────────────────────
+  auto-merge:
+    needs: [pipeline-config, integration-tests, agent-evaluation]
+    if: >-
+      always()
+      && needs.pipeline-config.outputs.full_deploy == 'true'
+      && needs.integration-tests.result == 'success'
+      && (needs.agent-evaluation.result == 'success' || needs.agent-evaluation.result == 'skipped')
+      && github.event_name == 'push'
+      && endsWith(github.ref_name, '-dev')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge dev PR into int-agentic
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          echo "🔍 Looking for open PR: ${BRANCH} → int-agentic"
+
+          PR_NUMBER=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --base int-agentic \
+            --head "$BRANCH" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')
+
+          if [ -n "$PR_NUMBER" ]; then
+            echo "✅ Found PR #${PR_NUMBER}"
+            echo "🔀 Merging ${BRANCH} → int-agentic..."
+            gh pr merge "$PR_NUMBER" \
+              --repo "${{ github.repository }}" \
+              --squash \
+              --auto \
+              --subject "chore: merge ${BRANCH} into int-agentic (auto)" \
+              --body "Auto-merged after successful CI/CD pipeline run ${{ github.run_id }}"
+            echo "✅ PR #${PR_NUMBER} merge initiated"
+          else
+            echo "ℹ️ No open PR found from ${BRANCH} → int-agentic"
+            echo "   Create one with: gh pr create --base int-agentic --head ${BRANCH}"
+          fi
+
+  # ────────────────────────────────────────────────────────────────────
+  # NOTE: Auto-destroy is disabled. All environments (integration-* and
+  # production) persist their infrastructure. To tear down an environment
+  # manually, use: workflow_dispatch → destroy.yml with the target env.
+  # ────────────────────────────────────────────────────────────────────
