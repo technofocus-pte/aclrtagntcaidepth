@@ -53,21 +53,19 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     the **applications** directory and install all required dependencies
     from the **pyproject.toml / uv.lock** file.
 
-	```
-	cd agentic_ai/applications
-	uv sync
-	```
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image5.png)
-
-    >[!Note]: If you face any error, please run the below given commands
+	+++cd agentic_ai/applications+++
 
 	+++pip install uv+++
 
 	+++uv sync+++
 
-8.  The command may take 5–10 minutes to complete. **Meanwhile, you can
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im1.png)
+
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im2.png)
+
+9.  The command may take 5–10 minutes to complete. **Meanwhile, you can
     proceed with Task 1**.
 
 ## Task 1: Implementing Human-in-the-Loop AI Workflows with Azure Agent Framework
@@ -331,5 +329,6 @@ fraud detection using the Azure Agent Framework. You explored how AI
 agents analyze suspicious activity, route high-risk cases to human
 analysts, and interact with a real-time React + FastAPI dashboard to
 monitor workflow execution and submit decisions.
+
 
 
