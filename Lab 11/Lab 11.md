@@ -272,13 +272,13 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer program AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image17.png)
 
-26. Once the terminal is open, execute the command,
+26. Rename the **requirements.txt.txt** to **requirements.txt**.
+
+27. Once the terminal is open, execute the command,
 
     +++pip install -r requirements.txt+++ to install all the required packages.
 
-    >[!Alert] In Order to install the Requirements.txt, please rename the file from **requirements.txt.txt** to **requirements.txt**. 
-
-27. Run the command given below to test out the working of the search
+28. Run the command given below to test out the working of the search
     tool.
 
 	+++python main.py+++
@@ -591,4 +591,5 @@ metrics and agent health.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
