@@ -117,90 +117,6 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer menu AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
 
-8.  Right-click on **application**  folder and then **New
-    file**  to create a new file to configure a simple agent.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image12.png)
-
-9.  Name the agent file as +++simple_agent_test.py+++.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image13.png)
-
-10. Copy and paste the following code into the file.
-
-	```
-	import asyncio
-	import os
-	from dotenv import load_dotenv
-	from agent_framework.azure import AzureOpenAIChatClient
-	from azure.identity import AzureCliCredential
-
-	# Load .env file (same folder or specify full path)
-	load_dotenv(dotenv_path=".env")
-
-	# Retrieve values from .env
-	endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
-	deployment_name = os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT")
-	api_version = os.getenv("AZURE_OPENAI_API_VERSION")
-
-	print("Using Azure OpenAI endpoint:", endpoint)
-	print("Deployment name:", deployment_name)
-	print("API version:", api_version)
-
-	# ✅ Correct parameter name is deployment_name (not deployment)
-	agent = AzureOpenAIChatClient(
-		api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-		endpoint=endpoint,
-		deployment_name=deployment_name,
-		api_version=api_version
-	).create_agent(
-		instructions="You are a helpful and funny assistant who tells short jokes.",
-		name="Joker"
-	)
-
-	async def main():
-		result = await agent.run("Tell me a joke about the cloud.")
-		print("\nAgent response:\n", result.text)
-
-	asyncio.run(main())
-	```
-
-    ![A computer screen shot of a program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image14.png)
-
-11. Select **File**  and then **Save** .
-
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
-
-12. Right click on simple_agent_test.py  and then select **Open
-    in Integrated Terminal** .
-
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image15.png)
-
-13. Run the command given below to run the agent and observe the output
-    to understand how the agent worked.
-
-	+++python simple_agent_test.py+++
-
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image16.png)
-
-14. Let's modify the instruction to observe how the agent responds.
-    Provide the instruction as +++Tell me a joke about the Earth+++  (line no. 31), then **Save** the file. Then run the
-    command below , and review the agent's response .
-
-	+++python simple_agent_test.py+++
-
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image17.png)
-
-15. This demonstrates how the agent's response varies based on the
-    instruction provided, highlighting its ability to adapt to different
-    prompts.
 
 ## Task 2: Creating a Single-Agent Workflow with Tool Integration
 
@@ -753,5 +669,6 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
