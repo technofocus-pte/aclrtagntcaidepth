@@ -281,6 +281,8 @@ encounter a connection error.
 
 15. Send a +++Hi+++ message and wait for a response from the agent.
 
+    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im16.png)
 
 15. Send the below prompt in the chat and view the response :
 
@@ -679,6 +681,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
