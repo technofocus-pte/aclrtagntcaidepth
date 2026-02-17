@@ -275,7 +275,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im6.png)
 
-    **Note:** Ensure all three terminals are running. If any of them stop,
+    >[!Note] Ensure all three terminals are running. If any of them stop,
 please rerun the respective command. If all three aren't active, you may
 encounter a connection error.
 
@@ -291,7 +291,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im7.png)
 
-    **Note:** Ensure all three terminals are running. If any of them stop,
+    >[!Note] Ensure all three terminals are running. If any of them stop,
 please rerun the respective command. If all three aren't active, you may
 encounter a connection error.
 
@@ -345,23 +345,23 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	- Each agent:
 
-	  - Has a specific domain and set of tools.
+		- Has a specific domain and set of tools.
 
-	  - Only communicates with the orchestrator, not directly with the user.
+		- Only communicates with the orchestrator, not directly with the user.
 
-	  - Provides factual, tool-backed responses.
+		- Provides factual, tool-backed responses.
 
 	- Here are the agents used in this Multi-Agent workflow
 
-	  - **CRM & Billing Agent** - Handles customer accounts, subscriptions,
+		- **CRM & Billing Agent** - Handles customer accounts, subscriptions,
 		billing, invoices, payments, and related queries using factual
 		tool-backed data.
 
-	  - **Product & Promotions Agent** - Provides product availability,
+		- **Product & Promotions Agent** - Provides product availability,
 		promotions, discounts, eligibility, and terms using structured
 		sources.
 
-	  - **Security & Authentication Agent** - Manages security incidents,
+		- **Security & Authentication Agent** - Manages security incidents,
 		authentication issues, account lockouts, and risk mitigation
 		guidance using logs and tools.
 
@@ -635,7 +635,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/im13.png)
 
-    **Note:** If you get a response as I was unable to retrieve the invoice
+    >[!Note] If you get a response as I was unable to retrieve the invoice
 details because the referenced numbers are invoice IDs, not subscription
 IDs. Please provide the subscription ID, or let me know if you need
 details for a specific invoice so I can assist you correctly. Provide
@@ -681,7 +681,6 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
-
 
 
 
