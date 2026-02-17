@@ -35,7 +35,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image2.png)
 
-4.  Navigate to C:\Labfiles\Day 3\\**OpenAIWorkshop-Framework** path,
+4.  Navigate to **C:\Labfiles\Day 3\\OpenAIWorkshop-Framework** path,
     select **OpenAIWorkshop-Framework**  and then **Select Folder**.
 
 5.  Select **Yes, I trust the authors**.
@@ -330,6 +330,7 @@ fraud detection using the Azure Agent Framework. You explored how AI
 agents analyze suspicious activity, route high-risk cases to human
 analysts, and interact with a real-time React + FastAPI dashboard to
 monitor workflow execution and submit decisions.
+
 
 
 
