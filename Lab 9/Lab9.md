@@ -279,8 +279,10 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 please rerun the respective command. If all three aren't active, you may
 encounter a connection error.
 
-15. Send the below prompt in the chat  and view the
-    response :
+15. Send a +++Hi+++ message and wait for a response from the agent.
+
+
+15. Send the below prompt in the chat and view the response :
 
 	+++Customer 251, what's my billing summary?+++
 
@@ -677,6 +679,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
