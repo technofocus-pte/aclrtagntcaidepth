@@ -301,10 +301,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
     >[!Note]: The uploading of data to indexes in search service might take 5-10 minutes.
 
-37. Click on **Start searching** on the pop-up.
-
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image37.png)
+37. Click on **Close** in the pop-up.
 
 38. Navigate to your **Overview**  page of **ai-foundry-project-**.
     and click on **Open In management center**.
@@ -443,4 +440,5 @@ enterprise-grade agent orchestration patterns for practical business
 applications.
 
 Congratulations! You have successfully completed the lab.
+
 
