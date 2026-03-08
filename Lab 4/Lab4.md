@@ -1,4 +1,4 @@
-
+<img width="312" height="229" alt="image" src="https://github.com/user-attachments/assets/ed0ea640-d5f5-426e-a7bc-b072ea5597fc" />
 # Lab 4: Develop a Health plan report generation multi-agent system
 
 **Overview**
@@ -398,11 +398,9 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image49.png)
 
-9.  When the box appears at the top, type exit into the box and press
-    Enter to stop the running code block.
-
-    >[!Note]: After the successful run of the cell you will recieve the
-following outcome.
+9.  When the box appears at the top, type +++exit+++ into the box and press
+    Enter to **stop** the running code block. After the successful run of the cell you will recieve the
+following outcome and the output file is stored under the Azure AI Agents folder.
 
 	> Orchestrator Agent is starting...
 	>
@@ -423,6 +421,10 @@ following outcome.
 	>
 	> Orchestrator Agent is starting...
 
+10. Navigate to the stored file **Northwind Health Standard Report.md** under **Azure AI Agents** to view the generated report. 
+
+
+
 **Summary**
 
 In this lab, you successfully developed an intelligent multi-agent
@@ -440,5 +442,6 @@ enterprise-grade agent orchestration patterns for practical business
 applications.
 
 Congratulations! You have successfully completed the lab.
+
 
 
