@@ -400,15 +400,15 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
  Here is what each of these options for -
 
-1.  **Keyword Search:** Used for traditional search experiences based on
+ -	**Keyword Search:** Used for traditional search experiences based on
     exact keywords. It indexes text so users can find information
     through keyword matching, without AI reasoning.
 
-2.  **RAG (Retrieval-Augmented Generation):** Combines document
+ -  **RAG (Retrieval-Augmented Generation):** Combines document
     retrieval with AI generation.It ingests text (and simple OCR images)
     so an AI agent can provide grounded, context-aware answers.
 
-3.  **Multimodal RAG:** Extends RAG to handle complex visual content
+ -  **Multimodal RAG:** Extends RAG to handle complex visual content
     like diagrams, tables, workflows, or charts. It enables AI to
     interpret both text and visual elements for richer, insight-based
     responses.
@@ -613,6 +613,7 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
+
 
 
 
