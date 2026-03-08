@@ -422,7 +422,8 @@ following outcome and the output file is stored under the Azure AI Agents folder
 
 10. Navigate to the stored file **Northwind Health Standard Report.md** under **Azure AI Agents** to view the generated report. 
 
-
+	    ![A screenshot of a computer AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image50.png)
 
 **Summary**
 
@@ -441,6 +442,7 @@ enterprise-grade agent orchestration patterns for practical business
 applications.
 
 Congratulations! You have successfully completed the lab.
+
 
 
 
