@@ -31,9 +31,12 @@ for deploying AI models. By the end of this task, you will have a fully
 initialized AI Project, serving as the foundation for further
 development and experimentation.
 
-1.  On the Azure Portal page (+++https://portal.azure.com+++), in the Search resources box at the top of
-    the portal, enter +++Microsoft Foundry+++, and then
-    select **Microsoft Foundry** under Services.
+1.  Login to the Azure portal at +++https://portal.azure.com+++ using
+    the below credentials and select **Foundry** from the Home page.
+
+	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+
+	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image1.png)
@@ -398,6 +401,7 @@ developing AI-powered applications.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
 
 
