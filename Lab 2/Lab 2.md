@@ -41,12 +41,11 @@ development and experimentation.
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image47.png)
 
-2.  In the left navigation pane for the **Use with Foundry**,
-    select **AI Hubs**. On the AI Hubs page, click on **Create** and select **Hub** from the drop-down.
+2.  Select **AI Hubs** under **Use with Foundry**, from the left navigation pane. In the AI Hubs page, click on **Create** and select **Hub** from the drop-down.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image2.png)
 
-3.  On the **Create an Azure AI hub** pane enter the following details
+3.  In the **Create an Azure AI hub** pane enter the following details
     under **Basics**:
 
     - Subscription : **Leave default subscription** 
@@ -116,13 +115,13 @@ in upcoming labs.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image11.png)
 
-2.  On a **Select a model** window, search for +++gpt-4o+++ ,
+2.  In the **Select a model** window, search for +++gpt-4o+++ ,
     select **gpt-4o** and select **Confirm** 
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image12.png)
 
-3.  On **Deploy model gpt-4o** window, select **Customize**.
+3.  In the **Deploy model gpt-4o** window, select **Customize**.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image13.png)
 
@@ -148,13 +147,13 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image16.png)
 
-6.  On the **Microsoft Foundry | Azure OpenAI** page, select **+
+6.  In the **Microsoft Foundry | Azure OpenAI** page, select **+
     Create**  then select **Azure OpenAI** to create
     Azure OpenAI resource.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image17.png)
 
-7.  On **Create Azure OpenAI** page, provide the following settings and
+7.  In the **Create Azure OpenAI** page, provide the following settings and
     click on **Next** :
 
     
@@ -172,16 +171,16 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 8.  Click on **Next** till Review + submit tab appears.
 
-9.  On the **Review + submit** page, click on **Create**
+9.  In the **Review + submit** page, click on **Create**
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image19.png)
 
-10. Wait until the deployment got succeeded and select **Go to
+10. Wait until the deployment gets succeeded and select **Go to
     resource**.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image20.png)
 
-11. On the **my-openai-service** resource page, select **Go to Foundry
+11. In the **my-openai-service** resource page, select **Go to Foundry
     portal**.
 
     ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image21.png)
@@ -199,24 +198,22 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	Azure OpenAI service and deploy a text embedding model there. We will
 	use this text embedding model later when we create our vector index.
 
-13. On a **Select a model** window, search
-    for **text-embedding-3-large** , then
+13. In the **Select a model** window, search
+    for +++**text-embedding-3-large**+++ , then
     select **text-embedding-3-large** and
     select **Confirm** 
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image23.png)
 
-14. On **Deploy model text-embedding-3-large** window,
-
-    - Deployment type: Select **Standard**
+14. In the **Deploy model text-embedding-3-large** window,
 
     - Tokens per Minutes Rate Limit: **120K**
 
     - Select **Deploy** to deploy the model.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image24.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image48.png)
 
 15. Click on **Deployment**, you can see the
     deployed **text-embedding-3-large** model.
@@ -401,6 +398,7 @@ developing AI-powered applications.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
 
 
