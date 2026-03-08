@@ -210,13 +210,13 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image7.png)
 
 6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 2** and click **Upload**.
+    **C:\Labfiles\Day 2** (as in the below screenshot) and click **Upload**.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image8.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image60.png)
 
     ![A screenshot of a upload box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image9.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image61.png)
 
 Now, the Storage account is create successfully and loaded with the
 policy documents.
@@ -551,15 +551,7 @@ In this task, you will test your agent by asking policy-related
 questions and reviewing structured logs to verify tool usage, search
 calls, and grounded responses.
 
-1.  Before testing the agent, connect Application Insights to enable
-    detailed logs and trace visibility.
-
-2.  In Microsoft Foundry portal, select **Monitoring** from left
-    menu, select **agent-insights-@lab.LabInstance.Id** and click on **Connect**
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image53.png)
-
-3.  Once done, select, **Agents** from left menu, and then choose
+3.  Select, **Agents** from left menu, and then choose
     the **EnterpriseAssistant** agent and click on **Try in
     playground**.
 
@@ -613,6 +605,7 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
+
 
 
 
