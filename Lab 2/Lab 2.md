@@ -39,7 +39,7 @@ development and experimentation.
 	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image1.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image47.png)
 
 2.  In the left navigation pane for the **Use with Foundry**,
     select **AI Hubs**. On the AI Hubs page, click on **Create** and select **Hub** from the drop-down.
@@ -401,6 +401,7 @@ developing AI-powered applications.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
 
 
