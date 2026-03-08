@@ -368,7 +368,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
     
-    >![Alert] **Important:** If you receive an error with the given region, please select a region that allows the Standard pricing tier. **East US 2** has been selected here.
+    > **Important:** If you receive an error with the given region, please select a region that allows the Standard pricing tier. **East US 2** has been selected here.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image32.png)
@@ -398,20 +398,20 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image37.png)
 
- Here is what each of these options for -
+	Here is what each of these options for -
 
- -	**Keyword Search:** Used for traditional search experiences based on
-    exact keywords. It indexes text so users can find information
-    through keyword matching, without AI reasoning.
-
- -  **RAG (Retrieval-Augmented Generation):** Combines document
-    retrieval with AI generation.It ingests text (and simple OCR images)
-    so an AI agent can provide grounded, context-aware answers.
-
- -  **Multimodal RAG:** Extends RAG to handle complex visual content
-    like diagrams, tables, workflows, or charts. It enables AI to
-    interpret both text and visual elements for richer, insight-based
-    responses.
+	 -	**Keyword Search:** Used for traditional search experiences based on
+	    exact keywords. It indexes text so users can find information
+	    through keyword matching, without AI reasoning.
+	
+	 -  **RAG (Retrieval-Augmented Generation):** Combines document
+	    retrieval with AI generation.It ingests text (and simple OCR images)
+	    so an AI agent can provide grounded, context-aware answers.
+	
+	 -  **Multimodal RAG:** Extends RAG to handle complex visual content
+	    like diagrams, tables, workflows, or charts. It enables AI to
+	    interpret both text and visual elements for richer, insight-based
+	    responses.
 
 8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
     and **datasets** **under Blob container** and select **Next**.
@@ -613,6 +613,7 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
+
 
 
 
