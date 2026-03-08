@@ -1,4 +1,3 @@
-<img width="312" height="229" alt="image" src="https://github.com/user-attachments/assets/ed0ea640-d5f5-426e-a7bc-b072ea5597fc" />
 # Lab 4: Develop a Health plan report generation multi-agent system
 
 **Overview**
@@ -442,6 +441,7 @@ enterprise-grade agent orchestration patterns for practical business
 applications.
 
 Congratulations! You have successfully completed the lab.
+
 
 
 
