@@ -421,7 +421,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 9.  Select the below details and select **Next**.
 
-	- Kind - **Azure AI Foundry (Preview)**
+	- Kind - **Microsoft Foundry**
 
 	- Azure AI Foundry/Hub project -
 	  **agentic-ai-project-@lab.LabInstance.Id**
@@ -429,7 +429,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	- Model deployment - **text-embedding-002-ada**
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image39.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image62.png)
 
 10. Select **Next** in the next screens until the **Review and create**
     screen appears.
@@ -613,6 +613,7 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
+
 
 
 
