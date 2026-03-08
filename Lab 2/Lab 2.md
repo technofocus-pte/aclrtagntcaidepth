@@ -227,7 +227,7 @@ virtual environment, and create an environment variables file. This
 ensures a controlled development environment and securely manages
 configuration settings for your AI project.
 
-1.  On your **Lab VM**, launch **Visual Studio Code**.
+1.  In your **Lab VM**, launch **Visual Studio Code**.
 
 2.  Click on **File** , then **Open Folder**.
 
@@ -250,7 +250,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image29.png)
 
-6.  Make sure your in **azure-ai-agents-labs** project directory. Run
+6.  Make sure you are in **azure-ai-agents-labs** project directory. Run
     the below powershell commands to create and activate your virtual
     environment:
 
@@ -398,6 +398,7 @@ developing AI-powered applications.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
 
 
