@@ -444,12 +444,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image24.png)
 
-11. Send the below prompt in the chat and view the response in the left
-    pane:
-
-	+++Customer 251, what's my billing summary?+++
-
-12. The orchestrator is like the manager or router. It reads the user
+11. The orchestrator is like the manager or router. It reads the user
     query and decides which specialized agent should handle it. It uses
     the context and keywords (like "billing", "promotion", "login") to
     make this decision.
@@ -457,12 +452,17 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image46.png)
 
-13. Select the **Magentic Group** option in the drop down availble in the top menu.
+12. Select the **Magentic Group** option in the drop down availble in the top menu.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image52.png)
 
-13. Orchestrator assigns the task to a domain agent. The orchestrator
+13. Send the below prompt in the chat and view the response in the left
+    pane:
+
+	+++Customer 251, what's my billing summary?+++
+
+14. Orchestrator assigns the task to a domain agent. The orchestrator
     sends the query to one of these internal agents:
 
     - crm_billing - billing, invoices, payments
@@ -471,7 +471,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
     - security_authentication - security, login, account lockouts
 
-14. For your query ("billing summary"), the orchestrator routes it
+15. For your query ("billing summary"), the orchestrator routes it
     to **crm_billing**.
 
     ![A screenshot of a computer AI-generated content may be
@@ -486,7 +486,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	- The agent calls the right tool, fetches structured data, and forms a
 	  factual response.
 
-15. After completing your testing, return to VS Code and terminate all
+16. After completing your testing, return to VS Code and terminate all
     running terminal sessions. This ensures that the upcoming
     multi-agent workflow runs without any interference.
 
@@ -680,6 +680,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
