@@ -148,7 +148,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	- Storage account name - +++aistorage@lab.LabInstance.Id+++
 
-    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+    - Region - Select your nearest region. EastUS2 is selected here.
 
 	- Preferred storage type – Select **Azure Blob Storage or Azure Data
 	  Lake Storage Gen2**
@@ -208,7 +208,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     
     - Name – +++agentic-@lab.LabInstance.Id+++
 
-    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+    - Region - Select your nearest region. EastUS2 is selected here.
 
 	- Default project name – +++agentic-ai-project-@lab.LabInstance.Id+++
 
@@ -336,7 +336,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
 
-	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+	- Region - Select your nearest region. EastUS2 is selected here.
 
     - Pricing Tier - **Standard**
 
@@ -537,6 +537,7 @@ environment for more advanced agent-driven scenarios in the upcoming
 labs.
 
 You have successfully completed this lab. 
+
 
 
 
