@@ -194,7 +194,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 8.  **Start the MCP Server (Terminal 1)**: (mcp directory is at project
     root level)
 
-    - Run the below command to launch the **MCP server**, which exposes
+    - Run the below commands one by one to launch the **MCP server**, which exposes
       APIs that agents can call as tools. (Server runs
       on [http://localhost:8000](http://localhost:8000/))
 
@@ -207,12 +207,15 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer program AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image39.png)
 
-9.  Let the command run, open a new terminal.
+    ![A screenshot of a computer program AI-generated content may be
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image53.png)
+
+10.  Let the command run, open a new terminal.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
 
-10. **Start the Backend (Terminal 2)**:
+11. **Start the Backend (Terminal 2)**:
 
     - Run the below command to start the backend server that hosts your
       agent workflows, session management, and API endpoints.
@@ -233,12 +236,12 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screen shot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image23.png)
 
-11. Let the command run, open a new terminal.
+12. Let the command run, open a new terminal.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
 
-12. **Start the React Frontend (Terminal 3)**:
+13. **Start the React Frontend (Terminal 3)**:
 
     - Enter the command given below to navigate to
       the react-frontend directory.
@@ -677,6 +680,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
