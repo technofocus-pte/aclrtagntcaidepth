@@ -21,10 +21,7 @@ You'll perform the following tasks in this lab.
 
 ## Task 0: Set up the code 
 
-1.  From C:\Labfiles\Day 3, extract the **OpenAIWorkshop-Framework**
-    file.
-
-2.  Click on the **Visual Studio Code** from the LabVM desktop.
+1.  Open the **Visual Studio Code** from the LabVM desktop if not open already.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image1.png)
@@ -60,10 +57,10 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	+++uv sync+++
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im1.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image29.png)
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im2.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image30.png)
 
 9.  The command may take 5–10 minutes to complete. **Meanwhile, you can
     proceed with Task 1**.
@@ -330,6 +327,7 @@ fraud detection using the Azure Agent Framework. You explored how AI
 agents analyze suspicious activity, route high-risk cases to human
 analysts, and interact with a real-time React + FastAPI dashboard to
 monitor workflow execution and submit decisions.
+
 
 
 
