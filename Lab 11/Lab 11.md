@@ -173,7 +173,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	AZURE_SEARCH_INDEX=[Index_Name]
 	```
 
-14. Add the content of the .env file with the below content.
+14. Add the content of the .env file with the below content. **Replace** < Replace with **Azure OpenAI key** > with the key value from the Foundry Overview page.
 
 	```
 	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
@@ -190,7 +190,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
 	```
 
-	Find the Microsoft Foundry project endpoint from the Overview page and replace **\<Microsoft Foundry endpoint\>** with that value.
+	Find the Microsoft Foundry project endpoint from the Overview page and replace **< Microsoft Foundry endpoint >** with that value.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image8.png)
@@ -226,7 +226,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 18. Final .env file should look like the given image.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/im4.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image58.png)
 
 19. Once done, select **File**  and then
     click **Save**  to save the file.
@@ -591,5 +591,6 @@ metrics and agent health.
 
 You have successfully completed this lab. Kindly click Next \>\> to
 proceed further.
+
 
 
