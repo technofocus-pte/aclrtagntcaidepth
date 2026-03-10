@@ -174,13 +174,13 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image7.png)
 
 6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 3** and click **Upload**.
+    **C:\Labfiles\Day 2** (as in the below screenshot) and click **Upload**.
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image8.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image60.png)
 
     ![A screenshot of a upload box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image9.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image61.png)
 
 Now, the Storage account is create successfully and loaded with the
 policy documents.
@@ -393,14 +393,14 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 9.  Select the below details and select **Next**.
 
-	- Kind – Azure AI Foundry (Preview)
+	- Kind – **Microsoft Foundry**
 
 	- Azure AI Foundry/Hub project – **agentic-ai-project-@lab.LabInstance.Id**
 
 	- Model deployment – **text-embedding-002-ada**
 
     ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image39.png)
+incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image62.png)
 
 10. Select **Next** in the next screens until the **Review and create**
     screen appears.
@@ -551,4 +551,5 @@ environment for more advanced agent-driven scenarios in the upcoming
 labs.
 
 You have successfully completed this lab. 
+
 
