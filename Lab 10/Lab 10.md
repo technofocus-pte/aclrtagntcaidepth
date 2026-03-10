@@ -386,7 +386,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 		responses.
 
 8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
-    and **datasets** **under Blob container, Acknowledge the addditional costs  and select **Next**.
+    and **datasets** under Blob container, Acknowledge the addditional costs  and select **Next**.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image38.png)
@@ -551,3 +551,4 @@ environment for more advanced agent-driven scenarios in the upcoming
 labs.
 
 You have successfully completed this lab. 
+
