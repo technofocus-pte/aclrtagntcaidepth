@@ -27,7 +27,7 @@ You'll perform the following tasks in this lab.
 
 ## Task 0: Lab environment setup
 
-1.  Click on the **Visual Studio Code** from the LabVM desktop.
+1.  Click on the **Visual Studio Code** from the LabVM desktop if not open already.
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image1.png)
@@ -677,6 +677,7 @@ specialized agents collaborate or hand off conversations based on user
 intent. You configured environment variables, launched the full agent
 environment, and tested how agents intelligently respond to
 domain-specific queries.
+
 
 
 
