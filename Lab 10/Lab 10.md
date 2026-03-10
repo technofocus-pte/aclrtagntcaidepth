@@ -466,30 +466,22 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image45.png)
 
-4.  In the next pane, provide these details and click on **Next**:
+4.  In a new tab, open the mail at +++https://outlook.office.com/mail/+++ and check for the email from the Freshworks with the **Verfication code**.
+
+5.  Back in the Freshworks steup tab, enter the **verification code**.
+
+6.  In the next pane, provide **password** as +++@lab.VirtualMachine(DPAI-061-VM).Password+++. Click on **Start my trial**.
+
+7.  In the next pane, provide these details and click on **Next**:
 
     - **What industry are you from ?:** from the list, select **Software and internet**
-
-    - **How many employees are there in your company?:** select **1-10**
 
     - select **I'm trying customer service software for the first time**
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image46.png)
 
-5.  Once done, copy the URL given and paste it in a new tab in your
-    browser inside VM to open **Outlook**.
-
-    - URL: +++https://go.microsoft.com/fwlink/p/?LinkID=2125442&clcid=0x409&culture=en-us&country=us+++
-
-6.  In the pick an account pane, select the account that you are
-    assigned for this lab.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image47.png)
-
-7.  In the Freshworks verification email, open and click on **Activate
-    Account**.
+8.  Open the email tab and in the **Freshworks Get started email**, click on **Activate Account**.
 
     ![A screenshot of a computer screen AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image48.png)
@@ -500,12 +492,6 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	reinitiating the steps to activate your free trial in a new
 	private/incognito window. Additionally, check your spam or junk folder,
 	as the email might have been filtered there.
-
-8.  In the next pane, provide **password** as +++@lab.VirtualMachine(DPAI-061-VM).Password+++ and provide the
-    same password for **Confirm password**. Click on **Activate your account**.
-
-    ![A screenshot of a login screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image49.png)
 
 9.  Once you are in the portal, click on the **Profile** icon in the
     top right corner and select **Profile settings**.
@@ -551,6 +537,7 @@ environment for more advanced agent-driven scenarios in the upcoming
 labs.
 
 You have successfully completed this lab. 
+
 
 
 
