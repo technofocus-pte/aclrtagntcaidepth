@@ -44,17 +44,7 @@ Search retrieval, and ticket creation. This enables unified visibility
 into agent behavior and cross-system correlation using trace IDs in
 Application Insights.
 
-1.  Instead of modifying the previous code again, you’ll work in a new
-    folder that already contains the updated observability-enabled
-    files. Understand how telemetry, tracing, and monitoring are
-    integrated using Microsoft Agent Framework Observability and
-    Application Insights.
-
-2.  In Visual Studio Code, before openening new folder, select
-    the .env file and copy the content and keep it safely in a notepad.
-
-3.  Once done, click on **file** option from top menu and select **Open
-    Folder**.
+1.  Click on **file** option from top menu and select **Open Folder**.
 
     ![A screenshot of a computer program AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image1.png)
@@ -173,7 +163,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	AZURE_SEARCH_INDEX=[Index_Name]
 	```
 
-14. Add the content of the .env file with the below content. **Replace** < Replace with **Azure OpenAI key** > with the key value from the Foundry Overview page.
+14. Add the below content to the .env file. **Replace** < Replace with **Azure OpenAI key** > with the key value from the **Foundry Overview page**.
 
 	```
 	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
