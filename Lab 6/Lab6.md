@@ -721,6 +721,7 @@ telemetry in Microsoft Foundry.
 	azure-identity==1.25.1
 	azure-monitor-opentelemetry==1.8.3
 	azure-monitor-opentelemetry-exporter==1.0.0b46
+ 	opentelemetry-semantic-conventions-ai==0.4.13
 	```
 
 4.  Select the **...** option from the top menu to extend the menu.
