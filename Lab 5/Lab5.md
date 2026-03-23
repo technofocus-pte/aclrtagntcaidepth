@@ -366,7 +366,7 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 
 	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
 
-	- Region - Select your nearest location (**EastUS2** is selected here)
+	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image32.png)
