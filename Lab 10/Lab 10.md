@@ -1,553 +1,467 @@
+# 大规模管理、保护和监控AI代理
 
-# Lab 10: Manage, Securing, and Monitoring AI Agents at Scale
-
-**Overview**
-
-This hands-on lab provides a focused on managing, securing, and
-monitoring AI agents at scale using the Azure AI Agent Service SDK and
-Microsoft Foundry. Participants will dive deep into production-grade
-practices essential for enterprise AI deployments, beginning with
-AgentOps—the discipline of observing and governing AI agents through
-OpenTelemetry integration and Azure Application Insights. The workshop
-emphasizes the importance of Responsible AI by implementing Microsoft's
-six foundational principles, including fairness, reliability, privacy,
-and accountability, through configurable content safety filters that
-detect and block harmful outputs such as hate speech, violence, and
-sensitive information. Additionally, participants will build
-sophisticated human-in-the-loop (HITL) workflows, exemplified through a
-fraud detection system where specialized AI agents analyze suspicious
-activity and intelligently route high-risk cases to human analysts for
-critical decision-making. Throughout the lab, you'll work with
-multi-agent systems that collaborate across retrieval, validation, and
-orchestration tasks, gaining hands-on experience with end-to-end
-tracing, custom metrics visualization, performance monitoring
-dashboards, and real-time workflow management. By the end of this
-workshop, participants will have mastered the essential skills for
-deploying, monitoring, and governing AI agents in enterprise
-environments, ensuring they operate safely, ethically, and efficiently
-at scale while maintaining compliance with organizational policies and
-regulatory requirements.
+**概述**
 
-**Objectives**
+该实践实验室专注于利用Azure AI Agent Service SDK和Microsoft
+Foundry大规模管理、保护和监控AI代理。参与者将深入探讨企业AI部署中必不可少的生产级实践，首先是AgentOps——通过OpenTelemetry集成和Azure应用洞察来观察和管理AI代理的学科。
+研讨会通过可配置的内容安全过滤器，通过检测和阻止仇恨言论、暴力和敏感信息等有害输出，实施Microsoft的六大基本原则，包括公平、可靠性、隐私和问责制，强调负责任
+AI
+的重要性。此外，参与者还将构建复杂的人工参与（HITL）工作流程，例如一个欺诈检测系统，专业AI代理分析可疑活动，并将高风险案件智能地引导至人工分析师，以实现关键决策。在整个实验室中，您将使用多代理系统，这些系统在检索、验证和编排任务中协作，积累端到端追踪、自定义指标可视化、性能监控仪表盘和实时工作流程管理的实践经验。到研讨会结束时，参与者将掌握在企业环境中部署、监控和管理
+AI
+代理的关键技能，确保其在大规模安全、伦理且高效运行的同时，遵守组织政策和监管要求。
 
-By the end of this lab, you will be able to:
+**目标**
 
-- **Enable Observability and Monitoring**: Implement end-to-end tracing
-  and telemetry for AI agents using OpenTelemetry integrated with Azure
-  Application Insights, capturing agent behavior, performance metrics,
-  and execution traces
+到这个实验结束时，你就能:
 
-- **Visualize Agent Metrics**: Create custom dashboards and workbooks in
-  Application Insights to monitor agent performance, response times,
-  token usage, routing accuracy, and system health in real-time
+- **启用可观察性和监控**:
+  利用OpenTelemetry集成Azure应用洞察，为AI代理实现端到端追踪和遥测，捕捉代理行为、性能指标和执行跟踪
 
-- **Implement Responsible AI Practices**: Configure content safety
-  filters in Microsoft Foundry to detect and block harmful outputs (hate
-  speech, violence, sensitive content) and ensure ethical, compliant AI
-  behavior
+- **可视化代理指标**: 在 Application Insights
+  中创建自定义仪表盘和工作簿，实时监控代理性能、响应时间、令牌使用情况、路由准确性和系统健康状况
 
-- **Build Human-in-the-Loop Workflows**: Design and deploy fraud
-  detection systems where AI agents analyze alerts and route high-risk
-  cases to human analysts for review and decision-making
+- **实施 Responsible AI 实践**: 在 Microsoft Foundry
+  中配置内容安全过滤器，以检测并阻止有害输出（仇恨言论、暴力、敏感内容），并确保
+  AI 行为符合伦理和合规
 
-- **Monitor Multi-Agent Systems**: Track agent-to-agent communication,
-  trace distributed workflows across multiple specialized agents, and
-  identify bottlenecks or failures in complex agent orchestrations
+- **构建人机作流程**:
+  设计并部署欺诈检测系统，让AI代理分析警报，并将高风险案件转交给人工分析师进行审核和决策
 
-Explanation of Components
+- **监控多智能体系统**:
+  跟踪代理间通信，追踪多个专业代理间分布式工作流，并识别复杂代理编排中的瓶颈或故障
 
-- **Microsoft Foundry**: A cloud-based platform for developing,
-  deploying, and managing AI models with centralized governance,
-  observability, and compliance features for enterprise AI applications.
+组件说明
 
-- **Azure AI Hub**: A top-level Azure resource providing a central,
-  secure, and collaborative environment for teams to build, manage, and
-  deploy AI applications with shared resources and governance policies.
+- **Microsoft Foundry**:
+  一个基于云的平台，用于开发、部署和管理具有集中治理、可观察性和合规功能的AI模型，适用于企业AI应用。
 
-- **Azure AI Search**: A vector-based search service enabling
-  Retrieval-Augmented Generation (RAG) by indexing and retrieving
-  relevant documents to improve AI-generated responses with grounded
-  information.
+- **Azure AI Hub**: 顶级 Azure
+  资源为团队提供一个集中、安全且协作的环境，以构建、管理和部署 AI
+  应用，共享资源和治理策略。
 
-- **Azure AI Services**: A collection of cloud-based AI services
-  offering pre-built and customizable APIs and models for vision,
-  language, speech, and decision-making capabilities.
+- **Azure AI 搜索**:
+  一项基于矢量的搜索服务，通过索引和检索相关文档，实现检索增强生成（RAG），以提升基于信息的AI生成响应。
 
-- **OpenTelemetry**: An open standard for distributed tracing, metrics,
-  and logging natively integrated into the Microsoft Agent Framework to
-  capture agent execution traces, performance metrics, and error
-  tracking.
+- **Azure AI 服务**: 一组基于云的 AI
+  服务，提供预构建且可定制的视觉、语言、语音和决策能力的API和模型。
 
-- **Content Safety Filters**: Built-in filtering system in Microsoft
-  Foundry that automatically detects and blocks harmful outputs across
-  categories like hate speech, violence, sexual content, and sensitive
-  information (PII).
+- **OpenTelemetry**:
+  一个面向分布式追踪、指标和日志的开放标准，原生集成于 Microsoft Agent
+  Framework，用于捕捉代理执行跟踪、性能指标和错误跟踪。
 
-- **LLMs and Embeddings**: Large Language Models provide natural
-  language understanding and generation, while embeddings are vector
-  representations used for text similarity, search, and knowledge
-  retrieval in AI applications.
+- **内容安全过滤器**: Microsoft Foundry
+  内置过滤系统，能够自动检测并屏蔽仇恨言论、暴力、性内容和敏感信息（PII）等类别的有害输出。
 
-# Lab 10: Prerequisites - Setting Up Knowledge Index and Ticketing System
+- **LLMs与嵌入**：大型语言模型提供自然语言理解和生成，而嵌入则是用于文本相似度、搜索和知识检索的向量表示，应用于AI应用。
 
-**Estimated Duration**: 30 Minutes
+# 实验10：先决条件——建立知识索引和工单系统
 
-**Overview**
+**预计时长**：30分钟
 
-In this prerequisite lab, you will set up the foundational components
-necessary for an AI-driven workflow that can retrieve enterprise
-knowledge and automatically create support tickets. The focus is on
-preparing a searchable knowledge base, enabling AI agents to query that
-knowledge using an MCP (Model Context Protocol) tool, and integrating a
-ticketing system for downstream action.
+**概述**
 
-By completing these tasks, you will establish the core infrastructure
-that allows agents to:
+在这个先修实验室中，你将建立一个由 AI
+驱动的工作流程所需的基础组件，能够检索企业知识并自动创建支持工单。重点是准备一个可搜索的知识库，使AI代理能够使用MCP（模型上下文协议）工具查询这些知识，并集成工单系统以实现下游作。
 
-- Retrieve relevant information from indexed data
+通过完成这些任务，您将建立核心基础设施，使客服能够:
 
-- Use that information contextually during conversations or workflows
+- 从索引数据中检索相关信息
 
-- Escalate issues by creating tickets in an external service
+- 在对话或工作流程中结合上下文运用这些信息
 
-This setup ensures that subsequent labs run smoothly and reflect a
-real-world enterprise scenario.
+- 通过在外部服务中创建工单来升级问题
 
-Lab Objectives
+这种安排确保后续实验室顺利运行，反映真实的企业场景。
 
-You'll perform the following tasks in this lab.
+实验室目标
 
-- Task 1: Prepare Knowledge Index
+你将在实验室执行以下任务。
 
-- Task 2: Setting up Freshworks for Ticket Management
+- 任务1：准备知识索引
 
-## Task 1: Create the Azure resources
+- 任务2：设置Freshworks用于工单管理
 
-In this task, you will create all the Azure resources that are required
-to perform this lab.
+## 任务1：创建Azure资源
 
-### Task 1.1: Create Storage account
+在这个任务中，你将创建完成该实验室所需的所有Azure资源。
 
-1.  Login to the Azure portal at +++https://portal.azure.com+++ using
-    the below credentials and select Storage accounts.
+### 任务1.1：创建存储账户
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+1.  使用以下凭据登录 Azure 门户 +++https://portal.azure.com+++
+    并选择存储账户。
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
+- 用户名 - +++@lab.CloudPortalCredential(User1).Username+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image1.png)
+- TAP - <+++@lab.CloudPortalCredential(User1).TAP>+++
 
-2.  Select for **Storage Accounts** and Select **Create**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image2.png)
+2.  选择 **Create**。
 
-3.  Enter the below details and select **Review + create**. Select
-    Create in the next screen.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-	- Storage account name - +++aistorage@lab.LabInstance.Id+++
+3.  输入以下信息，选择 **Review + create**。在下一界面选择“Create”。
 
-    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+- 存储账户名称 - +++aistorage@lab.LabInstance.Id+++
 
-	- Preferred storage type – Select **Azure Blob Storage or Azure Data
-	  Lake Storage Gen2**
+- 首选存储类型 – 选择 **Azure Blob Storage or Azure Data Lake Storage
+  Gen2**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image3.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image3.png)
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image4.png)
+4.  资源创建后，选择 **“Go to resource**”。
 
-4.  Once the resource is created, select **Go to resource**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image5.png)
+5.  选择 **Upload**，选择**Create new**容器以创建新容器。命名为
+    +++**datasets**+++，然后选择 **Ok**。
 
-5.  Select **Upload**, select **Create new** to create a new container.
-    Name it as +++**datasets**+++ and then select **Ok**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image6.png)
+![A screenshot of a login box AI-generated content may be
+incorrect.](./media/image7.png)
 
-    ![A screenshot of a login box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image7.png)
+6.  选择“**Browse for files**”，从**C:\Labfiles\Day
+    2**中选择策略文件，点击 **Upload**。
 
-6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 3** and click **Upload**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image8.png)
+![A screenshot of a upload box AI-generated content may be
+incorrect.](./media/image9.png)
 
-    ![A screenshot of a upload box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image9.png)
+现在，存储账户已成功创建并加载了策略文档。
 
-Now, the Storage account is create successfully and loaded with the
-policy documents.
+### 任务1.2：创建Foundry资源
 
-### Task 1.2: Create Foundry resource
+在此任务中，您将创建一个 Foundry 资源，访问 Microsoft Foundry 是必要的。
 
-In this task, you will create a Foundry resource which is required to
-access the Microsoft Foundry.
+1.  在Azure门户（+++https：//portal.azure.com+++）主页，选择
+    **Foundry**。
 
-1.  From the Home page of the Azure
-    portal (+++https://portal.azure.com+++), select **Foundry**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image10.png)
+2.  从左侧窗格选择**Foundry**，然后选择**Create** Foundry资源。
 
-2.  Select **Foundry** from the left pane, and then select **Create** to
-    create the Foundry resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image11.png)
+3.  输入以下信息，选择 **Review + create**。
 
-3.  Enter the below details and select **Review + create**.
+- 名称 – <+++agentic-@lab.LabInstance.Id>+++
 
-	- Resource Group - **@lab.CloudResourceGroup(AgenticAI).Name**
-    
-    - Name – +++agentic-@lab.LabInstance.Id+++
+- 默认项目名称 – <+++agentic-ai-project-@lab.LabInstance.Id>+++
 
-    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-	- Default project name – +++agentic-ai-project-@lab.LabInstance.Id+++
+4.  验证后选择**Create**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-4.  Select **Create** once validated.
+5.  确保资源已经建立。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-5.  Ensure that the resource is created.
+6.  打开 **<agentic-ai-project-@lab.LabInstance.Id>** ，选择 **“Go to
+    Foundry portal**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image14.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-6.  Open the **agentic-ai-project-@lab.LabInstance.Id** and select
-    **Go to Foundry portal**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image16.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image15.png)
+7.  在 Microsoft Foundry 中，从左侧面板选择 Models + 端点。选择 +
+    **Deploy model** -\> **Deploy base model**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-7.  In the Microsoft Foundry, select Models + endpoints from the left
-    pane. Select + **Deploy model** -\+ **Deploy base model**.
+8.  搜索 +++gpt-4o-mini+++，选择并点击确认以部署该模型。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image17.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image18.png)
 
-8.  Search for +++gpt-4o-mini+++, select it and click on Confirm to
-    deploy the model.
+9.  在部署窗口中选择 **Deploy**。
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image18.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-9.  Select **Deploy** in the deployment window.
+10. 同样，搜索 +++text-embedding-ada-002+++ 并部署。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image19.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-10. Similarly, search for +++text-embedding-ada-002+++ and deploy it.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image20.png)
+在这个任务中，你已经成功创建了Foundry资源，并在其中部署了一个聊天和一个嵌入模型。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image21.png)
+### 任务1.3：创建应用洞察
 
-In this task, you have successfully created the Foundry resource and
-deployed a chat and an embedding model in it.
+在此任务中，您将创建应用洞察资源，这是监控所必需的。
 
-### Task 1.3: Create Application insights
+1.  在Azure门户的主页，选择 **“Subscriptions”** 并选择分配的订阅。
 
-In this task, you will create an Application insights resource, which is
-required for monitoring.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-1.  From the Home page of the Azure portal (+++https://portal.azure.com+++), select **Subscriptions** and
-    select the assigned subscription.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image22.png)
+2.  从左侧面板选择 **Resource providers**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-2.  Select **Resource providers** from the left pane.
+3.  搜索 +++Operational+++，选择 **Microsoft.OperationalInsights** 旁的
+    3 个点，点击 **Register**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-3.  Search for +++Operational+++, select the 3 dots next to
-    **Microsoft.OperationalInsights** and click **Register**.
+4.  在 Microsoft Foundry 的左侧面板中，选择 **“Monitoring**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image25.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-4.  From the left pane of the Microsoft Foundry, select **Monitoring**.
+5.  选择 **Create New** -\>，输入名称为 [as
+    <+++agent-insights-@lab.LabInstance.Id>+++，然后选择](mailto:+++agent-insights-@lab.LabInstance.Id+++，然后选择)
+    **Create**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image26.png)
+![A screenshot of a application AI-generated content may be
+incorrect.](./media/image27.png)
 
-5.  Select **Create New** -\+ provide the name as
-    +++agent-insights-@lab.LabInstance.Id+++ and then select
-    **Create**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-    ![A screenshot of a application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image28.png)
+在这个任务中，你创建了应用洞察资源。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image29.png)
+### 任务1.4：创建搜索资源
 
-In this task, you have created the Application Insight resource.
+在AI代理能够准确回答企业问题之前，必须访问可信的数据源。Azure AI
+搜索通过索引政策、合同和手册等文档，实现检索增强生成（RAG）。索引就像一个可搜索的目录，将内容拆分成块，添加元数据，并使代理在对话中检索到正确的信息。
 
-### Task 1.4: Create Search resource
+在此任务中，利用 Azure AI Search 索引上传的文档，创建可搜索的知识库。
 
-Before an AI Agent can answer enterprise questions accurately, it must
-access trusted data sources. Azure AI Search enables Retrieval-Augmented
-Generation (RAG) by indexing documents such as policies, contracts, and
-manuals. An index acts like a searchable catalog that breaks content
-into chunks, adds metadata, and enables the agent to retrieve the right
-information during a conversation.
+1.  在 Azure 门户的主页，选择 **Foundry**。
 
-In this task, index the uploaded documents using Azure AI Search to
-create a searchable knowledge base.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-1.  From the Home page of the Azure portal, select **Foundry**.
+2.  从左侧窗格选择**“AI Search**”，然后选择 **+ Create。**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image30.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-2.  Select **AI Search** from the left pane and then select **+
-    Create.**
+3.  输入以下信息，选择 **Review + create**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image31.png)
+- 服务名称 - +++ai-knowledge-@lab.LabInstance.Id+++
 
-3.  Enter the below details, select **Review + create**.
+- 地区 - East US2
 
-    - Resource Group - **@lab.CloudResourceGroup(AgenticAI).Name**
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image32.png)
 
-	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
+4.  验证通过后选择 **Create**。创建资源后选择“Go to resource”。
 
-	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-    - Pricing Tier - **Standard**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image34.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image32.png)
+5.  选择 **Import data (new)** 。
 
-4.  Select **Create** once the validation passes. Select Go to resource
-    once the resource is created.
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image35.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image33.png)
+6.  在“**Azure Blob Storage**”下选择 **Choose data source**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image34.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-5.  Select **Import data (new)**.
+7.  在下一格，选择**RAG**选项，因为我们正在构建基于检索的代理。
 
-    >[!Alert] If instructed to try the **New** import data wizard, select **try now**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image37.png)
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image35.png)
+> 以下是这些选项的用途 -
 
-6.  Select the **Azure Blob Storage** under **Choose data source**.
+1.  **关键词搜索：**用于基于精确关键词的传统搜索体验。它会索引文本，让用户通过关键词匹配找到信息，无需AI推理。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image36.png)
+2.  **RAG（检索增强生成）：**结合文档检索与 AI
+    生成。它会接收文本（以及简单的OCR图像），因此AI代理能够提供扎实、具上下文感知的回答。
 
-7.  In the next pane, select the **RAG** option as we are building a
-    retrieval-based agent.
+3.  **多模态RAG：**扩展RAG以处理复杂的视觉内容，如图表、表格、工作流程或图表。它使
+    AI 能够解读文本和视觉元素，提供更丰富、基于洞察的回答。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image37.png)
+&nbsp;
 
-	- Here is what each of these options for:
+8.  在 **datasets** **under Blob containe**r 中的 **Storage account**
+    下选择 <aistorage@lab.LabInstance.Id>，然后选择“**Next**”。
 
-	1.  **Keyword Search:** Used for traditional search experiences based on
-		exact keywords. It indexes text so users can find information
-		through keyword matching, without AI reasoning.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-	2.  **RAG (Retrieval-Augmented Generation):** Combines document
-		retrieval with AI generation.It ingests text (and simple OCR images)
-		so an AI agent can provide grounded, context-aware answers.
+9.  请选择以下详情，然后选择 **“Next**”。
 
-	3.  **Multimodal RAG:** Extends RAG to handle complex visual content
-		like diagrams, tables, workflows, or charts. It enables AI to
-		interpret both text and visual elements for richer, insight-based
-		responses.
+- Kind – Azure AI Foundry （预览版）
 
-8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
-    and **datasets** **under Blob container, Acknowledge the addditional costs  and select **Next**.
+- Azure AI Foundry/Hub 项目 – <agentic-ai-project-@lab.LabInstance.Id>
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image38.png)
+- 模型部署 – text-embedding-002-ada
 
-9.  Select the below details and select **Next**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-	- Kind – Azure AI Foundry (Preview)
+10. 在接下来的界面选择“**Next**”，直到出现 **Review and create** 界面。
 
-	- Azure AI Foundry/Hub project – **agentic-ai-project-@lab.LabInstance.Id**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image40.png)
 
-	- Model deployment – **text-embedding-002-ada**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image39.png)
+11. 在“**Review and create**”界面选择 **Create**。
 
-10. Select **Next** in the next screens until the **Review and create**
-    screen appears.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image40.png)
+12. 在“创建成功”对话框中选择 **Close**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image41.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-11. Select **Create** in the **Review and create** screen.
+你已经成功将数据集导入 Azure AI
+搜索并创建了可搜索索引。在下一个任务中，你将创建一个 AI
+代理，并将该索引作为其知识来源连接起来。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image42.png)
+# 任务2：设置Freshworks用于工单管理
 
-12. Select **Close** in the Create succeeded dialog.
+在此任务中，您将搭建并配置Freshworks，以启用工单管理和多代理系统的企业集成。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image43.png)
+**Freshworks**
+是一个基于云的客户服务和互动平台，旨在提升客户支持运营和用户满意度。它提供一套工具，包括工单管理、在线聊天、帮助中心创建和客户自助服务。Freshworks
+支持全渠道通信，使企业能够通过集中界面管理电子邮件、聊天、电话和社交媒体上的客户互动。其自动化功能有助于简化工作流程、分配工单，并提供绩效跟踪的分析。现在你要创建Freshworks账户。
 
-You’ve successfully ingested the dataset into Azure AI Search and
-created a searchable index. In the next task, you’ll create an AI agent
-and connect this index as its knowledge source.
+1.  复制URL并粘贴到虚拟机内浏览器的新标签页，打开**Freshworks**门户。
 
-# Task 2: Setting up Freshworks for Ticket Management
+    - URL:
 
-In this task, you will set up and configure Freshworks to enable ticket
-management and an enterprise integration for your multi-agent system.
+> +++https://www.freshworks.com/freshdesk/lp/home/?tactic_id=3387224&utm_source=google-adwords&utm_medium=FD-Search-Brand-India&utm_campaign=FD-Search-Brand-India&utm_term=freshdesk&device=c&matchtype=e&network=g&gclid=EAIaIQobChMIuOK90qvLjQMV_dQWBR3JAi9VEAAYASAAEgK87_D_BwE&audience=kwd-30002131023&ad_id=282519464145&gad_source=1&gad_campaignid=671502402+++
 
-**Freshworks** is a cloud-based customer service and engagement platform
-designed to improve customer support operations and enhance user
-satisfaction. It offers a suite of tools for ticket management, live
-chat, help center creation, and customer self-service. Freshworks
-supports omnichannel communication, enabling businesses to manage
-customer interactions across email, chat, phone, and social media from a
-centralized interface. Its automation features help streamline
-workflows, assign tickets, and provide analytics for performance
-tracking. Now you will set up the Freshworks account.
+2.  在门户中，选择 **Start free trial** 即可开始免费试用。
 
-1.  Copy the URL and paste it in a new tab in your browser inside the VM
-    to open the **Freshworks** portal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-    - URL: +++https://www.freshworks.com/freshdesk/lp/home/?tactic_id=3387224&utm_source=google-adwords&utm_medium=FD-Search-Brand-India&utm_campaign=FD-Search-Brand-India&utm_term=freshdesk&device=c&matchtype=e&network=g&gclid=EAIaIQobChMIuOK90qvLjQMV_dQWBR3JAi9VEAAYASAAEgK87_D_BwE&audience=kwd-30002131023&ad_id=282519464145&gad_source=1&gad_campaignid=671502402+++
+3.  在下一页输入这些信息，并点击“**Try it free (6)”**:
 
-2.  In the portal, select **Start free trial** to start the free trial.
+    - **名字:** LODS
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image44.png)
+    - **姓氏:** User1
 
-3.  In the next pane, provide these details and click on **Try it free
-   **:
+    &nbsp;
 
-    - **First name:** +++LODS+++
+    - **工作邮箱:** **+++@lab.CloudPortalCredential(User1).Username+++**
 
-    - **Last name:** +++User1+++
+    &nbsp;
 
-    - **Work email:** +++@lab.CloudPortalCredential(User1).Username+++
-    
-    - **Company name:** +++Zava+++
+    - **公司名称:** Zava
 
-    - **Organization size:** Select **1-10**
+    - **组织规模:** 选择**1-10**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image45.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image45.png)
 
-4.  In the next pane, provide these details and click on **Next**:
+4.  在下一栏填写这些信息，点击**“Next (4)”**:
 
-    - **What industry are you from ?:** from the list, select **Software and internet**
+    - **What industry are you from ?:** 从列表中选择**Software and
+      internet (1)**
 
-    - **How many employees are there in your company?:** select **1-10**
+    - **How many employees are there in your company?:** 选择 **1-10
+      (2)**
 
-    - select **I'm trying customer service software for the first time**
+    - 选择 **I'm trying customer service software for the first time
+      (3)**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image46.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-5.  Once done, copy the URL given and paste it in a new tab in your
-    browser inside VM to open **Outlook**.
+5.  完成后，复制给出的URL，粘贴到虚拟机内浏览器的新标签页中打开**Outlook**。
 
-    - URL: +++https://go.microsoft.com/fwlink/p/?LinkID=2125442&clcid=0x409&culture=en-us&country=us+++
+    - URL:
 
-6.  In the pick an account pane, select the account that you are
-    assigned for this lab.
+> +++https://go.microsoft.com/fwlink/p/?LinkID=2125442&clcid=0x409&culture=en-us&country=us+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image47.png)
+6.  在“pick an account”面板中，选择你被分配给这个实验的账户。
 
-7.  In the Freshworks verification email, open and click on **Activate
-    Account**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image48.png)
+7.  在Freshworks验证邮件中，打开并点击“**Activate Account**”。
 
-	>[!Note]: If you're unable to locate the activation email from
-	Freshworks, please wait a few minutes, as there might be a delay in
-	email delivery. If the email doesn't arrive after some time, consider
-	reinitiating the steps to activate your free trial in a new
-	private/incognito window. Additionally, check your spam or junk folder,
-	as the email might have been filtered there.
+> ![A screenshot of a computer screen AI-generated content may be
+> incorrect.](./media/image48.png)
 
-8.  In the next pane, provide **password** as +++@lab.VirtualMachine(DPAI-061-VM).Password+++ and provide the
-    same password for **Confirm password**. Click on **Activate your account**.
+**注意：**如果您找不到Freshworks的激活邮件，请稍等几分钟，因为邮件发送可能会有延迟。如果邮件过了一段时间还没到，可以考虑在新的私密/无痕窗口重新激活免费试用的步骤。另外，检查垃圾邮件或垃圾邮件文件夹，因为邮件可能被过滤到了那里。
 
-    ![A screenshot of a login screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image49.png)
+8.  在下一栏， **Enter password (1)** ，**Confirm password (2)**
+    输入相同的密码。点击 **Activate your account (3)**。
 
-9.  Once you are in the portal, click on the **Profile** icon in the
-    top right corner and select **Profile settings**.
+> ![A screenshot of a login screen AI-generated content may be
+> incorrect.](./media/image49.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image50.png)
+9.  进入门户后，点击右上角的 **Profile (1)** 图标，选择 **Profile
+    settings (2)**。
 
-10. In the profile page, click on **View API Key** to get the API Keys.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-    ![A screenshot of a web page AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image51.png)
+10. 在个人资料页面，点击“**View API Key** ”即可获取 API 密钥。
 
-    >[!Note]: If you are unable to find this option, please minimize the
-screen size using **CTRL -**.
+![A screenshot of a web page AI-generated content may be
+incorrect.](./media/image51.png)
 
-11. In the next pane, complete the **CAPTCHA**.
+**注意：**如果您找不到该选项，请使用**CTRL + -**来最小化屏幕大小。
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image52.png)
+11. 在下一格，填写 **CAPTCHA**。
 
-12. Please copy the API Key to a notepad, you will be using this
-    further.
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image52.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image53.png)
+12. 请将API Key 复制到记事本，你将会继续使用它。
 
-13. From the browser tab, please copy the **Account URL** as shown and
-    copy the value to Notepad. You will be using this further.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image53.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image54.png)
+13. 请在浏览器标签页复制显示的
+    **账户URL**，并将数值复制到记事本。你还会继续使用它。
 
-**Summary**
+![](./media/image54.png)
 
-By completing this prerequisite lab, you have set up the essential
-foundation for an end-to-end agent workflow. You prepared a searchable
-knowledge index, enabled agents to query that data through an MCP tool
-built on **Azure AI Search**, and integrated **Freshworks** for
-automated ticket management.
+**摘要**
 
-This foundation ensures that agents can retrieve accurate context, make
-informed decisions, and escalate issues efficiently preparing the
-environment for more advanced agent-driven scenarios in the upcoming
-labs.
+完成这个先修实验，你为端到端的代理工作流程奠定了基础。你准备了一个可搜索的知识索引，使客服通过基于**Azure
+AI Search**的MCP工具查询这些数据，并集成
+**了Freshworks**实现自动化工单管理。
 
-You have successfully completed this lab. 
+这一基础确保代理能够获取准确的上下文，做出明智决策，并高效升级问题，为即将到来的实验室中更高级的代理驱动场景做好准备。
+
+你已经成功完成了这个实验。请点击“Next \>\>”以继续阅读

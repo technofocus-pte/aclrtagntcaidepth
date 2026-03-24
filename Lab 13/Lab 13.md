@@ -1,154 +1,138 @@
+# 实验13：利用人机环路AI实施企业欺诈检测
 
-# Lab 13: Implementing Enterprise Fraud Detection with Human-in-the-Loop AI
+**预计时长**：60分钟
 
-**Estimated Duration**: 60 Minutes
+**概述**
 
-**Overview**
+您是Contoso有限公司的AI工程师，负责实施人机参与（HITL）AI工作流程。在本实验室中，您将探索Contoso欺诈检测与响应工作流程，AI代理分析可疑活动，并将高风险行为转交人工分析师审核，同时使用实时React +
+FastAPI仪表盘进行监控和交互。
 
-You are an AI Engineer at Contoso Ltd., responsible for implementing
-human-in-the-loop (HITL) AI workflows. In this lab, you will explore the
-Contoso Fraud Detection & Response Workflow, where AI agents analyze
-suspicious activity and route high-risk actions to human analysts for
-review, using a real-time React + FastAPI dashboard for monitoring and
-interaction.
+实验室目标
 
-Lab Objective
+你将在实验室执行以下任务。
 
-You'll perform the following tasks in this lab.
+- 任务一：利用Azure Agent Framework实现人机参与AI工作流程
 
-- Task 1: Implementing Human-in-the-Loop AI Workflows with Azure Agent
-  Framework
+## 任务0：设置代码 
 
-## Task 0: Set up the code 
+1.  从 C：\Labfiles\Day 3 中，解压 **OpenAIWorkshop-Framework** 文件。
 
-1.  From C:\Labfiles\Day 3, extract the **OpenAIWorkshop-Framework**
-    file.
+2.  点击 LabVM桌面上的 **Visual Studio Code。**
 
-2.  Click on the **Visual Studio Code** from the LabVM desktop.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image1.png)
+3.  选择 **File** **(1)**并点击 **Open
+    Folder** **(2)** 以打开**OpenAIWorkshop-Framework**文件夹。 
 
-3.  Select **File**  and click **Open Folder**  to open
-    the **OpenAIWorkshop-Framework** folder.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image2.png)
+4.  进入 C：\Labfiles\Day 3\\**OpenAIWorkshop-Framework** 路径，选择
+    **OpenAIWorkshop-Framework**，然后**选择Folder**。
 
-4.  Navigate to **C:\Labfiles\Day 3\\OpenAIWorkshop-Framework** path,
-    select **OpenAIWorkshop-Framework**  and then **Select Folder**.
+5.  选择**“Yes, I trust the authors。”**
 
-5.  Select **Yes, I trust the authors**.
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image3.png)
+6.  点击**省略号（...）（1）**然后是 **Terminal** **(2)** ，然后是 **New
+    Terminal** **(3)**。
 
-6.  Click on the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+7.  输入以下命令，进入**应用程序**目录，并从 **pyproject.toml /
+    uv.lock** 文件安装所有必需的依赖。
 
-7.  Enter the below command to navigate to
-    the **applications** directory and install all required dependencies
-    from the **pyproject.toml / uv.lock** file.
+> cd agentic_ai/applications
+>
+> uv sync
 
-	+++cd agentic_ai/applications+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-	+++pip install uv+++
+**注意：**如果遇到任何错误，请执行以下命令
 
-	+++uv sync+++
+> +++pip install uv+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im1.png)
++++uv sync+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im2.png)
+8.  该指令可能需要5到10分钟完成。 **与此同时，你可以继续进行任务1**。
 
-9.  The command may take 5–10 minutes to complete. **Meanwhile, you can
-    proceed with Task 1**.
+## 任务1：利用Azure Agent Framework实现人机参与AI工作流程
 
-## Task 1: Implementing Human-in-the-Loop AI Workflows with Azure Agent Framework
+在本实验室中，您将为Contoso的欺诈检测系统实施人工参与（HITL）工作流程。你将运行多代理欺诈检测，审核高风险警报，做人工决策，并实时可视化React +
+FastAPI仪表盘的工作流程。
 
-In this lab, you will implement a Human-in-the-Loop (HITL) workflow for
-Contoso’s Fraud Detection system. You’ll run multi-agent fraud
-detection, review high-risk alerts, make human decisions, and visualize
-the workflow in real time using the React + FastAPI dashboard.
+1.  在Visual Studio Code中，展开 **agentic_ai (1) \> workflow (2)\>
+    fraud_detection
+    (3)**，选择**fraud_detection_workflow.py（4）。**查看代码**（5）**。
 
-1.  From the Visual Studio Code, expand **agentic_ai ** \> workflow
-    **\> fraud_detection**, select **fraud_detection_workflow.py**. View the Code .
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image6.png)
+2.  在**fraud_detection（1）**下，右键点击**.env.sample（2），**然后选择
+    **Rename (3)。**
 
-2.  Under **fraud_detection** , right click
-    on **.env.sample**  and then select **Rename** .
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image7.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image7.png)
+3.  将重命名为 .env，然后点击它打开文件。
 
-3.  Rename as .env and click on it to open the file.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image8.png)
+4.  用你在上一个实验中复制的实际数值替换AZURE_OPENAI_API_KEY**（1）**和AZURE_OPENAI_ENDPOINT**（2）**的数值。
 
-4.  Replace the value
-    of AZURE_OPENAI_API_KEY  and AZURE_OPENAI_ENDPOINT  with
-    the actual values that you have copied in the previous lab.
+5.  把AZURE_OPENAI_CHAT_DEPLOYMENT加成**gpt-40-mini（3）**
 
-5.  Add the AZURE_OPENAI_CHAT_DEPLOYMENT as **gpt-4o-mini**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image9.png)
+- 进入 **Microsoft Foundry** 门户，选择 **Overview** **(1)**，选择
+  **Azure OpenAI （2）**。复制 **Azure OpenAI key** **(3)**  和 **Azure
+  OpenAI endpoint** **(4)**。
 
-	- Navigate to **Microsoft Foundry** portal, select **Overview** ,
-	  select **Azure OpenAI** . Copy the **Azure OpenAI
-	  key**  and **Azure OpenAI endpoint** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image10.png)
+6.  选择 **File** **(1)** ，然后选择 **Save** **(2)**。
 
-6.  Select **File**  and then **Save** .
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image11.png)
+7.  在Visual Studio代码窗口中，点击**省略号（...）（1）**然后是
+    **Terminal** **(2)** ，然后是 **New Terminal** **(3)**。
 
-7.  In the Visual Studio Code Window, click on
-    the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+8.  执行以下命令。
 
-8.  Run the below command.
+> cd mcp
+>
+> uv run python mcp_service.py
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+9.  让命令运行，打开一个新的终端。
 
-9.  Let the command run, open a new terminal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+10. 请输入以下命令，用命令行运行工作流程。
 
-10. Enter the command given below to run the Workflow with the command
-    line.
+> cd agentic_ai/workflow/fraud_detection
+>
+> uv run python fraud_detection_workflow.py
+>
+> ![A black screen with white text AI-generated content may be
+> incorrect.](./media/image12.png)
 
-	```
-	cd agentic_ai/workflow/fraud_detection
-	uv run python fraud_detection_workflow.py
-	```
+**注意**：该命令可能需要5到10分钟完成。请等它结束。
 
-    ![A black screen with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image12.png)
+11. 示例包含三个示例警报:
 
-    >[!Note]: The command may take 5–10 minutes to complete. Please wait
-until it finishes.
-
-11. The example includes three sample alerts:
-
-    - **Alert 1: Multi-Country Login** (High Severity)
+    - **警报1：多国登录**（严重程度高）
 
     - alert_id: "ALERT-001"
 
@@ -156,181 +140,155 @@ until it finishes.
 
     - alert_type: "multi_country_login"
 
-    - description: "Login attempts from USA and Russia within 2 hours."
+    - 描述：“美国和俄罗斯在2小时内尝试登录。”
 
-	severity: "high"
+严重程度：“高”
 
-	- **Alert 2: Data Spike** (Medium Severity)
+- **警报2：数据激增**（中等严重度）
 
-	- alert_id: "ALERT-002"
+- alert_id: "ALERT-002"
 
-	- customer_id: 2
+- customer_id: 2
 
-	- alert_type: "data_spike"
+- alert_type: "data_spike"
 
-	- description: "Data usage increased by 500% in the last 24 hours."
+- 描述：“过去24小时内数据使用量增加了500%。”
 
-	severity: "medium"
+严重程度：“中等”
 
-	- **Alert 3: Unusual Charges** (High Severity)
+- **警报3：异常指控**（严重程度高）
 
-	- alert_id: "ALERT-003"
+- alert_id: "ALERT-003"
 
-	- customer_id: 3
+- customer_id: 3
 
-	- alert_type: "unusual_charges"
+- alert_type: "unusual_charges"
 
-	- description: "Three large purchases totaling $5,000 in 10 minutes."
+- 描述：“三笔大额购买，总共5000美元，耗时10分钟。”
 
-	severity: "high"
+严重程度：“高”
 
-12. Once the run succeeded, you can see the terminal as below. Select
-    the action based on the risk severity. If the risk
-    severity ≥0.6 human review is needed.
+12. 一旦运行成功，你可以看到下面的终端。根据风险严重度选择行动。如果风险严重度≥0.6，则需进行人工审核。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-13. As the risk severity is high, you can enter 2 to lock the customer
-    account 
+13. 由于风险严重性较高，您可以输入2来锁定客户账户**（1）。**
 
-    - Enter analyst notes: High risk confirmed from all three analyses.
-      Immediate action: locking account to prevent unauthorized
-      access. 
+    - 分析师笔记：三项分析均确认高风险。立即行动：锁定账户以防止未经授权访问。**（2）**
 
-    - Enter analyst ID (default: analyst_cli): Press **Enter** 
+    - 输入分析师ID（默认：analyst_cli）：按**Enter （3）**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image14.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-14. Once the workflow is completed, you will receive an output like
-    this.
+14. 一旦工作流程完成，你会收到这样的输出。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-15. Once the command is succeeded, **delete all the existing running
-    terminal sessions**.
+15. 命令成功后，**删除所有现有的正在运行的终端会话**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-## Real-Time Workflow Visualizer UI for Contoso Fraud Detection & Response Workflow
+## Contoso欺诈检测与响应工作流程的实时工作流程可视化界面
 
-You will use the Real-Time Workflow Visualizer UI to monitor and
-interact with the Contoso Fraud Detection & Response Workflow. You’ll
-start all services (MCP server, backend, frontend), select sample
-alerts, observe live workflow execution, review high-risk fraud alerts,
-submit analyst decisions, and monitor event streams in real time.
+您将使用实时工作流程可视化工具界面来监控并与Contoso欺诈检测与响应工作流程交互。您将启动所有服务（MCP服务器、后端、前端），选择示例提醒，观察实时工作流执行，审查高风险欺诈警报，提交分析师决策，并实时监控事件流。
 
-1.  Open a new terminal.
+1.  开一个新航站楼。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-2.  Start All Services (3 terminals):
+2.  启动所有服务（3 terminal）:
 
-    - Terminal 1 - MCP Server:
+    - Terminal 1 - MCP服务器:
 
-	```
-	cd mcp
-	uv run mcp_service.py 
-	```
+> cd mcp
+>
+> uv run mcp_service.py
 
-	- Terminal 2 - FastAPI Backend:
+- Terminal 2 - FastAPI 后端:
 
-	```
-	cd agentic_ai/workflow/fraud_detection
-	uv run --prerelease allow backend.py
-	```
+> cd agentic_ai/workflow/fraud_detection
+>
+> uv run --prerelease allow backend.py
+>
+> ![A screen shot of a computer program AI-generated content may be
+> incorrect.](./media/image17.png)
 
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image17.png)
+- Terminal 3 - React前端:
 
-	- Terminal 3 - React Frontend:
+> cd agentic_ai/workflow/fraud_detection/ui
+>
+> npm run dev
+>
+> **注意**：如果出现任何错误，先执行 +++npm install+++
+> 命令，然后重新运行 +++npm run dev+++ 命令。
+>
+> ![A computer screen with white text AI-generated content may be
+> incorrect.](./media/image18.png)
 
-	```
-	cd agentic_ai/workflow/fraud_detection/ui
- 	npm install
-	npm run dev
-	```
+- **ctrl + 点击** http://localhost:3000 在浏览器中打开应用
 
-	>[!Note]: If you get any error, execute the +++npm install+++ command and then rerun the +++npm run dev+++ command.
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
 
-    ![A computer screen with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image18.png)
+3.  查看实时工作流程可视化界面。
 
-	- **ctrl + click** on http://localhost:3000 to open the application in a
-	  browser
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image19.png)
+4.  您可以通过“**Select Alert**”下拉菜单查看示例警报 。
 
-3.  View the Real-Time Workflow Visualizer UI.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image20.png)
+**注意**：只有在第二个终端（backend.py）连接打开后，你才能通过下拉菜单看到警报。确保连接是开启的。
 
-4.  You can see sample alerts from the **Select Alerts** drop-down.
+5.  **选择警报**：从3个示例警报中选择（ALERT-001、ALERT-002、ALERT-003）（**1）**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image21.png)
+    - 点击 **Start Workflow (2**开始处理
 
-    >[!Note]: You will be able to see the alerts from the drop-down only
-	after the connection is open in the 2nd terminal (backend.py). Make sure
-	the connection is open.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-5.  **Select Alert**: Choose from 3 sample alerts (ALERT-001, ALERT-002,
-    ALERT-003) 
+6.  **观看实时更新**: 节点在执行器运行时会变色
 
-    - Cick on **Start Workflow** to begin processing
+    - 🔵 蓝色 = 运行
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image22.png)
+    - 🟢 绿色 = 完工
 
-6.  **Watch Live Updates**: Nodes change color as executors run
+    - ⚪ 灰色 = 闲置
 
-    - 🔵 Blue = Running
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    - 🟢 Green = Completed
+7.  **分析师审查**：当发现高风险欺诈时，会出现审查小组。
 
-    - ⚪ Gray = Idle
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image23.png)
+8.  **提交决策**：选择动作并添加备注
 
-7.  **Analyst Review**: When high-risk fraud is detected, a review panel
-    appears.
+    - 你的决定：如果严重程度较高，选择 **Lock Account (1)**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image24.png)
+    - 分析师注：输入“高风险”，三项分析均确认。立即行动：锁定账户以防止未经授权访问。**（2）**
 
-8.  **Submit Decision**: Choose action and add notes
+    - 选择 **SUBMIT WORKFLOW (3)**
 
-    - Your Decision: If the severity is high, select **Lock Account**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-    - Analyst notes: Enter High risk confirmed from all three analyses.
-      Immediate action: locking account to prevent unauthorized
-      access. 
+9.  **监控事件**：右侧面板显示完整的事件流。
 
-    - Select **SUBMIT WORKFLOW**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image25.png)
+**摘要**
 
-9.  **Monitor Events**: The right panel shows the complete event stream.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image26.png)
-
-**Summary**
-
-In this lab, you implemented a human-in-the-loop (HITL) workflow for
-fraud detection using the Azure Agent Framework. You explored how AI
-agents analyze suspicious activity, route high-risk cases to human
-analysts, and interact with a real-time React + FastAPI dashboard to
-monitor workflow execution and submit decisions.
-
-
-
-
+在本实验室中，你实施了利用Azure Agent
+Framework实现了欺诈检测的人工流程（HITL）。你探讨了 AI
+代理如何分析可疑活动，将高风险案件转交给人工分析师，以及如何与实时React +
+FastAPI仪表盘交互以监控工作流程执行和提交决策。

@@ -1,705 +1,648 @@
-# Lab 9: Implementing Single and Multi-Agent Workflows using Azure AI Framework
+# 实验9：利用Azure AI框架实现单代理和多代理工作流程
 
-**Estimated Duration**: 45 Minutes
+**预计时长**：45分钟
 
-**Overview**
+**概述**
 
-You are an AI Engineer at Contoso Ltd., tasked with developing
-intelligent agent workflows using the Azure AI Framework. In this lab,
-you will create a single-agent system that integrates with external
-tools using MCP, and then design multi-agent workflows where multiple
-specialized agents collaborate or hand off tasks dynamically based on
-user intent.
+您是Contoso有限公司的AI工程师，负责利用Azure
+AI框架开发智能代理工作流程。在本实验室中，你将创建一个单代理系统，通过MCP与外部工具集成，然后设计多代理工作流程，使多个专业代理根据用户意图动态协作或交付任务。
 
-Lab Objectives
+实验室目标
 
-You'll perform the following tasks in this lab.
+你将在实验室执行以下任务。
 
-- Task 1: Build and Test an Azure OpenAI Chat Agent
+- 任务1：构建并测试一个Azure OpenAI聊天代理
 
-- Task 2: Creating a Single-Agent Workflow with Tool Integration
+- 任务2：创建带有工具集成的单代理工作流程
 
-- Task 3: Multi-Agent Workflow Design
+- 任务3：多代理工作流程设计
 
-  - Task 3.1: Orchestrating Multi-Agent Workflows
+  - 任务3.1：协调多智能体工作流程
 
-  - Task 3.2: Handoff Pattern Multi-Agent System
+  - 任务3.2：切换模式多智能体系统
 
-## Task 0: Lab environment setup
+## 任务0：实验室环境搭建
 
-1.  From C:\Labfiles\Day 2, extract the **OpenAIWorkshop-Framework**
-    file.
+1.  从 C：\Labfiles\Day 2 中，解压 **OpenAIWorkshop-Framework** 文件。
 
-2.  Click on the **Visual Studio Code** from the LabVM desktop.
+2.  点击 LabVM桌面上的**Visual Studio Code** 。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image1.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-3.  Select **File**  and click **Open Folder**  to open
-    the **OpenAIWorkshop-Framework** folder.
+3.  选择 **Open Folder** **(2)** 并点击 **Open
+    Folder** **(2)** 以打开**OpenAIWorkshop-Framework**文件夹。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image2.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-4.  Navigate to C:\Labfiles\Day 2\OpenAIWorkshop-Framework path,
-    select **OpenAIWorkshop-Framework** and then **Select Folder**.
+4.  进入 C：\Labfiles\Day 2\\**OpenAIWorkshop-Framework** 路径，选择
+    **OpenAIWorkshop-Framework**，然后**选择文件夹**。
 
-5.  Select **Yes, I trust the authors**.
+5.  选择**“Yes, I trust the authors”**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image3.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-6.  Click on the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+6.  点击 **省略号（...）（1）**然后是 **Terminal** **(2)**，然后是 **New
+    Terminal** **(3)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-7.  Enter the below command to navigate to
-    the **applications** directory and install all required dependencies
-    from the **requirements.txt** file.
+7.  输入以下命令，导航到**应用程序**目录，**并从requirements.txt**文件安装所有必需的依赖
+    。
 
-	```
-	cd agentic_ai/applications
-	pip install -r requirements.txt
-	```
+> cd agentic_ai/applications
+>
+> pip install -r requirements.txt
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image5.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-8.  The command may take 5-10 minutes to complete.
+8.  该指令可能需要5到10分钟完成。
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image6.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-## Task 1: Build and Test an Azure OpenAI Chat Agent
+## 任务1：构建并测试一个Azure OpenAI聊天代理
 
-In this task, you will build and test a simple Azure OpenAI chat agent
-in Visual Studio Code. You'll configure environment variables, connect
-the agent to your deployed model, and observe how it generates dynamic
-responses based on different prompts.
+在这个任务中，你将用Visual Studio Code构建并测试一个简单的Azure
+OpenAI聊天代理。你将配置环境变量，将代理连接到已部署的模型，并观察它如何根据不同提示生成动态响应。
 
-1.  Navigate back to the **Visual Studio Code**.
+1.  返回**Visual** **Studio Code**。
 
-2.  Make sure the pip install -r requirements.txt command has completed
-    successfully. If it's still running, please wait until it finishes.
+2.  确保 pip install -r requirements.txt
+    命令已成功完成。如果还在运行，请等它结束。
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image6.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-3.  From the **Explorer**, expand **agentic_ai** **applications** . Right click
-    on **.env.sample**  and the **Rename** .
+3.  从**Explorer**中展开 **agentic_ai** **(1)
+    \>** **applications** **(2)**。右键点击 .env.sample **（3）** 和
+    **Rename （4）** 。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image7.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-4.  Rename the file to **.env** and click on it to open the file.
+4.  把文件重命名为.env，然后点击它打开文件。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image8.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-5.  Replace the value
-    of AZURE_OPENAI_API_KEY  and AZURE_OPENAI_ENDPOINT  with
-    the actual values. Fetch them from Microsoft Foundry **Overview**
-    page.
+5.  将AZURE_OPENAI_API_KEY**（1）**和AZURE_OPENAI_ENDPOINT**（2）**的值替换为实际值。从Microsoft
+    Foundry **Overview**页面获取。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image9.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image9.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image1.png)
+6.  把AZURE_OPENAI_CHAT_DEPLOYMENT 加成 **gpt-40-mini（3）**
 
-7.  Select **File** and then **Save**.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image10.png)
+
+7.  选择 **File (1)**，然后选择 **Save(2)**。
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
+
+8.  右键点击 **application** **(1)** 文件夹，然后点击 **New
+    file** **(2)** 创建新文件，配置一个简单的代理。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
+
+9.  将代理文件命名为 +++simple_agent_test.py+++。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
+
+10. 复制并粘贴以下代码到文件中。
+
+> import asyncio
+>
+> import os
+>
+> from dotenv import load_dotenv
+>
+> from agent_framework.azure import AzureOpenAIChatClient
+>
+> from azure.identity import AzureCliCredential
+>
+> \# Load .env file (same folder or specify full path)
+>
+> load_dotenv(dotenv_path=".env")
+>
+> \# Retrieve values from .env
+>
+> endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+>
+> deployment_name = os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT")
+>
+> api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+>
+> print("Using Azure OpenAI endpoint:", endpoint)
+>
+> print("Deployment name:", deployment_name)
+>
+> print("API version:", api_version)
+>
+> \# ✅ Correct parameter name is deployment_name (not deployment)
+>
+> agent = AzureOpenAIChatClient(
+>
+> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+>
+> endpoint=endpoint,
+>
+> deployment_name=deployment_name,
+>
+> api_version=api_version
+>
+> ).create_agent(
+>
+> instructions="You are a helpful and funny assistant who tells short
+> jokes.",
+>
+> name="Joker"
+>
+> )
+>
+> async def main():
+>
+> result = await agent.run("Tell me a joke about the cloud.")
+>
+> print("\nAgent response:\n", result.text)
+>
+> asyncio.run(main())
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+![A computer screen shot of a program AI-generated content may be
+incorrect.](./media/image14.png)
 
+11. 选择 **File** **(1)** ，然后选择 **Save** **(2)**。
 
-## Task 2: Creating a Single-Agent Workflow with Tool Integration
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-In this task, you'll build and test a single-agent workflow that
-integrates with external tools using the MCP (Model Context Protocol).
-You'll configure environment variables, run the MCP server, backend, and
-frontend locally, and observe how the agent leverages MCP tools to
-process user queries and deliver intelligent, context-aware responses.
+12. 右键点击**simple_agent_test.py（1）**，然后选择 **Open in Integrated
+    Terminal** **(2)**中打开。
 
-1.  On the Visual Studio Code, expand **agents** **agent_framework** **single_agent.py**  and
-    view the Single-Agent Workflow with MCPStreamableHTTPTool tool
-    integrated .
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image15.png)
 
-    - MCPStreamableHTTPTool allows the agent to invoke external
-      HTTP-based services via the MCP server and include tool outputs in
-      the conversation.
+13. 执行以下命令运行代理并观察输出，以了解代理的工作原理。
 
-    - Passed to ChatAgent and used automatically based on instructions
-      and user prompts
++++python simple_agent_test.py+++
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image18.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-2.  Go through the code to understand how it is integrated:
+14. 我们修改指令，观察代理的反应。将指令提供“Tell me a joke about the
+    Earth”
+    **(1)** （第31行），然后**Save** 文件。然后执行下面的命令**（2），**并查看代理的响应**（3）。**
 
-    - In the \_maybe_create_tools method:
++++python simple_agent_test.py+++
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image19.png)
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image17.png)
 
-	- This creates a streamable HTTP tool connected to your MCP server.
+15. 这表明代理的响应会根据所提供的指令而变化，凸显其适应不同提示的能力。
 
-	- It allows the agent to make HTTP calls to external services (through
-	  MCP) as part of its workflow.
+## 任务2：创建带有工具集成的单代理工作流程
 
-	- The tool is passed to the ChatAgent during initialization:
+在此任务中，您将构建并测试一个单代理工作流程，并与使用MCP（模型上下文协议）的外部工具集成。你将配置环境变量，本地运行MCP服务器、后端和前端，并观察代理如何利用MCP工具处理用户查询，提供智能且具上下文感知的响应。
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image19.png)
+1.  在Visual Studio Code中，展开 **agents** **(1)
+    \>** **agent_framework** **(2)
+    \>** **single_agent** **(3)** ，并查看集成MCPStreamableHTTPTool工具**（4）**的单代理工作流程。
 
-	- The agent can then use this tool whenever a user prompt triggers a
-	  tool call.
+    - MCPStreamableHTTPTool 允许代理通过 MCP 服务器调用基于 HTTP
+      的外部服务，并在对话中包含工具输出。
 
-	- Streaming support with WebSocket: When a tool/function is called
-	  during a streamed conversation, it broadcasts the tool name and turn
-	  via \_chat_async_streaming.
+    - 传递到ChatAgent，并根据指令和用户提示自动使用。
 
-3.  Navigate to the .env file , add the following Environment
-    variable to your .env file to specify **Single agent workflow** to
-    run (at around line 46 just before which the AGENT_MODULE varialbe is commented out):
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
 
-	+++AGENT_MODULE=agents.agent_framework.single_agent+++
+2.  仔细阅读代码，了解它是如何集成的:
 
-	- Add DISABLE_AUTH=true  environment variable, it is used to
-	  disable authentication in the application. It allows easier local
-	  development and testing.
+    - 在_maybe_create_tools法中:
 
-	+++DISABLE_AUTH=true+++
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image2.png)
+- 这会创建一个可流式的 HTTP 工具，连接到你的 MCP 服务器。
 
-4.  Select **File** and then **Save**.
+- 它允许代理通过MCP向外部服务发送HTTP调用，作为其工作流程的一部分。
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+&nbsp;
 
-5.  Now you will start the **MCP server, backend,** and **React
-    frontend** to run the full agent environment locally, allowing the
-    UI to interact with agents and tools.
+- 工具在初始化时传递给ChatAgent:
 
-6.  In the Visual Studio Code Window, click on the **ellipses (...)
-   **, then **Terminal**, and then **New Terminal**.
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+- 当用户提示触发工具调用时，代理就可以使用该工具。
 
-7.  Wait for completion of the previous step, and proceed to the next
-    step.
+- WebSocket
+  的流媒体支持：当在流式对话中调用工具/功能时，它会通过_chat_async_streaming广播工具名称和转机。
 
-8.  **Start the MCP Server (Terminal 1)**: (mcp directory is at project
-    root level)
+3.  进入 .env 文件（1），在 .env 文件中添加以下 Environment
+    变量以指定运行 **Single agent workflow**  **(2)** :
 
-    - Run the below command to launch the **MCP server**, which exposes
-      APIs that agents can call as tools. (Server runs
-      on [http://localhost:8000](http://localhost:8000/))
++++AGENT_MODULE=agents.agent_framework.single_agent+++
 
-	+++cd mcp+++
+- 添加 DISABLE_AUTH=true **（3）**
+  环境变量，用于禁用应用程序中的认证。它使本地开发和测试更加便捷。
 
-    +++pip install uv+++
-    
-	+++uv run python mcp_service.py+++
+> +++DISABLE_AUTH=true+++
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image3.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-9.  Let the command run, open a new terminal.
+4.  选择 **File (1)** ，然后选择 **Save(2)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-10. **Start the Backend (Terminal 2)**:
+5.  现在你将启动**MCP服务器、后端**和**React前端**，在本地运行完整的代理环境，允许UI与代理和工具交互。
 
-    - Run the below command to start the backend server that hosts your
-      agent workflows, session management, and API endpoints.
+6.  在Visual Studio代码窗口中，点击**省略号（...）（1），**然后是
+    **Terminal (2)**，然后是 **New Terminal (3)**。
 
-	```
-	cd agentic_ai/applications
-	uv run python backend.py
-	```
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image22.png)
+7.  等待上一步完成后，再进行下一步。
 
-	- Runs locally at: [http://localhost:7000](http://localhost:7000/).
+8.  **启动MCP服务器（Terminal 1）**: (mcp directory is at project root
+    level)
 
-	- This is the core application logic that the frontend will communicate
-	  with. Make sure the **Connection is open**.
+    - 执行以下命令启动**MCP服务器**，该服务器会暴露代理可以调用的API，作为工具调用。
+      (服务器运行在 [http://localhost:8000](http://localhost:8000/))
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image23.png)
+> cd mcp
+>
+> uv run python mcp_service.py
+>
+> ![A screenshot of a computer program AI-generated content may be
+> incorrect.](./media/image21.png)
+>
+> 注意：如果遇到任何错误，请执行以下命令:
 
-11. Let the command run, open a new terminal.
++++pip install uv+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
++++uv run python mcp_service.py+++
 
-12. **Start the React Frontend (Terminal 3)**:
+9.  让命令运行，打开一个新的 terminal。
 
-    - Enter the command given below to navigate to
-      the react-frontend directory.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-	+++cd agentic_ai/applications/react-frontend+++
+10. **启动后端（Terminal 2）**:
 
-	- Execute the below commands to launch the **React frontend** for your
-	  agent UI. Provides a user interface to interact with the agents and
-	  see their responses in real time.
+    - 执行以下命令启动托管代理工作流、会话管理和API端点的后端服务器。
 
-	+++npm install+++
+> cd agentic_ai/applications
+>
+> uv run python backend.py
 
-    +++npm run dev+++
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-	- Compilation may take some time. Please ignore the warnings and wait
-	  until it completes. Once the **webpack compiled successfully**, the
-	  Agent application runs locally
-	  at: [http://localhost:3000](http://localhost:3000/).
+- 本地运行于: [http://localhost:7000](http://localhost:7000/).
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+- 这是前端通信的核心应用逻辑。确保**连接是开启**的。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image5.png)
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image23.png)
 
-14. Once all three terminals are running, the agent application will
-    launch in your browser, which you can use to interact with the agent
-    and test its capabilities.
+11. 让命令运行，打开一个新的 terminal。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image6.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    >[!Note] Ensure all three terminals are running. If any of them stop,
-please rerun the respective command. If all three aren't active, you may
-encounter a connection error.
+12. **启动React前端（Terminal 3）**:
 
-15. Send a +++Hi+++ message and wait for a response from the agent.
+    - 输入下面给出的命令，导航到 react-frontend 目录。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image16.png)
+> +++cd agentic_ai/applications/react-frontend+++
 
-15. Send the below prompt in the chat and view the response :
+- 输入以下命令即可启动代理界面的**React前端**。提供用户界面，可与代理互动并实时查看其响应。
 
-	+++Customer 251, what's my billing summary?+++
+> +++npm start+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image7.png)
+- 编译可能需要一些时间。请忽略警告，等待它完成。一旦**webpack成功编译完成**，代理应用程序将在本地运行于: [http://localhost:3000](http://localhost:3000/).
 
-    >[!Note] Ensure all three terminals are running. If any of them stop,
-please rerun the respective command. If all three aren't active, you may
-encounter a connection error.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image24.png)
 
-16. View the output, It was the ChatAgent (self.\_agent) that
-    interpreted the prompt, possibly called the **MCP tool**, and
-    generated the output.
+13. 当三个终端都运行时，代理应用会在你的浏览器中启动，你可以用它与代理交互并测试其功能。
 
-    - The agent interpreted your request as a billing inquiry
-      for **Customer 251**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-    - It used the **MCP tool** to fetch structured billing data.
+**注意**：确保三个终端均在运行。如果有停止的指令，请重新执行相应的命令。如果这三个都不激活，可能会遇到连接错误。
 
-    - The agent is working as intended - it dynamically integrates tool
-      outputs and AI reasoning to answer user-specific questions.
+14. 在聊天中发送以下提示（**1），**查看回复（**2）**:
 
-17. After completing your testing, return to VS Code and terminate all
-    running terminal sessions. This ensures that the upcoming
-    multi-agent workflow runs without any interference.
++++Customer 251, what's my billing summary?+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-## Task 3: Multi-Agent Workflow Design
+**注意**：确保三个终端均在运行。如果有停止的指令，请重新执行相应的命令。如果这三个都不激活，可能会遇到连接错误。
 
-In this task, you will design and implement advanced multi-agent
-workflows that demonstrate different coordination patterns. You'll begin
-by orchestrating multiple specialized agents through a central manager
-to handle complex queries collaboratively, and then explore a
-handoff-based system where control shifts dynamically between
-domain-specific agents based on user intent.
+15. 查看输出，是 ChatAgent（self.\_agent）解释了提示，可能称为 **MCP
+    工具**，并生成了输出。
 
-### Task 3.1: Orchestrating Multi-Agent Workflows
+    - 客服将您的请求理解为对**客户251的账单查询**。
 
-In this task, you will orchestrate a multi-agent workflow where a
-central orchestrator coordinates multiple specialized agents to
-collaboratively process complex user queries and generate accurate,
-tool-based responses.
+    - 它使用 **MCP 工具**获取结构化计费数据。
 
-1.  Navigate to **agent  \> agent_framework  \> multi_agent  \>
-    magentic_group** and view the code .
+    - 该智能体按预期工作——它动态集成工具输出和 AI
+      推理，以回答用户特定的问题。
 
-    - This code represents a **multi-agent orchestration** framework
-      because it defines a system where multiple specialized agents
-      collaborate under the guidance of a central orchestrator.
+16. 完成测试后，返回 VS Code
+    并终止所有正在运行的终端会话。这确保了即将到来的多智能体工作流程无干扰地运行。
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-	- \_create_participants initializes multiple specialist agents
-	  (CRM/Billing, Product/Promotions, Security/Authentication).
+## 任务3：多代理工作流程设计
 
-	- Each agent:
+在这项任务中，你将设计和实施先进的多代理工作流程，展示不同的协调模式。您将首先通过中央管理器协调多个专业代理，协同处理复杂查询，然后探索基于切换的系统，该系统根据用户意图动态切换控制权。
 
-		- Has a specific domain and set of tools.
+### 任务3.1：协调多智能体工作流程
 
-		- Only communicates with the orchestrator, not directly with the user.
+在这项任务中，你将协调一个多代理工作流程，中央编排者协调多个专业代理，协作处理复杂的用户查询，生成准确且基于工具的响应。
 
-		- Provides factual, tool-backed responses.
+1.  导航到 **agent (1) \> agent_framework (2) \> multi_agent (3) \>
+    magentic_group (4)**并查看代码**(5)**。 
 
-	- Here are the agents used in this Multi-Agent workflow
+    - 该代码代表了**多代理编排**框架，因为它定义了一个系统，多个专业代理在中央编排器的指导下协作。
 
-		- **CRM & Billing Agent** - Handles customer accounts, subscriptions,
-		billing, invoices, payments, and related queries using factual
-		tool-backed data.
+> ![A screenshot of a computer program AI-generated content may be
+> incorrect.](./media/image28.png)
 
-		- **Product & Promotions Agent** - Provides product availability,
-		promotions, discounts, eligibility, and terms using structured
-		sources.
+- \_create_participants
+  初始化多个专业代理（CRM/计费、产品/促销、安全/认证）。
 
-		- **Security & Authentication Agent** - Manages security incidents,
-		authentication issues, account lockouts, and risk mitigation
-		guidance using logs and tools.
+- 每个代理人:
 
-2.  Navigate to .env file , comment out the single agent
-    variable  and enter the below command to add **Orchestrating
-    Multi-Agent** variable .
+  - 有特定的领域和工具。
 
-	+++AGENT_MODULE=agents.agent_framework.multi_agent.magentic_group+++
+  - 只与编排器通信，不直接与用户沟通。
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image8.png)
+  - 提供事实性、工具支持的回答。
 
-3.  Select **File** and then **Save**.
+- 以下是多代理工作流程中使用的代理
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+  - **CRM与计费代理**–
+    利用事实工具支持的数据处理客户账户、订阅、账单、发票、付款及相关查询。
 
-4.  Now launch the full agent application by starting its three core
-    components by following the steps:
+  - **产品与促销代理**——通过结构化资源提供产品供应情况、促销、折扣、资格和条款。
 
-5.  In the Visual Studio Code Window, click on the **ellipses (...)
-   **, then **Terminal**, and then **New Terminal**.
+  - **安全与认证代理**——通过日志和工具管理安全事件、认证问题、账户锁定及风险缓解指导。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+2.  导航到.env文件**（1）**，注释单个代理变量（2），然后输入以下命令添加**编排多代理**变量**（3）**。
 
-6.  **Start the MCP Server (Terminal 1)**: (mcp directory is at project
-    root level)
++++AGENT_MODULE=agents.agent_framework.multi_agent.magentic_group+++
 
-    - Run the below command to launch the **MCP server**, which exposes
-      APIs that agents can call as tools. (Server runs
-      on [http://localhost:8000](http://localhost:8000/))
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image29.png)
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+3.  选择 **File (1)** ，然后选择 **Save(2)**。
 
-7.  Let the command run, open a new terminal.
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+4.  现在，按照步骤启动完整的代理应用，启动其三个核心组件:
 
-8.  **Start the Backend (Terminal 2)**:
+5.  在Visual Studio代码窗口中，点击**省略号（...）（1），**然后是
+    **Terminal (2)**，然后是 **New Terminal (3)**。
 
-    - Run the below command to start the backend server that hosts your
-      agent workflows, session management, and API endpoints.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-	```
-	cd agentic_ai/applications
-	uv run python backend.py
-	```
+6.  **启动MCP服务器（Terminal 1）**: (MCP 目录位于项目根级)
 
-	- This is the core application logic that the frontend will communicate
-	  with. Make sure the **Connection is open**.
+    - 执行以下命令启动**MCP服务器**，该服务器会暴露代理可以调用的API，作为工具调用。
+      (服务器运行在 [http://localhost:8000](http://localhost:8000/))
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image23.png)
+> cd mcp
+>
+> uv run python mcp_service.py
 
-9.  Let the command run, open a new terminal.
+7.  让命令运行，打开一个新的终端。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-10. **Start the React Frontend (Terminal 3)**:
+8.  **启动后端（Terminal 2）**:
 
-    - Enter the command given below to navigate to
-      the react-frontend directory.
+    - 执行以下命令启动托管代理工作流、会话管理和API端点的后端服务器。
 
-	+++cd agentic_ai/applications/react-frontend+++
+> cd agentic_ai/applications
+>
+> uv run python backend.py
 
-	- Enter the below command to launch the **React frontend** for your
-	  agent UI. Provides a user interface to interact with the agents and
-	  see their responses in real time.
+- 这是前端通信的核心应用逻辑。确保**连接是开启**的。
 
-	+++npm run dev+++
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-	- Once the **webpack compiled successfully**, Agent application runs
-	  locally at: [http://localhost:3000](http://localhost:3000/).
+9.  让命令运行，打开一个新的终端。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-11. Send the below prompt in the chat and view the response in the left
-    pane:
+10. **启动React前端（Terminal 3）**:
 
-	+++Customer 251, what's my billing summary?+++
+    - 输入下面给出的命令，导航到 react-frontend 目录。
 
-12. The orchestrator is like the manager or router. It reads the user
-    query and decides which specialized agent should handle it. It uses
-    the context and keywords (like "billing", "promotion", "login") to
-    make this decision.
+> +++cd agentic_ai/applications/react-frontend+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image9.png)
+- 输入以下命令即可启动代理界面的**React前端**。提供用户界面，可与代理互动并实时查看其响应。
 
-13. Select the **Magentic Group** option in the drop down availble in the top menu.
+> +++npm start+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image15.png)
+- 一旦**webpack成功编译完成**，代理应用程序将在: [http://localhost:3000](http://localhost:3000/).
 
-13. Orchestrator assigns the task to a domain agent. The orchestrator
-    sends the query to one of these internal agents:
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    - crm_billing - billing, invoices, payments
+11. 在聊天中发送以下提示，并在左侧面板查看回复:
 
-    - product_promotions - products, discounts, offers
++++Customer 251, what's my billing summary?+++
 
-    - security_authentication - security, login, account lockouts
+12. 编排器就像管理器或路由器。它读取用户查询并决定由哪个专业代理处理。它会根据上下文和关键词（如“计费”、“促销”、“登录”）来做出这个决定。
 
-14. For your query ("billing summary"), the orchestrator routes it
-    to **crm_billing**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+13. 编排器将任务分配给域代理。编排器将查询发送给这些内部代理之一:
 
-	- The domain agent uses connected tools. Each agent has access to
-	  specific tools (APIs) via the MCP server.
+    - crm_billing – 账单、发票、付款
 
-	- Example: crm_billing can call get_customer_detail,
-	  get_billing_summary, get_invoice_payment etc.
+    - product_promotions – 产品、折扣、优惠
 
-	- The agent calls the right tool, fetches structured data, and forms a
-	  factual response.
+    - security_authentication – 安全、登录、账户锁定
 
-15. After completing your testing, return to VS Code and terminate all
-    running terminal sessions. This ensures that the upcoming
-    multi-agent workflow runs without any interference.
+14. 针对你的查询（“计费摘要”），编排器会将其路由到**crm_billing**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-### Task 3.2: Handoff Pattern Multi-Agent System
+- 域代理使用连接工具。每个代理都可以通过MCP服务器访问特定的工具（API）。
 
-In this task, you will explore a handoff-based multi-agent system, where
-conversations seamlessly transition between specialized agents (like
-Billing, Promotions, or Security) based on user intent, ensuring smooth,
-context-aware interactions across domains.
+- 例如：crm_billing可以呼叫get_customer_detail、get_billing_summary、get_invoice_payment等。
 
-- **How It Works**
+- 代理调用合适的工具，获取结构化数据，并生成事实回应。
 
-- User interacts with a domain agent directly - e.g., the CRM &
-Billing agent.
+15. 完成测试后，返回 VS Code
+    并终止所有正在运行的终端会话。这确保了即将到来的多智能体工作流程无干扰地运行。
 
-- An intent classifier checks whether the user's new message belongs
-to another domain (like promotions or security).
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-- If so, the system automatically transfers ("handoffs") the
-conversation to the appropriate specialist agent.
+### 任务3.2：切换模式多智能体系统
 
-- Each agent has filtered tools relevant to its domain (billing,
-promotions, or security).
+在这项任务中，你将探索一种基于切换的多代理系统，该系统根据用户意图，对话在专业代理（如计费、促销或安全）之间无缝切换，确保跨域的交互流畅且具上下文感知。
 
-- Handoff happens smoothly, with context transfer so the new agent
-understands the conversation history.
+- **工作原理**
 
-1.  Expand **agents  \> agent_framework  \> multi_agent  \>
-    handoff_multi_domain_agent** and view the Code .
+  - 用户直接与域代理交互——例如CRM和计费代理。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image32.png)
+  - 意图分类器检查用户的新消息是否属于其他域名（如促销或安全）。
 
-2.  Navigate to .env file , comment out the Orchestrating
-    Multi-Agent variable  and enter the below command to
-    add **Handoff Pattern Multi-Agent System** variable .
+  - 如果是这样，系统会自动将对话（“切换”）给相应的专业代理。
 
-	+++AGENT_MODULE=agents.agent_framework.multi_agent.handoff_multi_domain_agent+++
+  - 每个代理都有与其领域相关的筛选工具（计费、促销或安全）。
 
-	- Enter the command given below to control how much past conversation
-	  context is passed during a handoff. -1 refers it transfers all
-	  previous conversation turns .
+  - 切换过程很顺畅，有上下文转移，这样新客服就能理解对话历史。
 
-	+++HANDOFF_CONTEXT_TRANSFER_TURNS=-1+++
+1.  展开 **agents (1) \> agent_framework (2) \> multi_agent (3) \>
+    handoff_multi_domain_agent (4)**  并查看代码**（5）**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image14.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-3.  Select **File** and then **Save**.
+2.  导航到.env文件**（1）**，注释“**Handoff Pattern Multi-Agent
+    System** ”变量**（2）**，并输入以下命令添加切换模式多智能体系统变量**（3）**。
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
++++AGENT_MODULE=agents.agent_framework.multi_agent.handoff_multi_domain_agent+++
 
-4.  Now launch the full agent application by starting its three core
-    components by following the steps:
+- 输入以下命令，控制切换过程中传递多少过去对话上下文。-1表示转移所有之前对话回合（**4）。**
 
-5.  In the Visual Studio Code Window, click on the **ellipses (...)
-   **, then **Terminal**, and then **New Terminal**.
+> +++HANDOFF_CONTEXT_TRANSFER_TURNS=-1+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-6.  **Start the MCP Server (Terminal 1)**: (mcp directory is at project
-    root level)
+3.  选择 **File (1)** ，然后选择 **Save(2)**。
 
-    - Run the below command to launch the **MCP server**, which exposes
-      APIs that agents can call as tools. (Server runs
-      on [http://localhost:8000](http://localhost:8000/))
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+4.  现在，按照步骤启动完整的代理应用，启动其三个核心组件:
 
-7.  Let the command run, open a new terminal.
+5.  在Visual Studio代码窗口中，点击**省略号（...）（1），**然后是
+    **Terminal (2)**，然后是 **New Terminal (3)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-8.  **Start the Backend (Terminal 2)**:
+6.  **启动MCP服务器（Terminal 1）**: (MCP 目录位于项目根级)
 
-    - Run the below command to start the backend server that hosts your
-      agent workflows, session management, and API endpoints.
+    - 执行以下命令启动**MCP服务器**，该服务器会暴露代理可以调用的API，作为工具调用。
+      (服务器运行于http://localhost:8000)
 
-	```
-	cd agentic_ai/applications
-	uv run python backend.py
-	```
+> cd mcp
+>
+> uv run python mcp_service.py
 
-	- This is the core application logic that the frontend will communicate
-	  with. Make sure the **Connection is open**.
+7.  让命令运行，打开一个新的终端。
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-9.  Let the command run, open a new terminal.
+8.  **启动后端（Terminal 2）**:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+    - 执行以下命令启动托管代理工作流、会话管理和API端点的后端服务器。
 
-10. **Start the React Frontend (Terminal 3)**:
+> cd agentic_ai/applications
+>
+> uv run python backend.py
 
-    - Enter the command given below to navigate to
-      the react-frontend directory.
+- 这是前端通信的核心应用逻辑。确保**连接是开启**的。
 
-	+++cd agentic_ai/applications/react-frontend+++
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-	- Enter the below command to launch the **React frontend** for your
-	  agent UI. Provides a user interface to interact with the agents and
-	  see their responses in real time.
+9.  让命令运行，打开一个 new terminal。
 
-    +++npm run dev+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-	- Once the **webpack compiled successfully**, Agent application runs
-	  locally at: [http://localhost:3000](http://localhost:3000/).
+10. **启动React前端（Terminal 3）**:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image24.png)
+    - 输入下面给出的命令，导航到 react-frontend 目录。
 
-13. Select the **Handoff Multi Domain Agent** option in the drop down availble in the top menu.
+> +++cd agentic_ai/applications/react-frontend+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image10.png)
+- 输入以下命令即可启动代理界面的**React前端**。提供用户界面，可与代理互动并实时查看其响应。
 
-11. Send the below prompt in the chat and view the response in the left
-    pane:
+> +++npm start+++
 
-	+++Customer 251, what's my billing summary?+++
+- 一旦**webpack成功编译完成**，代理应用程序将在: [http://localhost:3000](http://localhost:3000/)。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image34.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-	- Here, Intent classifier routes to crm_billing domain
+11. 在聊天中发送以下提示，并在左侧面板查看回复:
 
-	- get_billing_summary tool is called for customer 251
++++Customer 251, what's my billing summary?+++
 
-12. You can provide the following query for continuation with respect to
-    billing:
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image34.png)
 
-	+++I would like to view the invoice details+++
+- 这里，意图分类器会路由到crm_billing域
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image13.png)
+- get_billing_summary工具为客户251呼叫
 
-    >[!Note] If you get a response as I was unable to retrieve the invoice
-details because the referenced numbers are invoice IDs, not subscription
-IDs. Please provide the subscription ID, or let me know if you need
-details for a specific invoice so I can assist you correctly. Provide
-the following prompt.
+12. 你可以就账单问题继续提出以下问题:
 
-	+++I would like to view the invoice details for customer 251+++
++++Yes, I would like to view the invoice details+++
 
-13. Let's now try a query related to another domain to test how the
-    handoff works.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image35.png)
 
-14. Enter the following query related to Product & Promotions and view
-    the response.
+**注意**：如果你收到回复，因为我无法获取发票详情，因为引用的数字是发票ID，不是订阅ID。请提供订阅ID，或者如果你需要特定发票的详细信息，请告诉我，以便我能正确协助你。请提供以下提示。
 
-	+++Are there any promotions available for my subscription plan+++
++++Yes, I would like to view the invoice details for customer 251+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image36.png)
+13. 现在让我们尝试一个与另一个域名相关的查询，以测试切换的运作方式。
 
-	- Since the previous conversation was handled by the CRM & Billing
-	  Specialist, the system detects a domain change. It decides to hand off
-	  the conversation to the Product & Promotions Specialist.
+14. 输入以下与产品与促销相关的查询并查看回复。
 
-	- The system optionally transfers previous conversation context (like
-	  which customer we're discussing) to the new agent, depending on the
-	  HANDOFF_CONTEXT_TRANSFER_TURNS setting.
++++Are there any promotions available for my subscription plan+++
 
-	- The Product & Promotions Specialist only has access to tools relevant
-	  to promotions, plans, and product information (e.g., get_promotions,
-	  get_eligible_promotions).
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image36.png)
 
-15. After completing your testing, return to VS Code and terminate all
-    running terminal sessions. This ensures that the upcoming
-    multi-agent workflow runs without any interference.
+- 由于之前的对话由CRM和计费专家处理，系统检测到域名变更。它决定将对话交给产品与促销专员。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image27.png)
+- 系统根据HANDOFF_CONTEXT_TRANSFER_TURNS设置，可以选择性地将之前的对话上下文（比如我们讨论的是哪位客户）转移到新的客服上。
 
-**Summary**
+- 产品与促销专员只能使用与促销、计划和产品信息相关的工具（例如get_promotions、get_eligible_promotions）。
 
-In this lab, you created a single-agent workflow that integrates with
-external tools using MCP and explored multi-agent designs where multiple
-specialized agents collaborate or hand off conversations based on user
-intent. You configured environment variables, launched the full agent
-environment, and tested how agents intelligently respond to
-domain-specific queries.
+15. 完成测试后，返回 VS Code
+    并终止所有正在运行的终端会话。这确保了即将到来的多智能体工作流程无干扰地运行。
 
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
+**摘要**
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+在这个实验室中，你创建了一个单代理工作流程，通过MCP与外部工具集成，并探索了多代理设计，即多个专业代理根据用户意图协作或交接对话。你配置了环境变量，启动了完整的代理环境，并测试代理如何智能响应特定领域的查询。

@@ -1,595 +1,529 @@
+# 实验11：AgentOps – 可观测性与管理
 
-# Lab 11: AgentOps – Observability and Management
+**预计时长**：60分钟
 
-**Estimated Duration**: 60 Minutes
+**概述**
 
-**Overview**
+在本实验室中，你将专注于AgentOps，即在生产环境中监控、管理和管理AI代理的学科。您将探索如何利用
+Microsoft Agent Framework 内置的 Application Insights 集成，通过
+**OpenTelemetry** 实现可观测性和遥测。
 
-In this lab, you will focus on AgentOps, the discipline of monitoring,
-governing, and managing AI agents in production environments. You’ll
-explore how to enable observability and telemetry using the Microsoft
-Agent Framework’s built-in integration with Application Insights
-using **OpenTelemetry**.
+关于 Microsoft Agent Framework 中的 OpenTelemetry
 
-About OpenTelemetry in Microsoft Agent Framework
+Microsoft Agent
+Framework原生集成了OpenTelemetry，OpenTelemetry是分布式追踪、指标和日志的开放标准。它通过自动捕获遥测数据（如跨度追踪、工具调用、模型响应和工作流性能）提供端到端的代理行为可视化。通过这种集成，开发者可以直接将可观测性数据导出到
+Azure Monitor、Application Insights 或其他兼容 OpenTelemetry
+的后端。这种标准化方法有助于跟踪复杂多智能体系统中的每一个代理作，实现性能调优、故障排除和合规审计，且配置极简。
 
-The Microsoft Agent Framework natively integrates with OpenTelemetry,
-the open standard for distributed tracing, metrics, and logging. It
-provides end-to-end visibility into agent behavior by automatically
-capturing telemetry data such as span traces, tool calls, model
-responses, and workflow performance. Using this integration, developers
-can export observability data directly to Azure Monitor, Application
-Insights, or any other OpenTelemetry-compatible backend. This
-standardized approach helps track every agent action across complex
-multi-agent systems, enabling performance tuning, troubleshooting, and
-compliance auditing with minimal configuration.
+实验室目标
 
-Lab Objectives
+你将在实验室执行以下任务。
 
-You'll perform the following tasks in this lab.
+- 任务1：启用OpenTelemetry的代理可观测性
 
-- Task 1: Enable Observability of Agent with OpenTelemetry
+- 任务2：可视化代理指标
 
-- Task 2: Visualize Agent Metrics
+- 任务3：监控Foundry门户中的代理特定指标
 
-- Task 3: Monitor Agent-specific metrics in Foundry Portal
+## 任务1：启用OpenTelemetry的代理可观测性
 
-## Task 1: Enable Observability of Agent with OpenTelemetry
+在这个任务中，你将把OpenTelemetry和Agent
+Framework的可观测性集成到你的项目中。你将配置遥测导出器，使用setup_observability（）初始化追踪，并捕捉工作流程各阶段的详细数据，包括代理路由、Azure
+AI
+搜索检索和工单创建。这使得通过应用洞察中的跟踪ID实现对代理行为和跨系统关联的统一可视化。
 
-In this task, you’ll integrate OpenTelemetry and Agent Framework
-observability into your project. You’ll configure telemetry exporters,
-initialize tracing with setup_observability(), and capture detailed
-spans for each stage of your workflow, including agent routing, Azure AI
-Search retrieval, and ticket creation. This enables unified visibility
-into agent behavior and cross-system correlation using trace IDs in
-Application Insights.
+1.  你不会再修改之前的代码，而是在一个已经包含已更新可观察性文件的新文件夹中工作。了解如何通过Microsoft代理框架的可观察性和应用洞察集成遥测、追踪和监控。
 
-1.  Instead of modifying the previous code again, you’ll work in a new
-    folder that already contains the updated observability-enabled
-    files. Understand how telemetry, tracing, and monitoring are
-    integrated using Microsoft Agent Framework Observability and
-    Application Insights.
+2.  在Visual Studio
+    Code中，打开新文件夹前，先选择.env文件并复制内容，并安全地保存在记事本中。
 
-2.  In Visual Studio Code, before openening new folder, select
-    the .env file and copy the content and keep it safely in a notepad.
+3.  完成后，点击顶部菜单中的** file **选项，选择**“Open Folder**”。
 
-3.  Once done, click on **file** option from top menu and select **Open
-    Folder**.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image1.png)
+4.  在打开文件夹的窗格中，进入C：\telemetry-codefiles，点击select文件夹。
 
-4.  In the open folder pane, navigate to **C:\Lab Files\Day 3\Enterprise-Agent-Code-files** and
-    click on select folder.
+5.  打开后，资源管理器菜单里的文件看起来和这个很像。
 
-5.  Once opened, the files in the explorer menu look similar to this.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image2.png)
+6.  请仔细查看代码文件，查看所有代理中OpenTelemetry的实现情况，以及追踪是如何进行的。
 
-6.  Please go through the code files, review how the opentelemetry
-    implemented in all agents, and how the tracing is happening.
+> **集成概述**
+>
+> 通过 agent_framework.observability 包，集成了整个代理工作流程的
+> OpenTelemetry 追踪。
 
-	> **Integration Overview**
-	>
-	integrated OpenTelemetry tracing throughout the agent workflow using
-	> the agent_framework.observability package.
+- 导入了get_tracer（）并使用OpenTelemetry跨度捕获每个关键作的结构化遥测数据。
 
-	- Imported get_tracer() and used OpenTelemetry spans to capture
-	  structured telemetry for each critical operation.
+- 将关键函数（如分类、路由、RAG、工单创建）包裹在带有上下文属性的范围内。
 
-	- Wrapped key functions (e.g., classification, routing, RAG, ticket
-	  creation) in spans with contextual attributes.
+- 增加了统一的启动可观察性设置，使用setup_observability（）来配置导出器和指标流水线。
 
-	- Added unified startup observability setup using setup_observability()
-	  to configure exporters and metrics pipelines.
+- 记录自定义属性，如查询文本、路由决策和备用方法，以实现更深层次的可视化。
 
-	- Recorded custom attributes such as query text, routing decisions, and
-	  fallback methods for deeper visibility.
+- 增强错误处理功能，记录异常痕迹，并将每个工作流执行关联到轨迹ID，实现跨系统关联。
 
-	- Enhanced error handling to record exception traces and link each
-	  workflow execution to a trace ID for cross-system correlation.
+> **文件增强**
+>
+> main.py – 端到端追踪与指标
 
-	> **File Enhancements**
-	>
-	> main.py – End-to-End Tracing and Metrics
+- 配置了OpenTelemetry追踪流水线和导出器设置。
 
-	- Configured OpenTelemetry tracing pipeline and exporter setup.
+- 跨区内的多代理编排包包，实现完整的工作流程可视化。
 
-	- Wrapped multi-agent orchestration inside spans for complete workflow
-	  visibility.
+- 新增了子步骤的跨度：路由、数据检索（RAG）、代理响应和工单创建。
 
-	- Added spans for sub-steps: routing, data retrieval (RAG), agent
-	  responses, and ticket creation.
+> planner_agent.py – 增强的路由可观测性
 
-	> planner_agent.py – Enhanced Routing Observability
+- 新增了一个追踪实例（get_tracer（））用于监控分类逻辑。
 
-	- Added a tracer instance (get_tracer()) to monitor classification
-	  logic.
+- 捕捉了原始的LLM响应、信心评分和备用关键词指标作为跨度属性。
 
-	- Captured raw LLM responses, confidence scores, and fallback keyword
-	  metrics as span attributes.
+- 区分基于 AI 和带标签跨度的启发式分类（SpanKind.INTERNAL）。
 
-	- Differentiated between AI-based and heuristic classification with
-	  labeled spans (SpanKind.INTERNAL).
+> azure_search_tool.py – RAG 可观测性
 
-	> azure_search_tool.py – RAG Observability
+- 增加了用于 Azure Search API 调用的跨度，以测量延迟和成功率。
 
-	- Added spans for Azure Search API calls to measure latency and success
-	  rates.
+- 记录检索的文档数量和有效载荷大小作为自定义指标。
 
-	- Logged retrieved document counts and payload sizes as custom metrics.
+- 在OpenTelemetry追踪中捕获搜索错误和性能数据。
 
-	- Captured search errors and performance data within OpenTelemetry
-	  traces.
+> freshdesk_tool.py – 工单创建可观察性
 
-	> freshdesk_tool.py – Ticket Creation Observability
+- 新增了API调用范围，用于跟踪工单创建时间和响应状态。
 
-	- Added API call spans to track ticket creation duration and response
-	  status.
+- 记录工单ID、标签和请求者详情，以便可追溯审计日志。
 
-	- Logged ticket IDs, tags, and requester details for traceable audit
-	  logs.
+- 监控外部API延迟和错误响应，以更好地跟踪事件。
+
+7.  审核完成后，右键点击 **.env.example （1）** 文件，选择 **Rename
+    (2)** 以重命名该文件。
 
-	- Monitored external API latency and error responses for better incident
-	  tracking.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-7.  Once reviewed, right-click on **.env.sample** file and
-    select **Rename** to rename the file.
+8.  完成后，将文件重命名为 **.env.example** --\>
+    **.env**，使该环境文件为该代理激活。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image3.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-8.  Rename the file from **.env.example** --\> **.env** to
-    make this environment file active for this agent.
+9.  现在，选择 .env 文件，粘贴你之前复制的内容。
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image4.png)
+10. 在 Azure 门户中，导航到 **agenticai** 资源组，从资源列表中选择
+    **ai-knowledge-** Search Service。
 
-10. In the Azure Portal, navigate to **agenticai** resource group, and
-    from the resource list select **ai-knowledge-** Search service.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image5.png)
- 
-11. Select **Keys** from the left menu, under Settings, and copy
-    the **Query key** using the copy option as shown. Save it in a notepad.
+11. 在设置中左侧菜单选择 **Keys (1)** ，然后使用复制选项复制 **Query key
+    (2)** 。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image6.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-12. Once copied, paste it safely in a notepad, select **Indexes** from
-    the left menu under Search Management, and copy the **Index Name**. Save it in a notepad.
+12. 复制完成后，安全地粘贴到记事本，在搜索管理的左侧菜单中选择
+    **Indexes**，复制 **Index Name (2)**。 
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image7.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-13. Populate the **.env** file, with the below content, replace the place holders of the Query_Key and the Index_name with the values copied and saved above.
+13. 在Visual Studio
+    Code面板中，选择**.env**文件，因为你需要添加AI搜索键才能连接。
 
-	```
-	# Azure AI Search (MCP)
-	AZURE_SEARCH_ENDPOINT=https://ai-knowledge-@lab.LabInstance.Id.search.windows.net/
-	AZURE_SEARCH_API_KEY=[Query_Key]
-	AZURE_SEARCH_INDEX=[Index_Name]
-	```
+> \# Azure AI Search (MCP)
+>
+> AZURE_SEARCH_ENDPOINT=https://ai-knowledge--@lab.LabInstance.Id.search.windows.net/
+>
+> AZURE_SEARCH_API_KEY=\[Query_Key\]
+>
+> AZURE_SEARCH_INDEX=\[Index_Name\]
 
-14. Add the content of the .env file with the below content.
+**注意：**请用之前复制的值替换Query_Key和Index_Name值。
 
-	```
-	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
-	AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
-	AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
-	AZURE_OPENAI_API_VERSION=2025-03-01-preview
-	```
+14. 将.env文件的内容与以下内容添加。
 
-15. Add the following Foundry project key variables to the .env file.
+> AZURE_OPENAI_ENDPOINT=https://agentic-
+> @lab.LabInstance.Id.cognitiveservices.azure.com/
+>
+> AZURE_OPENAI_API_KEY=\<Replace with Azure OpenAI key\>
+>
+> AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
+>
+> AZURE_OPENAI_API_VERSION=2025-03-01-preview
 
-	```
-	# Azure AI Project Configuration
-	AZURE_AI_PROJECT_ENDPOINT=<Microsoft Foundry endpoint>
-	AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
-	```
+15. 将以下 Foundry 项目密钥变量添加到 .env 文件中。
 
-	Find the Microsoft Foundry project endpoint from the Overview page and replace **\<Microsoft Foundry endpoint\>** with that value.
+> \# Azure AI Project Configuration
+>
+> AZURE_AI_PROJECT_ENDPOINT=**\<Microsoft Foundry endpoint\>**
+>
+> AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+>
+> 从概览页面找到Microsoft Foundry项目端点，并用该值替换 **\<Microsoft
+> Foundry endpoint\>**。
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image8.png)
+![](./media/image9.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image9.png)
+16. 完成后，将以下 App Insights 变量添加到同一个文件中。
 
-16. Once done, add the following App Insights variables to the same
-    file.
+> \# Observability and Monitoring Configuration
+>
+> APPLICATIONINSIGHTS_CONNECTION_STRING=**\<Connection string\>**
+>
+> ENABLE_OTEL=true
+>
+> ENABLE_SENSITIVE_DATA=true
+>
+> 从Azure门户打开应用洞察资源，复制连接字符串，并将**\<Connection
+> string\>**替换为复制的值。
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image10.png)
 
-	```
-	# Observability and Monitoring Configuration
-	APPLICATIONINSIGHTS_CONNECTION_STRING=<Connection string>
-	ENABLE_OTEL=true
-	ENABLE_SENSITIVE_DATA=true
+17. 在.env文件中，添加以下内容，并添加你之前复制的Freshdesk的API密钥和账户URL。
 
-	```
+> \# Freshdesk Configuration
+>
+> FRESHDESK_DOMAIN=\[Domain_URL\]
+>
+> FRESHDESK_API_KEY=\[API_Key\]
 
-	Open the Application insight resource from the Azure portal, copy the connection string and replace **< Connection string >** with the value copied.
+18. 最终的.env文件应该看起来像给的图片。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image10.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-17. In the .env file, add the following content and add the API key and
-    Account URL of Freshdesk that you copied earlier.
+19. 完成后，选择 **File** **(1)** ，然后点击 **Save** **(2)** 保存文件。
 
-    ```
-    # Freshdesk Configuration
-    FRESHDESK_DOMAIN=[Domain_URL]
-    FRESHDESK_API_KEY=[API_Key]
-    
-    ```
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image12.png)
 
-18. Final .env file should look like the given image.
+20. 选择......**（1）**顶部菜单中的扩展菜单选项。选择 **Terminal
+    (2)** ，然后点击 **New Terminal (3)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/im4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-19. Once done, select **File**  and then
-    click **Save**  to save the file.
+21. 在**VS Code** Terminal中，运行Azure CLI登录命令:
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image12.png)
++++az login+++
 
-20. Select the **...** option from the top menu to extend the menu.
-    Select **Terminal** and click on **New Terminal**.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image13.png)
+22. 在 **Sign in** 窗口中，选择 **Work or school account** 并点击
+    **Continue**。
 
-21. In **VS Code** Terminal, run the Azure CLI sign-in command:
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-	+++az login+++
+23. 在**“Sign into Microsoft** ” 标签页，使用以下凭证登录。
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image14.png)
+- 用户名 - <+++@lab.CloudPortalCredential(User1).Username>+++
 
-22. On the **Sign in** window, select **Work or school account** and
-    click **Continue**.
+- TAP - +++@lab.CloudPortalCredential(User1).TAP+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image15.png)
+24. 当被提示登录选项时，选择**“No, this app
+    only** ”，这样可以继续，不链接其他桌面应用。
 
-23. On the **Sign into Microsoft** tab, and login using the below
-    credentials.
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image16.png)
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+25. 输入**1**，然后在“**Select a subscription and tenant**”中回车。
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image17.png)
 
-24. When prompted with the sign-in options, select **No, this app
-    only** to continue without linking other desktop apps.
+26. 终端打开后，执行命令，
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image16.png)
+> +++pip install -r requirements.txt+++ 以安装所有必需的包。
 
-25. Type **1** and hit enter in the **Select a subscription and
-    tenant**.
+27. 请执行以下命令来测试搜索工具的工作原理。
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image17.png)
++++python main.py+++
 
-26. Rename the **requirements.txt.txt** to **requirements.txt**.
+> ![A screenshot of a computer screen AI-generated content may be
+> incorrect.](./media/image18.png)
 
-27. Once the terminal is open, execute the command,
+## 任务2：可视化代理指标
 
-    +++pip install -r requirements.txt+++ to install all the required packages.
+在这个任务中，你将使用 Azure Application Insights
+来可视化代理遥测数据。你将探索响应时间、路由准确性和工单创建成功的自定义指标。然后，你将构建交互式Azure
+Monitor仪表盘，以显示关键绩效指标和趋势。这有助于识别瓶颈、衡量效率，并确保部署代理的实时健康运行。
 
-28. Run the command given below to test out the working of the search
-    tool.
+1.  进入 Azure 门户，打开资源组，从资源列表中选择
+    **agent-insights- **应用洞察资源。
 
-	+++python main.py+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image18.png)
+2.  进入概览页面后，你可以看到显示的一些默认指标。
 
-## Task 2: Visualize Agent Metrics
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-In this task, you’ll use Azure Application Insights to visualize agent
-telemetry data. You’ll explore custom metrics for response time, routing
-accuracy, and ticket creation success. Then, you’ll build interactive
-Azure Monitor dashboards to display key performance indicators and
-trends. This helps identify bottlenecks, measure efficiency, and ensure
-the healthy operation of your deployed agents in real time.
+3.  在左侧菜单中，选择 **Search (1)**，点击 **See all data in last 24
+    hours (2)**。
 
-1.  Navigate to Azure Portal, open your resource group, and from the
-    resource list, select **agent-insights-** app insight resource.
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image21.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image19.png)
+4.  打开后，从底部开始查看 **Traces (1)**，然后点击“**View as individual
+    items (2)**”。 
 
-2.  Once in the overview page, you can see some of the default metrics
-    shown.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image20.png)
+5.  完成后，你将可以看到与经纪人的所有沟通细节，以及在指定时间范围内发生的所有交易。你也可以调整时间范围，探索更多。
 
-3.  From the left menu, select **Search**, click on **See all data
-    in last 24 hours**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image21.png)
+6.  探索和回顾这些翻译，你只需点击它们即可打开详细视图。查看如何查看所有细节，比如代理、消息和检索信息。
 
-4.  Once opened, from bottom, review the **Traces** and then **click
-    on View as individual items**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-5.  Once done, you will be able to see all the communication details
-    that happened with the agent, as well as all the transactions that
-    took place within the given time range. You can also adjust the time
-    range to explore more.
+7.  接下来，选择 **Failures (1)**，审查失败 **requests
+    (2)** ，以集中视图查看所有失败执行，并通过详细的跟踪分析找出根本原因。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-6.  Explore and review these transations, you can open a detailed view
-    just by clicking on them. Review how you can see all the details,
-    like agents, messages, and retrieval details.
+8.  接下来，选择 **Performance (1)** ，检查
+    **作和响应时间（2），**由此可以确定代理的性能SLA。 
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image25.png)
+9.  现在，在左侧菜单的监控中选择**“Metrics**”。你可以探索通过 SPAN
+    发布的自定义指标。
 
-7.  Next, select **Failures**, Review **failed requests** to
-    gain a centralized view of all unsuccessful executions and identify
-    the underlying causes through detailed trace analysis.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image26.png)
+10. 选中后，在 **Metric Namespace （1）** 下，选择
+    azure.applicationinsights **（2）。**
 
-8.  Next, select **Performance** and check on the **operations and
-    response times**, based on which you can determine the
-    performance SLA of the agent.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image27.png)
+11. 现在，在指标中，选择 **gen_ai.client.operation.duration and set the
+    aggregation to avg (1)**。查看 **line chart (2)** 以查看 **Response
+    Time** 指标，代理回复用户时采用了哪个指标。
 
-9.  Now, under monitoring from the left menu, select **Metrics**. You
-    can explore the custom metrics that are published through span.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image28.png)
+12. 同样地，选择 **gen_ai.client.token.usage and set the aggregation to
+    avg (1)**。查看 **line chart (2)** ，查看代理的代币使用情况。
 
-10. Once selected, under **Metric Namespace**,
-    select azure.applicationinsights .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image29.png)
+13. 接着，从左侧菜单选择 **Logs (1)** ，取消 **Queries hub (2)** 面板。
 
-11. Now, under metrics, select **gen_ai.client.operation.duration and
-    set the aggregation to avg**. Check the **line chart** to
-    review the **Response Time** metric, which agent took to reply to
-    the user.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image30.png)
+14. 关闭后，点击 **tables** 选项，将鼠标悬停在 **customMetrics**
+    参数上，你会看到一个**Run** 选项，点击它。 
 
-12. In a similar way, select **gen_ai.client.token.usage and set the
-    aggregation to avg**. Check the **line chart** to review the
-    token usage from the agent.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image31.png)
+![A close-up of a message AI-generated content may be
+incorrect.](./media/image34.png)
 
-13. Next, select **Logs** from left menu, cancel the **Queries hub
-   ** pane.
+15. 查询成功运行后，你会看到下面列出的所有自定义指标作为查询结果。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image32.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image35.png)
 
-14. Once closed, click on **tables** option, hover over
-    the **customMetrics** parameter, you'll see a **Run** option, click
-    on that.
+16. 接下来，从左侧菜单选择“**Workbooks (1)** ”，点击快速开始下的“**Empty
+    (2)** 工作簿”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image33.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-    ![A close-up of a message AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image34.png)
+17. 打开后，点击 **+ Add (1)** ，然后选择 **Add metric (2)**。
 
-15. Once the query runs successfully, you will see all the custom
-    metrics listed below as query results.
+![A screenshot of a phone AI-generated content may be
+incorrect.](./media/image37.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image35.png)
+18. 打开公制面板后，点击**“Add metric”**选项。
 
-16. Next, select **Workbooks** from the left menu and click on
-    the **Empty** workbook under Quick start.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image36.png)
+19. 现在，选择**Metric** 为 gen_ai.client.token.usage**（1）**，将
+    **Display name** 作为令牌使用量**（2）**，点击 **Save (3)**。
 
-17. Once opened, click on **+ Add** and select **Add metric**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-    ![A screenshot of a phone AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image37.png)
+20. 再次点击 **Add metric** 选项。
 
-18. Once the metric pane is opened, click on the **Add metric** option.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image38.png)
+21. 现在，选择 **Metric** 为 gen_ai.client.operation.duration
+    **（1）**，将 **Display name**设置为响应时间**（2）**，点击 **Save
+    (3)**。
 
-19. Now, select **Metric** as gen_ai.client.token.usage ,
-    provide **Display name** as Token Usage  and click on **Save**.
+![A screenshot of a screenshot of a metric settings AI-generated content
+may be incorrect.](./media/image40.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image39.png)
+22. 选中这两个指标后，点击“**Run Metrics**”。
 
-20. Again click on **Add metric** option.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image38.png)
+23. 现在把**可视化**改成**面积图**，获得类似的可视化效果。你可以探索许多其他可视化方式，以及时间范围。
 
-21. Now, select **Metric** as gen_ai.client.operation.duration ,
-    provide **Display name** as Response Time  and click
-    on **Save**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-    ![A screenshot of a screenshot of a metric settings AI-generated content
-may be incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image40.png)
+24. 编辑完成后，点击**“Done
+    editing**”。这样可以把这张卡保存到你的练习册里。
 
-22. Once selected, both the metrics, click on **Run Metrics**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image41.png)
+25. 现在，再次点击 **+ Add (1)** ，然后选择 **Add query (2)**。
 
-23. Now change the **Visualization** to **Area Chart** to get the
-    similar visualization. You can explore many other options of
-    visualization, and also the time range.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image42.png)
+26. 在查询窗格中，添加以下 **query (1)**，并点击 **Run Query (2)**。
 
-24. Once the edit is completed, click on **Done editing**. This will
-    save this card to your workbook.
++++customMetrics+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image43.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-25. Now, click on **+ Add** again and select **Add query**.
+27. 查询成功运行后查看结果。审核完成后，点击 **Done Editing**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image44.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-26. In the query pane, add the following **query**, and click
-    on **Run Query**.
+28. 完成后，点击顶部菜单中的“**Done editing (1)** ”，然后点击“**Save
+    (2)**”图标。
 
-	+++customMetrics+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image45.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image48.png)
 
-27. Check the results once the query runs successfully. Once reviewed,
-    click on **Done Editing**.
+29. 在“Save As”面板上，输入“标题为代理工作簿**（1）**，然后点击 **Save
+    As (2)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image46.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image49.png)
 
-28. Once done, click on **Done editing** from the top menu, and then
-    click on **Save** icon.
+30. 由于这是实验室环境，可用数据可能有限，难以进行全面监测。不过，你可以通过添加客服的自定义指标，并创建专门针对特定目标的监控仪表盘来提升可见性，例如以下内容:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image47.png)
+- **代理性能仪表盘**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image48.png)
+> **显示的指标:**
 
-29. On the Save As pane, enter Title as agent-workbook , then
-    click **Save As**.
+- 代理响应时间（平均，P95）
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image49.png)
+- 按代理类型划分的成功率
 
-30. Since this is a lab environment, the available data may be limited
-    for comprehensive monitoring. However, you can enhance visibility by
-    adding custom metrics from your agents and creating purpose-built
-    monitoring dashboards focused on specific objectives, such as the
-    following:
+- 请求量趋势
 
-- **Agent Performance Dashboard**
+- 错误率警报
 
-> **Metrics Displayed:**
+> **商业问题解答:**
 
-- Agent response times (avg, P95)
+- 哪些代理表现最好？
 
-- Success rates by agent type
+- 我们是否达成了SLA目标？
 
-- Request volume trends
+- 是什么导致了系统变慢？
 
-- Error rate alerts
+&nbsp;
 
-> **Business Questions Answered:**
+- **用户体验仪表盘**
 
-- Which agents perform best?
+> **显示的指标:**
 
-- Are we meeting SLA targets?
+- 端到端请求延迟
 
-- What's causing system slowdowns?
+- 工单生成率
 
-- **User Experience Dashboard**
+- 知识检索成功
 
-> **Metrics Displayed:**
+- 用户满意度代理指标
 
-- End-to-end request latency
+> **商业问题解答:**
 
-- Ticket creation rates
+- 用户回复是否很快？
 
-- Knowledge retrieval success
+- 请求多久会变成支持工单？
 
-- User satisfaction proxy metrics
+- 知识库对用户有帮助吗？
 
-> **Business Questions Answered:**
+## 任务3：监控Foundry门户中的代理特定指标
 
-- Are users getting fast responses?
+在这个任务中，你将使用 Azure Application Insights
+来可视化代理遥测数据。你将探索来自 Microsoft Foundry
+门户的定制代理特定指标。
 
-- How often do requests become support tickets?
+1.  既然你已经将 Application Insights 连接到 Microsoft Foundry
+    门户，你可以返回 Foundry 门户，直观地可视化代理的工作过程。
 
-- Is the knowledge base helping users?
+2.  从资源列表中返回你的资源组，选择**agent-foundry**资源。
 
-## Task 3: Monitor Agent-specific metrics in Foundry Portal
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-In this task, you’ll use Azure Application Insights to visualize agent
-telemetry data. You’ll explore custom agent-specific metrics from the
-Microsoft Foundry Portal.
+3.  在下一页，点击**“Go to Foundry
+    portal**”。现在，您将被引导到Microsoft
+    Foundry门户，在那里创建您的第一个代理。
 
-1.  As you have already connected Application Insights to the Microsoft
-    Foundry portal, you can navigate back to your Foundry portal and
-    visualize the working of your agent.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image51.png)
 
-2.  Navigate back to your resource group, from the resource list,
-    select **agent-** foundry resource.
+4.  在测试代理之前，连接 Application
+    Insights，以启用详细日志和跟踪可视化。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image50.png)
+5.  在 Microsoft Foundry 门户中，从左侧菜单选择 **Monitoring
+    (1)** ，选择 **agent-insights- (2)** ，点击 **Connect (3)**。
 
-3.  In the next pane, click on **Go to Foundry portal**. You will now be
-    navigated to the Microsoft Foundry portal, where you will be
-    creating your first agent.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image52.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image51.png)
+6.  现在，进入你之前连接过应用洞察的 **Monitoring** 面板，选择
+    **Resource usage** 标签，查看所有指标和数值。 
 
-4.  Before testing the agent, connect Application Insights to enable
-    detailed logs and trace visibility.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image53.png)
 
-5.  In Microsoft Foundry portal, select **Monitoring** from left
-    menu, select **agent-insights-@Lab.Labinstance.id** and click on **Connect**.
+7.  从左侧菜单选择 **Tracing (1)** ，点击任一的 **Trace
+    (2)**，查看代理互动的详细跟踪。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image52.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image54.png)
 
-6.  Now, navigate to the **Monitoring** pane, where you have connected
-    application insights before, and select the **Resource usage** tab
-    and review all the metrics and values.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image55.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image53.png)
+**摘要**
 
-7.  Select **Tracing** from the left menu, click on any of
-    the **Trace**, and review the detailed traces of agent
-    interactions.
+在这个实验室里，你为企业代理配置了可观察性和监控功能。通过OpenTelemetry追踪，你捕捉了每个工作流步骤的详细执行数据，并通过与Azure应用洞察集成，创建了用于可视化性能指标和座席健康状况的仪表盘。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image54.png)
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image55.png)
-
-**Summary**
-
-In this lab, you configured observability and monitoring for your
-enterprise agents. Using OpenTelemetry tracing, you captured detailed
-execution data for every workflow step, and by integrating with Azure
-Application Insights, you created dashboards to visualize performance
-metrics and agent health.
-
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
-
+你已经成功完成了这个实验。请点击“Next \>\>”继续。
