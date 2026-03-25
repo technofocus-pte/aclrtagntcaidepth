@@ -1,403 +1,375 @@
+# 실습 2: AI 프로젝트를 설정하고 VS Code에서 채팅 완료를 수행하기
 
-# Lab 2: Setup AI Project and perform Chat Completion from VS Code
+**개요**
 
-**Overview**
+이 실습에서는 Microsoft Foundry에서 AI 프로젝트를 생성하고 구성하며,
+Large Language Model (LLM)과 임베딩 모델을 배포하고, 프로젝트를 Visual
+Studio Code와 연결하여 AI 에이전트 구축에 필요한 완전한 개발 환경을
+준비하게 됩니다. 그 후 코드에서 간단한 채팅 완료를 실행하여 환경을
+올바르게 구성하고 AI 기반 애플리케이션 개발에 준비가 되었는지 검증할
+것입니다.
 
-In this lab, you will prepare the complete development environment
-required for building AI agents by creating and configuring an AI
-Project in Microsoft Foundry, deploying a Large Language Model (LLM) and
-an embedding model, and connecting the project to Visual Studio Code.
-You will then validate the setup by running a simple chat completion
-from code, ensuring that your environment is correctly configured and
-ready for developing AI-powered applications.
+실습 목표
 
-Lab Objectives
+이 실습에서 다음과 같은 작업을 수행합니다.
 
-You'll perform the following tasks in this lab.
+- 작업 1: Microsoft Foundry에서 AI 프로젝트를 설정하기
 
-- Task 1: Setting up the AI Project in the Microsoft Foundry
+- 작업 2: LLM 및 임베딩 모델을 배포하기
 
-- Task 2: Deploying an LLM and embedding models
+- 작업 3: 의존성을 설치하고, 가상 환경을 생성하고 환경 변수 파일을
+  생성하기
 
-- Task 3: Install dependencies, create a virtual environment, and create
-  an environment variables file
+## 작업 1: Microsoft Foundry에서 AI 프로젝트를 설정하기
 
-## Task 1: Setting up the AI Project in the Microsoft Foundry
+이 작업에서는 Microsoft Foundry 내에서 AI 프로젝트를 생성하고 구성하게
+됩니다. 이는 필요한 자원 구축, 프로젝트 매개변수 정의, AI 모델 배포 환경
+준비 등을 포함합니다. 이 작업이 끝날 때쯤이면 완전히 초기화된 AI
+프로젝트가 완성되어 추가 개발과 실습의 토대가 될 것입니다.
 
-In this task, you will create and configure an AI Project within
-Microsoft Foundry. This involves setting up the necessary resources,
-defining project parameters, and ensuring that the environment is ready
-for deploying AI models. By the end of this task, you will have a fully
-initialized AI Project, serving as the foundation for further
-development and experimentation.
+1.  Azure Portal 페이지에서 포털의 상단의 Search 자원
+    상자에서 **Microsoft Foundry (1)**을 입력한 후 Services
+    항목에서 **Microsoft Foundry (2)**를 선택하세요.
 
-1.  On the Azure Portal page (+++https://portal.azure.com+++), in the Search resources box at the top of
-    the portal, enter +++Microsoft Foundry+++, and then
-    select **Microsoft Foundry** under Services.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image1.png)
+2.  In the left navigation pane for the **Use with Foundry**,
+    select **AI Hubs (1)**. On the AI Hubs page, click on **Create
+    (2)** and select **Hub (3)** from the drop-down.
 
-2.  In the left navigation pane for the **Use with Foundry**,
-    select **AI Hubs**. On the AI Hubs page, click on **Create** and select **Hub** from the drop-down.
+![](./media/image2.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image2.png)
+3.  On the **Create an Azure AI hub** pane enter the following details
+    under **Basics** **(1)** :
 
-3.  On the **Create an Azure AI hub** pane enter the following details
-    under **Basics**:
+    - Subscription : **Leave default subscription** **(2)**
 
-    - Subscription : **Leave default subscription** 
+    - Resource Group : **AgenticAI** **(3)**
 
-    - Resource Group : **AgenticAI**
+    - Region : **East US2** (4)
 
-    - Region : **@lab.CloudResourceGroup(AgenticAI).Location**
+    - Name : ** <+++ai-foundry-hub@lab.LabInstance.Id>+++ (5)**
 
-    - Name : +++ai-foundry-hub@lab.LabInstance.Id+++
-
-    - Connect AI Services incl. OpenAI : Click on **Create
-      New**.
+    - Connect AI Services incl. OpenAI : Click on **Create
+      New** **(6)**.
 
     - Connect AI Services incl. OpenAI : Provide a
-      name +++my-ai-service@lab.LabInstance.Id+++.
+      name **<+++my-ai-service@lab.LabInstance.Id>+++ (7)**.
 
-    - Click on **Save**, followed by **Next:Storage** 
+    - Click on **Save** **(8)**, followed by **Next:Storage** **(9)**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image3.png)
+> ![](./media/image3.png)
 
-4.  Click on **Review + Create** tab followed by **Create.**
+4.  Click on **Review + Create** tab followed by **Create.**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image5.png)
+![](./media/image5.png)
 
-5.  Wait for the deployment to complete and then click on **Go to
+5.  Wait for the deployment to complete and then click on **Go to
     resource**.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image6.png)
+![](./media/image6.png)
 
-6.  On the Overview pane, click on **Launch Azure AI Foundry**. This
+6.  On the Overview pane, click on **Launch Azure AI Foundry**. This
     will navigate you to the Microsoft Foundry portal.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image7.png)
+![](./media/image7.png)
 
-7.  Scroll down and click on **+ New project** on the Hub Overview.
+7.  Scroll down and click on **+ New project** on the Hub Overview.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image8.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
 8.  Provide the project name
-    as +++ai-foundry-project@lab.LabInstance.Id+++, then click
-    on **Create**.
+    as **<+++ai-foundry-project@lab.LabInstance.Id>+++ ,** then click
+    on **Create (2)**.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image9.png)
+![](./media/image9.png)
 
-9.  Once the project is created, scroll down and copy the **Project
+9.  Once the project is created, scroll down and copy the **Project
     connection string**, then paste them into Notepad or a secure
     location, as they will be required for upcoming tasks.
 
-    ![A screenshot of a project AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image10.png)
+![A screenshot of a project AI-generated content may be
+incorrect.](./media/image10.png)
 
-## Task 2: Deploying an LLM and embedding models
+## 작업 2: LLM 및 임베딩 모델을 배포하기
 
-In this task, you will deploy a large language model (LLM) and an
-embedding model within your Microsoft Foundry project. These models will
-be used for AI-driven applications and vector-based search capabilities
-in upcoming labs.
+이 작업에서는 Microsoft Foundry 프로젝트 내에 large language model
+(LLM)과 임베딩 모델을 배포하게 됩니다. 이 모델들은 향후 실습에서 AI 기반
+응용 및 벡터 기반 검색 기능에 사용될 예정입니다.
 
-1.  In your **Microsoft Foundry project**, navigate to the **My
-    assets** section, then select **Models +
-    endpoints**. Click **Deploy model** , and
-    choose **Deploy base model**  to proceed.
+1.  **Microsoft Foundry project**에서 **My assets** **(1)** 섹션으로
+    이동하고 **Models + endpoints** **(2)**를 선택하세요. **Deploy
+    model** **(3)**을 클릭하고 계속하려면 **Deploy base
+    model** **(4)**를 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image11.png)
+![](./media/image11.png)
 
-2.  On a **Select a model** window, search for +++gpt-4o+++ ,
-    select **gpt-4o** and select **Confirm** 
+2.  **Select a model** 창에서 **gpt-4o** **(1)**을 검색하고
+    **gpt-4o** **(2)**를 선택하고 **Confirm** **(3)**을 선택하세요
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-3.  On **Deploy model gpt-4o** window, select **Customize**.
+3.  **Deploy model gpt-4o** 창에서 **Customize**를 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image13.png)
+![](./media/image13.png)
 
-	- Deployment Name: **gpt-4o** 
+- Deployment Name: **gpt-4o** **(1)**
 
-	- Deployment type: **Global Standard**
+- Deployment type: **Global Standard** **(2)**
 
-	- Change the **Model version to 2024-08-06 (Default)** 
+- Change the **Model version to 2024-08-06 (Default)** **(3)**
 
-	- Change the Tokens per Minute Rate Limit to **200K** 
+- Change the Tokens per Minute Rate Limit to **200K** **(4)**
 
-	- Click on **Connect and Deploy** 
+- **Connect and Deploy** **(5)**를 클릭하세요
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image14.png)
+![](./media/image14.png)
 
-4.  Click on **Model + Endpoints** , there you can see the
-    deployed **gpt-4o** model.
+4.  **Model + Endpoints** **(1)**을 클릭하고 배포된
+    **gpt-4o** **(2)** 모델을 볼 수 있습니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image15.png)
+![](./media/image15.png)
 
-5.  Navigate back to **Azure Portal** and search for +++Open
-    AI+++  and select **Azure Open AI** resource.
+5.  **Azure Portal**로 이동하고 **Open AI** **(1)**을 검색하고 **Azure
+    Open AI** **(2)** 자원을 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image16.png)
+![](./media/image16.png)
 
-6.  On the **Microsoft Foundry | Azure OpenAI** page, select **+
-    Create**  then select **Azure OpenAI** to create
-    Azure OpenAI resource.
+6.  **Microsoft Foundry | Azure OpenAI** 페이지에서 **+
+    Create** **(1)**을 선택하고 Azure OpenAI 리소스를 생성하려면 **Azure
+    OpenAI** **(2)**를 선택하세요 .
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image17.png)
+![](./media/image17.png)
 
-7.  On **Create Azure OpenAI** page, provide the following settings and
-    click on **Next** :
+7.  **Create Azure OpenAI** 페이지에서 다음 설정을 입력하고
+    **Next** **(6)**을 클릭하세요:
 
-    
-    | Detail | Value |
-    | ------ | ------ |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Resource Group** | **@lab.CloudResourceGroup(AgenticAI).Name** |
-    | **Region** | **@lab.CloudResourceGroup(AgenticAI).Location** |
-    | **Name** | +++my-openai-service@lab.LabInstance.Id+++ |
-    | **Pricing Tier** | **Standard S0** |
+[TABLE]
 
+> ![](./media/image18.png)
 
+8.  Review + submit 탭이 나타날 때 까지 **Next**를 클릭하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image18.png)
+9.  **Review + submit** 페이지에서 **Create**를 클릭하세요.
 
-8.  Click on **Next** till Review + submit tab appears.
+![](./media/image19.png)
 
-9.  On the **Review + submit** page, click on **Create**
+10. 배포가 성공될 때 기다리고 **Go to resource**를 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image19.png)
+![](./media/image20.png)
 
-10. Wait until the deployment got succeeded and select **Go to
-    resource**.
+11. **my-openai-service** 리소스 페이지에서 **Go to Foundry portal**을
+    선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image20.png)
+![](./media/image21.png)
 
-11. On the **my-openai-service** resource page, select **Go to Foundry
-    portal**.
+12. AI Foundry 프로젝트에서 **Shared resources** 섹션으로 이동하고
+    **Deployments** **(1)**을 선택하세요. **Deploy model** **(2)**를
+    클릭하고 계속하려면 **Deploy base model** **(3)**을 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image21.png)
+![](./media/image22.png)
 
-12. In your AI Foundry project, navigate to the **Shared
-    resources** section, then select **Deployments** .
-    Click **Deploy model**, and choose **Deploy base
-    model**  to proceed.
+**참고**: 이후 실습에서 사용할 Azure AI Search의 가져오기 및 벡터화
+wizard는 아직 AI Foundry 프로젝트 내에서 텍스트 임베딩 모델을 지원하지
+않습니다. 이 때문에 Azure OpenAI 서비스를 생성하고 텍스트 임베딩 모델을
+배포해야 합니다. 이 텍스트 임베딩 모델은 나중에 벡터 인덱스를 생성할 때
+사용할 예정입니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image22.png)
+13. **Select a model** 창에서 **text-embedding-3-large** **(1)**을
+    검색하고 **text-embedding-3-large** **(2)**를
+    선택하고 **Confirm** **(3)**을 선택하세요.
 
-	>[!Note]: The import and vectorize wizard in Azure AI Search, which will
-	be used in subsequent labs, does not yet support text embedding models
-	within your AI Foundry project. Because of this, we need to create an
-	Azure OpenAI service and deploy a text embedding model there. We will
-	use this text embedding model later when we create our vector index.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-13. On a **Select a model** window, search
-    for **text-embedding-3-large** , then
-    select **text-embedding-3-large** and
-    select **Confirm** 
+14. **Deploy model text-embedding-3-large** 창에서,
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image23.png)
+    - Deployment type: Select **Standard (1)**
 
-14. On **Deploy model text-embedding-3-large** window,
+    - Tokens per Minutes Rate Limit: **120K (2)**
 
-    - Deployment type: Select **Standard**
+    - 모델을 배포하려면 **Deploy (3)**을 선택하세요.
 
-    - Tokens per Minutes Rate Limit: **120K**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    - Select **Deploy** to deploy the model.
+15. **Deployment (1)**을 클릭하면 배포된 **text-embedding-3-large
+    (2)** 모델을 볼 수 있습니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image24.png)
+![](./media/image25.png)
 
-15. Click on **Deployment**, you can see the
-    deployed **text-embedding-3-large** model.
+## 작업 3: 의존성을 설치하고, 가상 환경을 생성하고 환경 변수 파일을 생성하기
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image25.png)
+이 작업에서는 필요한 의존성을 설치하고, 가상 환경을 설정하며, 환경 변수
+파일을 생성해야 합니다. 이를 통해 통제된 개발 환경을 보장하고 AI
+프로젝트의 구성 설정을 안전하게 관리할 수 있습니다.
 
-## Task 3: Install dependencies, create a virtual environment, and create an environment variables file
+1.  **Lab VM**에서 **Visual Studio Code**를 실행하세요.
 
-In this task, you will install the required dependencies, set up a
-virtual environment, and create an environment variables file. This
-ensures a controlled development environment and securely manages
-configuration settings for your AI project.
+2.  **File** **(1)**을 클릭하고 **Open Folder**를 선택하세요.
 
-1.  On your **Lab VM**, launch **Visual Studio Code**.
+![](./media/image26.png)
 
-2.  Click on **File** , then **Open Folder**.
+3.  C:\LabFiles\Day-1 \\**(1)**로 이동하고
+    **azure-ai-agents-labs** **(2)** 폴더를 선택하고 **Select
+    folder** **(3)**을 클릭하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image26.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-3.  Navigate to C:\LabFiles\Day-1, select
-    the **azure-ai-agents-labs** folder and then click
-    on **Select folder** .
+4.  **Yes, I Trust the authors**를 클릭하세요,
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image27.png)
+![](./media/image28.png)
 
-4.  Click on **Yes, I Trust the authors**,
+5.  **elipses(...)** **(1)**을 클릭하고 **Terminal** **(2)**를 클릭하고
+    **New Terminal** **(3)**을 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-5.  Click on the **elipses(...)** , then **Terminal** and
-    then **New Terminal** .
+6.  azure-AI-agents-labs 프로젝트 디렉터리에 있는지 확인하세요. 아래의
+    PowerShell 명령어를 실행하여 가상 환경을 생성하고 활성화하세요:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image29.png)
+7.  python -m venv venv
 
-6.  Make sure your in **azure-ai-agents-labs** project directory. Run
-    the below powershell commands to create and activate your virtual
-    environment:
++++venv/Scripts/activate+++
 
-	+++python -m venv venv+++
+![](./media/image30.png)
 
-	+++venv/Scripts/activate+++
+8.  다음 powershell 명령어를 실행하세요. 이렇게 하면 필요한 모든
+    패키지가 설치됩니다:
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image30.png)
+9.  pip install -r requirements.txt
 
-8.  Run the below powershell command. This installs all the required packages:
++++pip install azure-ai-ml azure-identity+++
 
-    +++pip install -r requirements.txt+++
+![A screen shot of a computer code AI-generated content may be
+incorrect.](./media/image31.png)
 
-	+++pip install azure-ai-ml azure-identity+++
+10. 아래 powerShell 명령어를 실행하여 pip을 최신 버전으로 설치하거나
+    업그레이드하세요.
 
-    ![A screen shot of a computer code AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image31.png)
++++python.exe -m pip install --upgrade pip+++
 
-10. Run the below powershell command to install or upgrade pip to the
-    latest version.
+![](./media/image32.png)
 
-	+++python.exe -m pip install --upgrade pip+++
+11. 아래 명령을 실행하여 Azure 계정에 로그인하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image32.png)
++++az login+++
 
-11. Run the below command to log into your Azure account.
+12. 승인할 사용자 계정을 선택하세요.
 
-	+++az login+++
+13. 승인이 완료되면 Visual Studio 코드로 다시 이동하세요.
 
-12. Select the user account to authorize.
+![](./media/image33.png)
 
-13. Once the Authorization is completed, navigate back to the Visual
-    studio code.
+14. Sample.env **파일을 열고** 필요한 환경 변수를 입력하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image33.png)
+![](./media/image34.png)
 
-14. Open the **Sample.env** file and provide the necessary environment
-    variables.
+- Microsoft foundry 포털로 이동하고 My asset의 **Models + endpoints(1)**
+  섹션에서 **gpt-4o** **(2)** 모델을 클릭하고 오른쪽 창에서
+  **Endpoint**를 복사하고 노트패드에 **Target URI (1)** 및 **Key (2)**를
+  복사하고 붙여넣으세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image34.png)
+![](./media/image35.png)
 
-	- Navigate to Microsoft foundry portal, click
-	  on **gpt-4o** model from the **Models + endpoints(1)** section
-	  under My assets, copy and paste the **Target URI** and **Key** in a notepad
+![](./media/image36.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image35.png)
+15. **Sample.env** 파일에서,
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image36.png)
+    - AIPROJECT_CONNECTION_STRING: 작업 1의 단계 9에 복사한 **Project
+      connection string**값을 제공하세요
 
-15. On the **Sample.env** file,
+    - CHAT_MODEL_ENDPOINT: 이전 단계에서 복사한 **gpt-4o** 모델의
+      **Target URI**를 제공하세요
 
-    - AIPROJECT_CONNECTION_STRING: Provide **Project connection
-      string** value you have copied in Task 1
+    - CHAT_MODEL_API_KEY: 이전 단계에서 복사한 **gpt-4o**모델의 **Key**
+      값을 제공하세요
 
-    - CHAT_MODEL_ENDPOINT: Provide the **Target
-      URI** of **gpt-4o** model you have copied in the previous step
+    - CHAT_MODEL: **gpt-4o**
 
-    - CHAT_MODEL_API_KEY: Provide the **Key** value of **gpt-4o** model
-      you have copied in the previous step
+![](./media/image37.png)
 
-    - CHAT_MODEL: **gpt-4o**
+16. **Sample.env** 파일에 변경 사항을 저장하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image37.png)
+17. 다음 powershell 명령어를 실행하세요. **.env** 파일이 생성됩니다:
 
-16. Save changes to the **Sample.env** file.
++++cp sample.env .env+++
 
-17. Run the below powershell command. This creates your **.env** file:
+![](./media/image38.png)
 
-	+++cp sample.env .env+++
+18. **Lab 1 - Project Setup.ipynb** 파일을 여세요. **Lab 1 - Project
+    Setup.ipynb** 노트북은 Microsoft Foundry에서 AI 프로젝트 설정, LLM
+    배포 및 모델 임베딩, VS Code 연결 설정 과정을 안내합니다. 또한 설정
+    확인을 위한 간단한 Chat Completion API 호출도 포함되어 있습니다. 이
+    노트북을 실행하면 AI 기반 애플리케이션 개발에 적합한 환경이 올바르게
+    구성되어 있음을 보장합니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image38.png)
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image39.png)
 
-18. Later Open the **Lab 1 - Project Setup.ipynb** file. The **Lab 1 -
-    Project Setup.ipynb** notebook guides you through setting up an AI
-    Project in Microsoft Foundry, deploying an LLM and embedding models,
-    and configuring VS Code connectivity. It also includes a simple Chat
-    Completion API call to verify the setup. Running this notebook
-    ensures that your environment is correctly configured for developing
-    AI-powered applications.
+19. 오른쪽 상단에 있는 **Select kernel (1)** 설정을 선택하고
+    **Install/enable selected extensions (python+jupyter) (2)**를
+    선택하세요.
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image39.png)
+![](./media/image40.png)
 
-19. Select the **Select kernel** setting available in the top right
-    corner and select **Install/enable selected extensions
-    (python+jupyter)**.
+20. 필요한 의존성이 설치된 올바른 Python 인터프리터에서 Jupyter
+    Notebook이 실행되는지 확인하려면 **Python environments**를
+    선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image40.png)
+![](./media/image41.png)
 
-20. Select **Python Environments** to ensure that Jupyter Notebook runs
-    in the correct Python interpreter with the necessary dependencies
-    installed.
+21. 목록에서 **venv(Python 3.x.x)**를 선택하세요. 이 버전은 Microsoft
+    Foundry SDK 및 기타 의존성 호환성을 위해 필요할 가능성이 큽니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image41.png)
+![](./media/image42.png)
 
-21. Select **venv (Python 3.x.x)** from the list as this version is
-    likely required for compatibility with Microsoft Foundry SDK and
-    other dependencies.
+**참고:** **venv (Python 3.x.x)**가 목록에 나타나지 않을 경우, Visual
+Studio 코드를 닫고 열어보세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image42.png)
+22. 첫 번째 셀을 실행해서 Azure AI 서비스를 다루기 위해 필요한 Python
+    라이브러리를 가져오세요.
 
-    >[!Note]: If **venv (Python 3.x.x)** does not appear in the list. Close
-and Open the Visual studio code.
+![](./media/image43.png)
 
-22. Run the first cell to import necessary Python libraries for working
-    with Azure AI services.
+23. 아래 셀을 실행하여 환경 변수에서 프로젝트 연결 문자열과 모델 이름을
+    가져오세요. 이 값들은 민감한 정보를 하드코딩하지 않고 Large Language
+    Model (LLM)과 안전하게 상호작용하는 데 필요합니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image43.png)
+![](./media/image44.png)
 
-23. Run the below cell to retrieve the project connection string and
-    model name from environment variables. These values are needed to
-    interact with the Large Language Model (LLM) securely, without
-    hardcoding sensitive information.
+24. 아래 셀을 실행하여 연결 문자열을 사용해 Microsoft Foundry 프로젝트에
+    연결하세요. 이로 인해 AIProjectClient와 안전한 연결이 구축되어
+    프로젝트 자원과의 상호작용이 가능해집니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image44.png)
+![](./media/image45.png)
 
-24. Run the below cell to connect to your Microsoft Foundry project
-    using the connection string. This establishes a secure connection
-    with AIProjectClient, enabling interactions with your project
-    resources.
+25. 아래 셀을 실행하여 Microsoft Foundry 프로젝트를 통해 GPT-4o 모델과
+    상호작용하세요. 이 코드는 채팅 클라이언트를 초기화하고, 곰인형에
+    관한 농담 요청을 보내고, 응답을 출력합니다. 마지막으로 채팅 모델에서
+    제공되는 출력을 확인해 보세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image45.png)
+![](./media/image46.png)
 
-25. Run the below cell to interact with the GPT-4o model using your
-    Microsoft Foundry project. This code initializes a chat client,
-    sends a request for a joke about a teddy bear, and prints the
-    response. Finally see the output provided from the chat model.
+> **참고:** 이 단계의 출력은 AI 모델에 의해 동적으로 생성되며 매번
+> 달라질 수 있습니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image46.png)
+**요약**
 
-	>[!Note]: The output in this step is generated dynamically by the AI model and may vary each time.
+이 실습에서는 Microsoft Foundry에서 AI 프로젝트를 생성 및 구성하고,
+GPT-4o Large Language Model 및 text-embedding-3-large embedding model을
+배포하며, Visual Studio Code와의 보안 연결을 구축하여 완전한 AI 개발
+환경을 성공적으로 구축했습니다. 필요한 의존성을 설치하고, 가상 환경을
+생성하고, 민감한 정보를 안전하게 관리할 수 있도록 환경 변수를
+설정했습니다. 마지막으로, 간단한 채팅 완성 API 호출을 실행해 환경이
+올바르게 구성되어 AI 기반 애플리케이션 개발에 적합한지 확인했습니다.
 
-**Summary**
-
-In this lab, you successfully set up a complete AI development
-environment by creating and configuring an AI Project in Microsoft
-Foundry, deploying a GPT-4o Large Language Model and
-text-embedding-3-large embedding model, and establishing secure
-connectivity from Visual Studio Code. You installed the required
-dependencies, created a virtual environment, and configured environment
-variables to manage sensitive information securely. Finally, you
-validated the setup by running a simple Chat Completion API call,
-confirming that your environment is correctly configured and ready for
-developing AI-powered applications.
-
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
-
-
+이 실습을 성공적으로 완료했습니다. 계속하려면 Next \>\>를 클릭하세요.

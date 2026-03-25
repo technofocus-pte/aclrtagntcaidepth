@@ -1,154 +1,151 @@
+# 실습 13: Human-in-the-Loop AI를 이용한 기업 사기 탐지 구현하기
 
-# Lab 13: Implementing Enterprise Fraud Detection with Human-in-the-Loop AI
+**예상 소요 시간**: 60분
 
-**Estimated Duration**: 60 Minutes
+**개요**
 
-**Overview**
+당신은 Contoso Ltd.의 AI 엔지니어로, Human-in-the-Loop (HITL) AI
+워크플로우 구현을 담당하고 있습니다. 이 실습에서는 Contoso 사기 탐지 및
+대응 워크플로우를 탐구하는데, AI 에이전트가 의심스러운 활동을 분석하고
+고위험 행동을 실시간 React + FastAPI 대시보드를 통해 모니터링 및
+상호작용을 위해 인간 분석가에게 전달하는 방식입니다.
 
-You are an AI Engineer at Contoso Ltd., responsible for implementing
-human-in-the-loop (HITL) AI workflows. In this lab, you will explore the
-Contoso Fraud Detection & Response Workflow, where AI agents analyze
-suspicious activity and route high-risk actions to human analysts for
-review, using a real-time React + FastAPI dashboard for monitoring and
-interaction.
+실습 목표
 
-Lab Objective
+이 실습에서 다음과 같은 작업을 수행하게 됩니다.
 
-You'll perform the following tasks in this lab.
+- 작업 1: Azure 에이전트 프레임워크를 활용한 Human-in-the-Loop AI
+  워크플로우 구현하기
 
-- Task 1: Implementing Human-in-the-Loop AI Workflows with Azure Agent
-  Framework
+## 작업 0: 코드를 설정하기 
 
-## Task 0: Set up the code 
+1.  C:\Labfiles\Day 3에서 **OpenAIWorkshop-Framework** 파일을
+    추출하세요.
 
-1.  From C:\Labfiles\Day 3, extract the **OpenAIWorkshop-Framework**
-    file.
+2.  LabVM 데스크톱에서 **Visual Studio Code**를 클릭하세요.
 
-2.  Click on the **Visual Studio Code** from the LabVM desktop.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image1.png)
+3.  **File** **(1)**을 선택하고 **OpenAIWorkshop-Framework** 폴더를
+    열려면 **Open Folder** **(2)**를 클릭하세요.
 
-3.  Select **File**  and click **Open Folder**  to open
-    the **OpenAIWorkshop-Framework** folder.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image2.png)
+4.  C:\Labfiles\Day 3\\**OpenAIWorkshop-Framework** 경로로 이동하고
+    **OpenAIWorkshop-Framework**를 선택하고 **Select Folder**를
+    클릭하세요.
 
-4.  Navigate to **C:\Labfiles\Day 3\\OpenAIWorkshop-Framework** path,
-    select **OpenAIWorkshop-Framework**  and then **Select Folder**.
+5.  **Yes, I trust the authors**를 선택하세요.
 
-5.  Select **Yes, I trust the authors**.
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image3.png)
+6.  **ellipsis(...)** **(1)**을 클릭하고 **Terminal** **(2)**를 클릭하고
+    **New Terminal** **(3)**을 클릭하세요.
 
-6.  Click on the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+7.  아래 명령어를 입력하여 **applications** 디렉터리로 이동하고
+    **pyproject.toml / uv.lock** 파일에서 필요한 모든 의존성을
+    설치하세요.
 
-7.  Enter the below command to navigate to
-    the **applications** directory and install all required dependencies
-    from the **pyproject.toml / uv.lock** file.
+> cd agentic_ai/applications
+>
+> uv sync
 
-	+++cd agentic_ai/applications+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-	+++pip install uv+++
+**참고:** 오류가 발생하면 아래에 주어진 명령어를 실행하세요
 
-	+++uv sync+++
+> +++pip install uv+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im1.png)
++++uv sync+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im2.png)
+8.  명령은 완료하는 데 5분에서 10분 정도 걸릴 수 있습니다. **그동안 작업
+    1을 진행할 수 있습니다**.
 
-9.  The command may take 5–10 minutes to complete. **Meanwhile, you can
-    proceed with Task 1**.
+## 작업 1: Azure 에이전트 프레임워크를 활용한 Human-in-the-Loop AI 워크플로우 구현하기
 
-## Task 1: Implementing Human-in-the-Loop AI Workflows with Azure Agent Framework
+이 실습에서는 Contoso의 사기 탐지 시스템을 위한 Human-in-the-Loop (HITL)
+워크플로우를 구현하게 됩니다. 다중 에이전트 사기 탐지를 실행하고, 고위험
+경고를 검토하며, 인간의 의사결정을 내리고, React + FastAPI 대시보드를
+사용해 실시간으로 워크플로우를 시각화할 수 있습니다.
 
-In this lab, you will implement a Human-in-the-Loop (HITL) workflow for
-Contoso’s Fraud Detection system. You’ll run multi-agent fraud
-detection, review high-risk alerts, make human decisions, and visualize
-the workflow in real time using the React + FastAPI dashboard.
+1.  Visual Studio Code에서 **agentic_ai (1) \> workflow (2)\>
+    fraud_detection (3)**을 확장하고 **fraud_detection_workflow.py
+    (4)**를 선택하세요. 코드를 보세요 **(5)**.
 
-1.  From the Visual Studio Code, expand **agentic_ai ** \> workflow
-    **\> fraud_detection**, select **fraud_detection_workflow.py**. View the Code .
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image6.png)
+2.  **fraud_detection** **(1)**에서 **.env.sample** **(2)**를 우클릭하고
+    **Rename** **(3)**을 선택하세요.
 
-2.  Under **fraud_detection** , right click
-    on **.env.sample**  and then select **Rename** .
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image7.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image7.png)
+3.  .env로 이름을 바꾸고 클릭하면 파일을 여세요.
 
-3.  Rename as .env and click on it to open the file.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image8.png)
+4.  AZURE_OPENAI_API_KEY **(1)**와 AZURE_OPENAI_ENDPOINT **(2)** 값을
+    이전 실습에서 복사한 실제 값으로 교체하세요.
 
-4.  Replace the value
-    of AZURE_OPENAI_API_KEY  and AZURE_OPENAI_ENDPOINT  with
-    the actual values that you have copied in the previous lab.
+5.  AZURE_OPENAI_CHAT_DEPLOYMENT을 **gpt-4o-mini (3)**로 추가하세요.
 
-5.  Add the AZURE_OPENAI_CHAT_DEPLOYMENT as **gpt-4o-mini**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image9.png)
+- **Microsoft Foundry** 포털로 이동하고 **Overview** **(1)**을 선택하고
+  **Azure OpenAI** **(2)**를 선택하세요. **Azure OpenAI
+  key** **(3)** 및 **Azure OpenAI endpoint** **(4)**를 복사하세요.
 
-	- Navigate to **Microsoft Foundry** portal, select **Overview** ,
-	  select **Azure OpenAI** . Copy the **Azure OpenAI
-	  key**  and **Azure OpenAI endpoint** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image10.png)
+6.  **File** **(1)**을 선택하고 **Save** **(2)**를 클릭하세요.
 
-6.  Select **File**  and then **Save** .
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image11.png)
+7.  Visual Studio Code 창에서 **ellipsis(...)** **(1)**을
+    클릭하고 **Terminal** **(2)**를 클릭하고 **New Terminal** **(3)**을
+    클릭하세요.
 
-7.  In the Visual Studio Code Window, click on
-    the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+8.  다음 명령어를 실행하세요.
 
-8.  Run the below command.
+> cd mcp
+>
+> uv run python mcp_service.py
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+9.  명령어를 실행하고 새 터미널을 여세요.
 
-9.  Let the command run, open a new terminal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+10. 아래에 제시된 명령러를 입력하여 명령줄로 워크플로우를 실행하세요.
 
-10. Enter the command given below to run the Workflow with the command
-    line.
+> cd agentic_ai/workflow/fraud_detection
+>
+> uv run python fraud_detection_workflow.py
+>
+> ![A black screen with white text AI-generated content may be
+> incorrect.](./media/image12.png)
 
-	```
-	cd agentic_ai/workflow/fraud_detection
-	uv run python fraud_detection_workflow.py
-	```
+**참고**: 명령은 완료하는 데 5분에서 10분 정도 걸릴 수 있습니다. 끝날
+때까지 기다리세요.
 
-    ![A black screen with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image12.png)
+11. 예시에는 세 가지 샘플 경고가 포함되어 있습니다:
 
-    >[!Note]: The command may take 5–10 minutes to complete. Please wait
-until it finishes.
-
-11. The example includes three sample alerts:
-
-    - **Alert 1: Multi-Country Login** (High Severity)
+    - **경고 1: 다국 로그인** (고중증도)
 
     - alert_id: "ALERT-001"
 
@@ -156,181 +153,169 @@ until it finishes.
 
     - alert_type: "multi_country_login"
 
-    - description: "Login attempts from USA and Russia within 2 hours."
+    - 설명: "Login attempts from USA and Russia within 2 hours."
 
-	severity: "high"
+심각성: "상"
 
-	- **Alert 2: Data Spike** (Medium Severity)
+- **경고 2: 데이터 스파이크** (중등 중증도)
 
-	- alert_id: "ALERT-002"
+- alert_id: "ALERT-002"
 
-	- customer_id: 2
+- customer_id: 2
 
-	- alert_type: "data_spike"
+- alert_type: "data_spike"
 
-	- description: "Data usage increased by 500% in the last 24 hours."
+- 설명: "Data usage increased by 500% in the last 24 hours."
 
-	severity: "medium"
+심각성: "중"
 
-	- **Alert 3: Unusual Charges** (High Severity)
+- **경고 3: 비정상적인 혐의** (고강도)
 
-	- alert_id: "ALERT-003"
+- alert_id: "ALERT-003"
 
-	- customer_id: 3
+- customer_id: 3
 
-	- alert_type: "unusual_charges"
+- alert_type: "unusual_charges"
 
-	- description: "Three large purchases totaling $5,000 in 10 minutes."
+- 설명: "Three large purchases totaling $5,000 in 10 minutes."
 
-	severity: "high"
+심각도: "상"
 
-12. Once the run succeeded, you can see the terminal as below. Select
-    the action based on the risk severity. If the risk
-    severity ≥0.6 human review is needed.
+12. 실행이 성공하면 터미널을 아래와 같이 볼 수 있습니다. 위험 심각도에
+    따라 행동을 선택하세요. 위험 심각도≥0.6이 필요하다면 인간 검토가
+    필요합니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-13. As the risk severity is high, you can enter 2 to lock the customer
-    account 
+13. 위험 심각도가 높으므로 고객 계정을 잠그기 위해 2를 입력할 수
+    있습니다 **(1)**
 
-    - Enter analyst notes: High risk confirmed from all three analyses.
-      Immediate action: locking account to prevent unauthorized
-      access. 
+    - 분석가 노트: 세 가지 분석 모두 고위험이 확인되었습니다. 즉각적인
+      조치: 무단 접근을 막기 위해 계정을 잠가세요. **(2)**
 
-    - Enter analyst ID (default: analyst_cli): Press **Enter** 
+    - 분석가 ID 입력(기본값: analyst_cli): **Enter (3)**를 누르세요
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image14.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-14. Once the workflow is completed, you will receive an output like
-    this.
+14. 워크플로우가 완료되면 다음과 같은 결과물을 받게 됩니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-15. Once the command is succeeded, **delete all the existing running
-    terminal sessions**.
+15. 명령이 성공하면, **delete all the existing running terminal
+    sessions**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-## Real-Time Workflow Visualizer UI for Contoso Fraud Detection & Response Workflow
+## Contoso 사기 탐지 및 대응 워크플로우를 위한 실시간 워크플로우 시각화 UI
 
-You will use the Real-Time Workflow Visualizer UI to monitor and
-interact with the Contoso Fraud Detection & Response Workflow. You’ll
-start all services (MCP server, backend, frontend), select sample
-alerts, observe live workflow execution, review high-risk fraud alerts,
-submit analyst decisions, and monitor event streams in real time.
+실시간 워크플로우 시각화 UI를 사용하여 Contoso 사기 탐지 및 대응
+워크플로우를 모니터링하고 상호작용하게 됩니다. 모든 서비스(MCP 서버,
+백엔드, 프론트엔드)를 시작하고, 샘플 알림을 선택하며, 실시간 워크플로우
+실행을 관찰하고, 고위험 사기 경고를 검토하며, 분석가 결정을 제출하고,
+이벤트 스트림을 실시간으로 모니터링합니다.
 
-1.  Open a new terminal.
+1.  새 터미널을 여세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-2.  Start All Services (3 terminals):
+2.  모든 서비스 시작하세요 (3개 터미널):
 
-    - Terminal 1 - MCP Server:
+    - 터미널 1 - MCP Server:
 
-	```
-	cd mcp
-	uv run mcp_service.py 
-	```
+> cd mcp
+>
+> uv run mcp_service.py
 
-	- Terminal 2 - FastAPI Backend:
+- 터미널 2 - FastAPI Backend:
 
-	```
-	cd agentic_ai/workflow/fraud_detection
-	uv run --prerelease allow backend.py
-	```
+> cd agentic_ai/workflow/fraud_detection
+>
+> uv run --prerelease allow backend.py
+>
+> ![A screen shot of a computer program AI-generated content may be
+> incorrect.](./media/image17.png)
 
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image17.png)
+- 터미널3 - React Frontend:
 
-	- Terminal 3 - React Frontend:
+> cd agentic_ai/workflow/fraud_detection/ui
+>
+> npm run dev
+>
+> **참고**: 오류가 발생하면 +++npm install+++ 명령을 실행한 후 +++npm
+> run dev+++ 명령을 다시 실행하세요.
+>
+> ![A computer screen with white text AI-generated content may be
+> incorrect.](./media/image18.png)
 
-	```
-	cd agentic_ai/workflow/fraud_detection/ui
- 	npm install
-	npm run dev
-	```
+- **Ctrl +** http://localhost:3000 클릭하면 브라우저에서 애플리케이션을
+  여세요
 
-	>[!Note]: If you get any error, execute the +++npm install+++ command and then rerun the +++npm run dev+++ command.
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
 
-    ![A computer screen with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image18.png)
+3.  실시간 워크플로우 시각화 UI 보세요.
 
-	- **ctrl + click** on http://localhost:3000 to open the application in a
-	  browser
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image19.png)
+4.  **Select Alerts**드롭다운에서 샘플 알림을 볼 수 있습니다 .
 
-3.  View the Real-Time Workflow Visualizer UI.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image20.png)
+**참고**: 두 번째 단말기(backend.py)에서 연결이 열린 후에야 드롭다운에서
+알림을 볼 수 있습니다. 연결이 열려 있는지 확인하세요.
 
-4.  You can see sample alerts from the **Select Alerts** drop-down.
+5.  **경고 선택**: 3가지 샘플 경고 (ALERT-001, ALERT-002, ALERT-003)
+    **(1) 중에서 선택하세요**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image21.png)
+    - 처리를 시작하려면 **Start Workflow (2)**를 클릭하세요
 
-    >[!Note]: You will be able to see the alerts from the drop-down only
-	after the connection is open in the 2nd terminal (backend.py). Make sure
-	the connection is open.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-5.  **Select Alert**: Choose from 3 sample alerts (ALERT-001, ALERT-002,
-    ALERT-003) 
+6.  **실시간 업데이트 시청**: 노드는 실행 시 색상이 변합니다
 
-    - Cick on **Start Workflow** to begin processing
+- 🔵 파란색 = 달리기
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image22.png)
+- 🟢 녹색 = 완료
 
-6.  **Watch Live Updates**: Nodes change color as executors run
+- ⚪ 회색 = 대기 상태
 
-    - 🔵 Blue = Running
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    - 🟢 Green = Completed
+7.  **분석가 리뷰**: 고위험 사기가 발견되면 심사 위원회가 구성됩니다.
 
-    - ⚪ Gray = Idle
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image23.png)
+8.  **결정 제출**: 액션을 선택하고 노트를 추가하세요
 
-7.  **Analyst Review**: When high-risk fraud is detected, a review panel
-    appears.
+    - 결정: 심각성이 높으면 **Lock Account (1)**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image24.png)
+    - 분석가 노트: 세 가지 분석 모두 확인된 고위험 항목을 입력합니다.
+      즉각적인 조치: 무단 접근을 막기 위해 계정을 잠가세요. **(2)**
 
-8.  **Submit Decision**: Choose action and add notes
+    - SUBMIT WORKFLOW **(3)** 선택
 
-    - Your Decision: If the severity is high, select **Lock Account**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-    - Analyst notes: Enter High risk confirmed from all three analyses.
-      Immediate action: locking account to prevent unauthorized
-      access. 
+9.  **모니터 이벤트**: 오른쪽 패널은 전체 이벤트 스트림을 보여줍니다.
 
-    - Select **SUBMIT WORKFLOW**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image25.png)
+**요약**
 
-9.  **Monitor Events**: The right panel shows the complete event stream.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image26.png)
-
-**Summary**
-
-In this lab, you implemented a human-in-the-loop (HITL) workflow for
-fraud detection using the Azure Agent Framework. You explored how AI
-agents analyze suspicious activity, route high-risk cases to human
-analysts, and interact with a real-time React + FastAPI dashboard to
-monitor workflow execution and submit decisions.
-
-
-
-
+이 실습에서는 Azure Agent 프레임워크를 활용해 사기 탐지를 위한
+human-in-the-loop (HITL) 워크플로우를 구현하셨습니다. AI 에이전트가
+의심스러운 활동을 분석하고, 고위험 사례를 인간 분석가에게 연결하며,
+실시간 React + FastAPI 대시보드와 상호작용하여 워크플로우 실행을
+모니터링하고 의사결정을 제출하는 방식을 탐구하셨습니다.

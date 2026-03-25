@@ -1,446 +1,418 @@
+# 실습 4: 건강 보험 보고서 생성 다중 에이전트 시스템 개발하기
 
-# Lab 4: Develop a Health plan report generation multi-agent system
+**개요**
 
-**Overview**
+이 실습에서는 포괄적인 건강 보험 보고서 자동 생성을 위해 특별히 설계된
+지능형 다중 에이전트 시스템을 개발하게 됩니다. 이 시스템은 4개의 전문 AI
+에이전트가 합력하여 상세한 건강보험 문서를 검색, 분석, 생성 및 검증하는
+협력을 활용합니다. 다중 에이전트 아키텍처는 자율 에이전트들이 협력하여
+단일 에이전트가 효과적으로 처리하기 어려운 복잡한 작업을 수행할 수
+있음을 보여줍니다.
 
-In this lab, you will develop an intelligent multi-agent system
-specifically designed to automate the generation of comprehensive health
-plan reports. This system leverages the collaborative power of four
-specialized AI agents working in coordination to retrieve, analyze,
-generate, and validate detailed health insurance documentation. The
-multi-agent architecture demonstrates how autonomous agents can work
-together to accomplish complex tasks that would be challenging for a
-single agent to handle effectively.
+이 4개의 AI 에이전트를 구축할 것입니다:
 
-You will build these 4 AI Agents:
+- **검색 에이전트** – 이 에이전트는 특정 건강 보험 정책에 관한 정보를
+  위해 Azure AI 검색 인덱스를 검색합니다.
 
-- **Search Agent** - This agent will search an Azure AI Search index for
-  information about specific health plan policies.
+- **보고서 에이전트** – 이 에이전트는 검색 에이전트로부터 반화된 정보를
+  바탕으로 건강 보험 정책에 대한 상세 보고서를 생성합니다.
 
-- **Report Agent** - This agent will generate a detailed report about
-  the health plan policy based on the information returned from the
-  Search Agent.
+- **검증 에이전트** – 이 에이전트는 생성된 보고서가 지정된 요구사항을
+  충족하는지 검증합니다. 저희 경우에는 보고서에 보장 제외 사항에 관한
+  정보가 포함되는지 확인하는 것이 중요합니다.
 
-- **Validation Agent** - This agent will validate that the generated
-  report meets specified requirements. In our case, making sure that the
-  report contains information about coverage exclusions.
-
-- **Orchestrator Agent** - This agent will act as an orchestrator that
-  manages the communication between the Search Agent, Report Agent, and
-  Validation Agent.
+- **오케스트레이터 에이전트** – 이 에이전트는 검색 에이전트, 보고
+  에이전트, 검증 에이전트 간의 통신을 관리하는 오케스트레이터 역할을
+  합니다.
 
 ![A diagram of a company AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image1.png)
+incorrect.](./media/image1.png)
 
-Orchestration is a key part of multi-agentic systems since the agents
-that we create need to be able to communicate with each other in order
-to accomplish the objective.
+오케스트레이션은 다중 에이전트 시스템의 핵심 요소로, 우리가 생성하는
+에이전트들이 목표를 달성하기 위해 서로 소통할 수 있어야 하기 때문입니다.
 
-We'll use the Azure AI Agent Service to create the Search, Report, and
-Validation agents. However, to create the Orchestrator Agent, we'll use
-Semantic Kernel. The Semantic Kernel library provides out-of-the-box
-functionality for orchestrating multi-agent systems.
+Azure AI 에이전트 서비스를 사용해 검색, 보고, 검증 에이전트를 생성할
+예정입니다. 하지만 Orchestrator Agent를 생성하기 위해서는 Semantic
+Kernel을 사용할 것입니다. Semantic Kernel 라이브러리는 멀티 에이전트
+시스템을 오케스트레이션하기 위한 기본 기능을 제공합니다.
 
-**Lab Objectives**
+**실습 목표**
 
-You'll perform the following tasks in this lab.
+이 실습에서 다음과 같은 작업을 수행할 것입니다.
 
-- Task 1: Create the Azure AI Search Index
+- 작업 1: Azure AI Search 인덱스를 생성하기
 
-- Task 2: Create the Search, Report, and Validation Agents.
+- 작업 2: 검색, 보고서 및 검증 에이전트를 생성하기
 
-## Task 1: Create the Azure AI Search Index
+## 작업 1: Azure AI Search 인덱스를 생성하기
 
-In this task, you will create an **Azure AI Search index** to store
-vectorized representations of health insurance plan documents, enabling
-efficient retrieval for AI-driven search and analysis.
+이 작업에서는 **Azure AI Search index**를 생성하여 건강보험 계획 문서의
+벡터화된 표현을 저장하여, AI 기반 검색 및 분석을 위한 효율적인 검색을
+가능하게 합니다.
 
-1.  Navigate to **Azure portal**, search for +++AI Search+++ and
-    select **AI Search** resource from the services.
+1.  **Azure portal**로 이동하고 **AI Search (1)**을 검색하고
+    서비스에서 **AI Search (2)** 리소스를 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image2.png)
+![](./media/image2.png)
 
-2.  This will navigate you to the AI Foundry, within **AI Search** ,
-    click on **Create**.
+2.  이 모드는 AI Foundry로 이동하며 **AI Search** (1) 내에서
+    **Create**(2)를 클릭하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image3.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-3.  On the **Create a Search service** pane enter the following details
-    and click on **Review + Create** 
+3.  **Create a Search service** 창에서 다음 정보를 입력하고 **Review +
+    Create** (4)를 클릭하세요
 
-    - Subscription : **Leave default subscription**
+    - Subscription : **Leave default subscription**
 
-    - Resource Group : Select **@lab.CloudResourceGroup(AgenticAI).Name**
+    - Resource Group : Select **AgenticAI (1)**
 
-    - Service Name : +++my-search-service-@lab.LabInstance.Id+++
+    - Service Name : **my-search-service- (2)**
 
-    - Location : **@lab.CloudResourceGroup(AgenticAI).Location**
+    - Location : **(3)**
 
-    - Tier : **Standard**
+![](./media/image4.png)
 
-    >[!Alert] Please verify the **Location** allows the **Standard** Tier. 
+4.  **Review + Create**에서 **Create**를 클릭하세요
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-4.  On the **Review + Create**, click on **Create**
+5.  배포가 완료될 때까지 기다렸다가 **Go to resource**를 클릭하세요
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image5.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-5.  Wait for until the deployment is completetd and then click on **Go
-    to resource**
+6.  왼쪽 메뉴에서 **Settings** 아래의 **Keys (1)**로 이동하세요. **API
+    Access control**에서 **Both(2)**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image6.png)
+![](./media/image7.png)
 
-6.  Navigate to **Keys** under **Settings** in the left menu.
-    Under **API Access control** select **Both**.
+7.  **Are you sure want to update the API Access Control for this serach
+    service**에 **Yes**를 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image7.png)
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image8.png)
 
-7.  Select **Yes** for **Are you sure want to update the API Access
-    Control for this serach service**.
+8.  **Settings**에서 **Identity(1)**로 이동하세요. System-assigned에서
+    Status를 **On(2)**로 설정하고 **Save(3)**을 클릭하세요.
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image8.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-8.  Navigate to **Identity** under **Settings**. Under
-    System-assigned set the Status to **On** and click
-    on **Save**.
+9.  **Enable System assigned managed identity**에 **Yes**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image9.png)
+![A close-up of a computer error AI-generated content may be
+incorrect.](./media/image10.png)
 
-9.  Select **Yes** for **Enable System assigned managed identity**.
+10. Azure portal에서 **Storage accounts (1)**를 검색하고 서비스에서
+    **Storage accounts (2)**를 선택하세요.
 
-    ![A close-up of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image10.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-10. On the Azure portal, search for +++**Storage accounts**+++ and
-    select **Storage accounts** from the services.
+11. **aifoundry**로 시작하는 저장 계정으로 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image11.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image12.png)
 
-11. Select the storage account that begins with **aifoundry**.
+12. **Access control (IAM) (1)**을 선택하고 **Add(2)**를 클릭하고 **Add
+    role assignment**를 선택하세요.
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-12. Select **Access control (IAM)**, then click on **Add**, and
-    then select **Add role assignment**.
+13. **Job function roles**에서 **Storage Blob Data Reader (1)**를
+    검색하고 **Storage Blob Data Reader (2)**를 선택하고 **Next (3)**을
+    선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-13. Under **Job function roles**, search for +++**Storage Blob Data Reader**+++, select **Storage Blob Data Reader**, and then
-    select **Next**.
+14. **Add role assignment** 페이지에서
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image14.png)
+    - Members에서 **Managed identity(1)**을 선택하세요
 
-14. On the **Add role assignment** page,
+    - **Members (2)**를 선택하세요
 
-    - Under Members, select **Managed identity**
+    - Managed identity: **search service(1)** **(3)**
 
-    - Select **Members**
+    - **my-search-service-**(4) search service를 선택하세요.
 
-    - Managed identity: **search service** 
+    - **Select (5)**를 클릭하세요
 
-    - Then select **my-search-service-@lab.LabInstance.Id** search service.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-    - Click on **Select**
+15. **Review + assign**을 두번 클릭하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-15. Click on **Review + assign** twice.
+16. **Azure OpenAI**, **my-openai-service**로 이동하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-16. Go to the **Azure OpenAI**, that starts with **my-openai-service**.
+17. **Access control (IAM) (1)**을 선택하고 **Add(2)**를 클릭하고 **Add
+    role assignment**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image17.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
 
-17. Select **Access control (IAM)**, then click on **Add**, and
-    then select **Add role assignment**.
+18. **Job function roles**에서 **Cognitive Services OpenAI User (1)**을
+    검색하고 **Cognitive Services OpenAI User (2)**를 선택하고 **Next
+    (3)**을 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image18.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-18. Under **Job function roles**, search for +++**Cognitive Services OpenAI User**+++, select **Cognitive Services OpenAI User**, and then
-    select **Next**.
+19. **Add role assignment** 페이지에서
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image19.png)
+    - Members에서 **Managed identity(1)**을 선택하세요
 
-19. On the **Add role assignment** page,
+    - **Members (2)**를 선택하세요
 
-    - Under Members, select **Managed identity**
+    - Managed identity: **search service(1)** **(3)**
 
-    - Select **Members**
+    - **my-search-service-**(4) search service를 선택하세요.
 
-    - Managed identity: **search service** 
+    - **Select (5)**를 클릭하세요
 
-    - Then select **my-search-service-** search service.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-    - Click on **Select**
+20. **Review + assign**을 두번 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image20.png)
+![](./media/image21.png)
 
-20. Select **Review + assign** twice.
+21. **Azure Portal**로 이동하고 **Storage account (1)**을 검색하고
+    **Storage account (2)**를 선택하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-21. Navigate to **Azure Portal**, search for +++**Storage account**+++ and
-    select the **Storage account**.
+22. **aifoundryhub**로 시작하는 스토리지 계정을 선택 하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-22. Select the Storage account that starts with **aifoundryhub**.
+23. Data storage에서 **Containers (1)**을 클릭하고 **+ Container(2)**를
+    선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-23. Click on **Containers** under data storage, then
-    select **+ Add container**.
+24. New Container 페이지에서 name을 **healthplan(1)**로 입력하고
+    **Create (2)**를 클릭하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-24. On New Container page enter +++**healthplan**+++ as name and click
-    on **Create**.
+25. **healthplan** 컨테이너를 클릭하고 여세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image25.png)
+![](./media/image26.png)
 
-25. Open **healthplan** container by clicking on it.
+26. 파일을 업로드하려면 **upload (1)**을 클릭하고 **browse for files
+    (2)**를 클릭하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image26.png)
+> ![](./media/image27.png)
 
-26. Click on **upload** to upload the file and then Click
-    on **browse for files**.
+27. C:\LabFiles\Day-1\azure-ai-agents-labs\data **(1)**로
+    이동하고 업로드할 PDF를 **(2)** 모두 선택하고 **Open (3)**을
+    클릭하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-27. Navigate to C:\LabFiles\Day-1\azure-ai-agents-labs\data  and
-    select both the PDFs to upload , and click on **Open**.
+28. **Upload**를 클릭하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-28. Click on **Upload**.
+**참고:** 기존 컨테이너를 선택하라고 하면, 드롭다운에서 건강보험을
+선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image29.png)
+29. **Azure AI search** 서비스로 이동하고 **my-search-service-**를
+    선택하세요.
 
-    >[!Note]: If it ask you to select existing container, from the drop down
-select healthplan.
+![](./media/image30.png)
 
-29. Navigate to **Azure AI search** service and
-    select the service that starts with **my-search-service-**.
+30. **import data (new)**를 클릭하세요.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image30.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-30. Click on **import data (new)**.
+31. **azure blob storage**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image31.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-31. Select **azure blob storage**.
+32. **RAG** 모델을 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image32.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-32. Choose **RAG** Model.
+33. Configure your Azure Blob Storage에서 다음 정보를 입력하고
+    **Next(5)**를 클릭하세요:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image33.png)
+[TABLE]
 
-33. On Configure your Azure Blob Storage , enter the following details
-    and click on **Next**:
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image34.png)
 
-    | Detail | Value |
-    | ------ | ------ |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Storage Account** | **ai-foundry-hub@lab.LabInstance.Id** |
-    | **Blob Container** | **healthplan** |
-    | **Managed Identity Type** | **system-assigned** |
+34. Vectorize your text에서 다음 정보를 입력하고 **Next (7)**를
+    클릭하세요:
 
+[TABLE]
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image34.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image35.png)
 
-34. On Vectorize your text, enter the following details and click
-    on **Next**:
+35. **Next**를 두번 클릭하세요.
 
-    | Detail | Value |
-    | ------ | ------ |
-    | **Kind** | **Azure OpenAI** |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Azure OpenAI Service** | **my-openai-service@lab.LabInstance.Id** |
-    | **Model Deployment** | **text-embedding-3-large** |
-    | **Authentication Type** | **System assigned identity** |
-    | **Acknowledge the additional costs** | **Enabled** |
+36. **Objects name prefix**에 **health-plan (1)**을 입력하고 **Create
+    (2)**를 클릭하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image35.png)
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image36.png)
 
-35. Click on **Next** twice.
+**참고**: 검색 서비스에서 데이터를 인덱스에 업로드하는 데 5-10분이 걸릴
+수 있습니다.
 
-36. Enter +++**health-plan**+++ for **Objects name prefix** and click
-    on **Create**.
+37. 팝업에서 **Start searching**을 클릭하세요.
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image36.png)
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image37.png)
 
-    >[!Note]: The uploading of data to indexes in search service might take 5-10 minutes.
+38. **ai-foundry-project-**의 **Overview** (1) 페이지로 이동하세요.
+    **Open In management center**(2)를 클릭하세요.
 
-37. Click on **Start searching** on the pop-up.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image37.png)
+39. **Connected resources** (1)을 선택하고 **New connection** (2)를
+    클릭하세요.
 
-38. Navigate to your **Overview**  page of **ai-foundry-project-**.
-    and click on **Open In management center**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image38.png)
+40. 검색바에 **Azure AI Search**(1)을 입력하고 **Azure AI Search**(2)를
+    선택하세요.
 
-39. Select **Connected resources** under Project and click on **New
-    connection** .
+![](./media/image40.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image39.png)
+41. 계속하려면 **Add connection**을 클릭하세요.
 
-40. Enter **Azure AI Search** in search bar and select **Azure AI
-    Search**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image40.png)
+## 작업 2: 검색, 보고서 및 검증 에이전트를 생성하기
 
-41. Click on **Add connection** to proceed.
+이 작업에서는 건강 보험 보고서를 검색, 생성, 검증하기 위한 검색, 보고,
+검증 에이전트를 생성합니다. 이 에이전트들은 정확성과 요구사항 준수를
+보장하기 위해 협력합니다. 각 요원은 보고서의 조회, 수집, 정확성 보장에
+뚜렷한 역할을 수행합니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image41.png)
+1.  **Lab 4 - Develop A Mult-Agent System.ipynb** 파일을 여세요. 이
+    **Lab 4 - Develop A Mult-Agent System.ipynb** 노트북은 검색, 보고,
+    검증, 조정 에이전트를 포함한 다중 에이전트 시스템을 개발하여 건강
+    보험 보고서를 생성하고 검증하는 방법을 안내합니다. 각 요원은
+    보고서의 조회, 수집, 정확성 보장에 뚜렷한 역할을 수행합니다.
 
-## Task 2: Create the Search, Report, and Validation Agents
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-In this task, you will create the Search, Report, and Validation Agents
-to retrieve, generate, and validate health plan reports. These agents
-will work together to ensure accuracy and compliance with requirements.
-Each agent plays a distinct role in retrieving, compiling, and ensuring
-the accuracy of the reports.
+2.  오른쪽 상단에 있는 **Select kernel (1)** 설정을 선택한 후 목록에서
+    **venv (Python 3.x.x) (2)**를 선택 하세요.
 
-1.  Open the **Lab 4 - Develop A Mult-Agent System.ipynb** file,
-    this **Lab 4 - Develop A Mult-Agent System.ipynb** notebook guides
-    you through developing a multi-agent system with Search, Report,
-    Validation, and Orchestrator Agents to generate and validate health
-    plan reports. Each agent plays a distinct role in retrieving,
-    compiling, and ensuring the accuracy of the reports.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image42.png)
+3.  이 셀을 실행하여 Azure AI Search, GPT-4o, Semantic Kernel을 통합한
+    **multi-agent system**을 개발 하여 지능형 작업 실행을 지원합니다. 이
+    구조는 여러 AI 에이전트가 정보를 검색하고, 응답을 생성하며, 복잡한
+    쿼리를 처리하는 데 협력할 수 있게 합니다.
 
-2.  Select the **Select kernel** setting available in the top right
-    corner and select **venv (Python 3.x.x)** from the list.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image44.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image43.png)
+4.  이 셀을 실행하면 **Search Agent**를 생성하는데, 이 에이전트는
+    GPT-4o를 사용해 Azure AI Search에서 건강 보험 세부 정보를
+    조회합니다. 이 에이전트는 건강 보험 문서 내에서 구조화된 정보를
+    효율적으로 검색할 수 있게 합니다.
 
-3.  Run this cell to develop a **multi-agent system** that integrates
-    Azure AI Search, GPT-4o, and Semantic Kernel for intelligent task
-    execution. This setup enables multiple AI agents to collaborate on
-    retrieving information, generating responses, and handling complex
-    queries.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image44.png)
+5.  이 셀을 실행하면 GPT-4o를 사용해 건강 보험에 대한 상세 보고서를
+    생성하는 **Search Agent**를 생성합니다. 이 에이전트는 구조화된 통찰,
+    보장 세부사항, 다양한 플랜에 대한 제외 사항을 제공하여 문서를
+    향상시킵니다.
 
-4.  Run this cell to create the **Search Agent**, which retrieves health
-    plan details from Azure AI Search using GPT-4o. This agent enables
-    efficient retrieval of structured information from health plan
-    documents.
+![](./media/image46.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image45.png)
+6.  이 셀을 실행하면 **Validation Agent**를 생성하는데, 이는 Report
+    Agent가 생성한 보고서가 품질 기준을 충족하는지 확인하며, 특히 보장
+    제외 여부를 확인합니다.
 
-5.  Run this cell to create the **Report Agent**, which generates
-    detailed reports on health plans using GPT-4o. This agent enhances
-    documentation by providing structured insights, coverage details,
-    and exclusions for various plans.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image46.png)
+7.  **다중 에이전트 시스템을 생성하기**: 아래 셀을 실행하면 VS Code
+    상단에 건강 보험 플랜 이름을 입력하라는 채팅 상자가 뜨게 됩니다.
 
-6.  Run this cell to create the **Validation Agent**, which ensures that
-    reports generated by the Report Agent meet quality standards,
-    specifically checking for coverage exclusions.
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image48.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image47.png)
+8.  기억하신다면, 저희는 두 개의 건강 보험을 검색 인덱스에
+    업로드했습니다. 안내를 받으면 상단에 나타나는 박스에 다음 건강 보험
+    중 하나를 입력하고 **Enter**를 눌러 멀티 에이전트 시스템 실행을
+    시작하세요:
 
-7.  **Create a multi-agent system** : When you run the below cell, you
-    will see a chat box pop up at the top of VS Code asking you to input
-    the name of a health plan.
+    - **Northwind Health Standard**
 
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image48.png)
+    - **Northwind Health Plus**1
 
-8.  If you recall, we uploaded two health plans to the search index.
-    When prompted, type any one of the following health plans in the box
-    that appears at the top and press **Enter** to begin running the
-    multi-agent system:
+![](./media/image49.png)
 
-    - +++Northwind Health Standard+++
+9.  상자가 상단에 나타나면 Exit을 입력하고 Enter 버튼을 눌러 실행 중인
+    코드 블록을 멈추세요.
 
-    - +++Northwind Health Plus+++
+**참고**: 셀을 성공적으로 돌리면 다음과 같은 결과를 받게 됩니다.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image49.png)
+> Orchestrator Agent is starting...
+>
+> Calling SearchAgent...
+>
+> SearchAgent completed successfully.
+>
+> Calling ReportAgent...
+>
+> ReportAgent completed successfully.
+>
+> Calling ValidationAgent...
+>
+> ValidationAgent completed successfully.
+>
+> The report for Northwind Plus has been generated. Please check the
+> Northwind Plus Report.md file for the report.
+>
+> Orchestrator Agent is starting...
 
-9.  When the box appears at the top, type exit into the box and press
-    Enter to stop the running code block.
+**요약**
 
-    >[!Note]: After the successful run of the cell you will recieve the
-following outcome.
+이 실습에서 4개의 전문 AI 에이전트가 협력하여 포괄적인 건강 보험 보고서
+생성을 자동화하는 지능형 다중 에이전트 시스템을 성공적으로
+개발하셨습니다. 벡터화된 건강보험 문서를 저장하는 Azure AI 검색 인덱스를
+생성하고, 정책 정보를 검색하는 검색 에이전트, 상세 문서를 생성하는
+리포트 에이전트, 요구사항 준수를 보장하는 검증 에이전트, 그리고 모든
+에이전트 간 통신을 관리하는 Semantic Kernel을 사용하는 오케스트레이터
+에이전트를 생성했습니다. 실제 건강보험 플랜 데이터를 활용한 다중
+에이전트 시스템을 운영함으로써, 자율 에이전트들이 단일 에이전트가 어려운
+복잡한 작업을 효과적으로 협력하여 수행할 수 있음을 보여주었고, 실용적인
+비즈니스 애플리케이션을 위한 엔터프라이즈급 에이전트 오케스트레이션
+패턴을 보여주었습니다.
 
-	> Orchestrator Agent is starting...
-	>
-	> Calling SearchAgent...
-	>
-	> SearchAgent completed successfully.
-	>
-	> Calling ReportAgent...
-	>
-	> ReportAgent completed successfully.
-	>
-	> Calling ValidationAgent...
-	>
-	> ValidationAgent completed successfully.
-	>
-	> The report for Northwind Plus has been generated. Please check the
-	> Northwind Plus Report.md file for the report.
-	>
-	> Orchestrator Agent is starting...
-
-**Summary**
-
-In this lab, you successfully developed an intelligent multi-agent
-system designed to automate the generation of comprehensive health plan
-reports through the coordination of four specialized AI agents. You
-created an Azure AI Search index to store vectorized health insurance
-documents, then built a Search Agent to retrieve policy information, a
-Report Agent to generate detailed documentation, a Validation Agent to
-ensure compliance with requirements, and an Orchestrator Agent using
-Semantic Kernel to manage communication between all agents. By running
-the multi-agent system with real health plan data, you demonstrated how
-autonomous agents can collaborate effectively to accomplish complex
-tasks that would be challenging for a single agent, showcasing
-enterprise-grade agent orchestration patterns for practical business
-applications.
-
-Congratulations! You have successfully completed the lab.
-
+축하합니다! 실습을 성공적으로 완료했습니다.

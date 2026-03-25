@@ -1,618 +1,584 @@
-# Lab 5 Design Scalable AI Agents with Microsoft Foundry and Agent Framework
-
-**Overview**
-
-In this hands-on lab spanned across 3 days for designing and building
-scalable AI agents using Microsoft Foundry and the Microsoft Agent
-Framework. Participants will begin by creating their first AI agent
-through the Microsoft Foundry portal, where they will learn to upload
-enterprise policy documents and ingest them into Azure AI Search to
-prepare a searchable knowledge base. The workshop then progresses to
-building multi-agent systems using the Microsoft Agent Framework SDK,
-where multiple specialized agents collaborate through Agent-to-Agent
-(A2A) communication patterns. Learners will extend their agent
-capabilities by integrating external tools and data sources using the
-Model Context Protocol (MCP), connecting to both Azure AI Search for
-knowledge retrieval and external APIs like Freshdesk for ticket
-management. The training advances to deploying agents into the Microsoft
-Foundry Agent Service as persistent, cloud-hosted solutions with state
-management and enterprise-grade reliability. Finally, participants will
-implement advanced workflow patterns including orchestrated multi-agent
-systems with centralized coordination and handoff-based systems where
-conversations seamlessly transition between specialized agents based on
-user intent and domain expertise.
-
-**Objectives**
-
-By the end of this lab, you will be able to:
-
-- **Set Up AI Project and Perform Chat Completion from VS
-  Code:** Configure a production-ready AI development environment by
-  creating an Microsoft Foundry project, deploying GPT-4 and embedding
-  models, and establishing secure connections from Visual Studio Code.
-  You will validate the setup by executing chat completion calls,
-  ensuring seamless integration between your local development
-  environment and Azure AI services with proper authentication and
-  project configuration.
-
-- **Build a Health Insurance Plans Analyzer AI Agent:** Develop an
-  intelligent AI Agent specialized in analyzing and visualizing health
-  insurance data. You will create an agent that processes complex health
-  benefit plan information and automatically generates comparative bar
-  charts, demonstrating core AI agent capabilities including data
-  interpretation, natural language understanding, code execution, and
-  automated visualization generation for decision support.
-
-- **Develop a Multi-Agent Collaborative System:** Design and implement
-  an advanced multi-agent architecture where specialized AI agents work
-  together to analyze health plan documents and generate comprehensive
-  reports. You will build a Search Agent for intelligent document
-  retrieval using Azure AI Search, a Report Agent for generating
-  detailed analytical reports, a Validation Agent for ensuring
-  compliance and accuracy, and an Orchestrator Agent for managing
-  inter-agent communication and workflow coordination, showcasing
-  enterprise-grade agent collaboration patterns.
-
-**Prerequisites**
-
-Participants should have:
-
-- **Azure & Cloud Experience** - Familiarity with Azure Portal, Resource
-  Groups, and Azure AI services
-
-- **Programming Skills** - Basic Python knowledge (async/await,
-  environment variables, API calls)
-
-- **AI Concepts** - Understanding of LLMs, embeddings, RAG
-  (Retrieval-Augmented Generation), and prompt engineering
-
-- **Development Tools** - Proficiency with Visual Studio Code, terminal
-  usage, and Git
-
-- **Agent Framework Awareness** - Basic knowledge of agent
-  architectures, tools, and orchestration patterns
-
-Explanation of Components
-
-- **Microsoft Foundry**: Microsoft Foundry is a cloud platform for
-  developing, deploying, and managing enterprise AI agents. It provides
-  managed Agent Service runtime, centralized project management, and
-  Application Insights monitoring, ensuring enterprise-grade
-  reliability, security, and observability throughout the agent
-  lifecycle.
-
-- **Microsoft Agent Framework SDK**: The official Python SDK for
-  building intelligent, modular agents that replace AutoGen and Semantic
-  Kernel. It features native Agent-to-Agent communication, Model Context
-  Protocol integration, and Microsoft Foundry support, enabling
-  production-ready enterprise agent systems with standardized tool
-  usage.
-
-- **Azure AI Search**: A vector-based search engine enabling
-  Retrieval-Augmented Generation workflows. It provides hybrid retrieval
-  combining vector similarity and keyword search, semantic ranking for
-  improved relevance, and document indexing capabilities, ensuring
-  agents deliver grounded, factually accurate responses from enterprise
-  knowledge sources.
-
-- **Model Context Protocol (MCP)**: A standardized interface enabling
-  agents to access external knowledge and tools securely. MCP connects
-  to enterprise data sources, external APIs like Freshdesk, and custom
-  tools with structured schemas, ensuring reliable, auditable
-  interactions and forming the foundation for extensible enterprise AI
-  systems.
+# Microsoft Foundry 및 에이전트 프레임워크를 활용한 확장 가능한 AI 에이전트 설계하기
+
+**개요**
+
+이 실습에서는 3일간 진행되어 Microsoft Foundry와 Microsoft Agent
+Framework를 활용한 확장 가능한 AI 에이전트를 설계하고 구축했습니다.
+참가자들은 Microsoft Foundry 포털을 통해 첫 AI 에이전트를 생성하는
+것부터 시작하며, 기업 정책 문서를 업로드하고 Azure AI Search에 입력하여
+검색 가능한 지식 베이스를 준비하는 방법을 배웁니다. 워크숍은 이후
+Microsoft Agent Framework SDK를 사용하여 다중 에이전트 시스템 구축으로
+진행되며, 여러 전문 에이전트가 Agent-to-Agent (A2A) 통신 패턴을 통해
+협력합니다. 학습자들은 Model Context Protocol (MCP)을 사용하여 외부
+도구와 데이터 소스를 통합하여 에이전트 역량을 확장하며, 지식 검색을 위한
+Azure AI Search와 티켓 관리를 위한 Freshdesk와 같은 외부 API와
+연결됩니다. 교육은 에이전트를 Microsoft Foundry Agent Service에 배포하는
+단계로 발전하며, 상태 관리와 기업급 신뢰성을 갖춘 지속적인 클라우드
+호스팅 솔루션으로 구현합니다. 마지막으로, 참가자들은 중앙 조정이
+이루어진 오케스트레이션 다중 에이전트 시스템과 사용자 의도와 도메인
+전문성에 따라 전문 에이전트 간 대화가 원활하게 전환되는 핸드오프 기반
+시스템 등 고급 워크플로우 패턴을 구현할 예정입니다.
+
+**목표**
+
+이 실습이 끝날 때 다음을 수행할 수 있습니다:
+
+- **AI 프로젝트를 설정하고 VS Code에서 채팅 완료를 수행:** Microsoft
+  Foundry 프로젝트를 생성하고, GPT-4 및 모델을 임베딩하며, Visual Studio
+  Code와 안전한 연결을 구축하여 생산성 준비가 된 AI 개발 환경을
+  구성하세요. 채팅 완료 호출을 실행하여 설정 검증을 수행하여, 로컬 개발
+  환경과 Azure AI 서비스 간의 원활한 통합 및 적절한 인증 및 프로젝트
+  구성을 보장합니다.
+
+- **건강 보험 플랜 분석기 AI 에이전트 구축:** 건강보험 데이터를 분석하고
+  시각화하는 지능형 AI 에이전트를 개발하세요. 복잡한 건강보험 플랜
+  정보를 처리하고 비교 막대 차트를 자동으로 생성하는 에이전트를 생성하여
+  데이터 해석, 자연어 이해, 코드 실행, 의사결정 지원을 위한 자동 시각화
+  생성 등 핵심 AI 에이전트 기능을 시연합니다.
+
+- **다중 에이전트 협업 시스템 개발:** 전문 AI 에이전트들이 협력하여 건강
+  보험 문서를 분석하고 포괄적인 보고서를 생성하는 첨단 다중 에이전트
+  아키텍처를 설계하고 구현합니다. Azure AI Search를 이용한 지능형 문서
+  검색용 Search Agent, 상세한 분석 보고서를 생성하는 Report Agent, 준수
+  및 정확성을 보장하는 Validation Agent, 그리고 에이전트 간 통신 및
+  워크플로우 조정을 관리하는 Orchestrator Agent를 구축하여
+  엔터프라이즈급 에이전트 협업 패턴을 보여줄 것입니다.
+
+**필수 구성 요소**
+
+참가자들은 다음 사항을 갖추어야 합니다:
+
+- **Azure 및 클라우드 경험** – Azure Portal, Resource Groups, 및 Azure
+  AI 서비스에 대한 익숙
+
+- **프로그래밍 기술** – 기본 Python 지식 (async/await, 환경 변수, API
+  호출)
 
-- **Chat Response Agent**: A single-turn, stateless agent model for
-  local development and testing. It processes requests independently
-  without retaining context, running within local environments and
-  responding immediately. Ideal for prototyping core logic and
-  validating behavior before advancing to production with persistent
-  agents.
+- **AI 개념** – LLM, 임베딩, RAG (Retrieval-Augmented Generation), 및
+  프롬프트 엔지니어링에 대한 이해
 
-- **Persistent Agent**: A cloud-hosted, long-lived service in Microsoft
-  Foundry maintaining state across conversations. It supports external
-  tool integration via MCP, Agent-to-Agent collaboration, and
-  enterprise-scale reliability with built-in monitoring, providing
-  foundations for production applications requiring stateful, multi-turn
-  conversational experiences.
+- **개발 도구** – Visual Studio Code, 터미널 사용 및 Git 숙련도
 
-- **Planner Agent**: An intelligent orchestrator analyzing user queries
-  to route them to appropriate specialist agents. It uses AI reasoning
-  and keyword heuristics to classify queries across domains like HR,
-  Finance, or Compliance, ensuring optimal task distribution and serving
-  as the central coordination point.
+- **에이전트 프레이워크 인식** – 에이전트 아키텍처, 도구 및
+  오케스트레이션 패턴에 대한 기본 지식
 
-- **Worker Agents**: Domain specialists with expertise in specific areas
-  like HR, Finance, or Compliance. Each agent has domain-specific
-  instructions, specialized tools, and relevant knowledge sources. They
-  collaborate with planner agents through A2A communication, delivering
-  authoritative, accurate responses for complex domain-specific
-  inquiries.
+구성 요소 설명
 
-- **Azure OpenAI**: Enterprise-grade service providing access to
-  advanced LLMs through secure API endpoints. It offers chat completion,
-  embedding models, content filtering, and compliance features.
-  Seamlessly integrates with Microsoft Foundry, enabling agents to
-  leverage GPT-4 while maintaining data privacy and governance controls.
+- **Microsoft Foundry**: Microsoft Foundry는 엔터프라이즈 AI 에이전트를
+  개발, 배포 및 관리하는 클라우드 플랫폼입니다. 관리형 에이전트 서비스
+  런타임 중앙 집중식 프로젝트 관리, 애플리케이션 인사이트 모니터링을
+  제공하여 에이전트 수명주기 전반에 걸쳐 엔터프라이즈급 신뢰성, 보안,
+  관측 가능성을 보장합니다.
 
-# Lab 5: Building a Retrieval-Augmented AI Agent with Microsoft Foundry
+- **Microsoft Agent Framework SDK**: AutoGen과 Semantic Kernel을
+  대체하는 지능형 모듈형 에이전트를 구축하는 공식 Python SDK입니다. 이
+  시스템은 네이티브 Agent-to-Agent 통신, Model Context Protocol 통합,
+  Microsoft Foundry 지원을 제공하여 표준화된 도구 사용과 함께 본용 생산
+  준비가 된 엔터프라이즈 에이전트 시스템을 가능하게 합니다.
 
-**Overview**
+- **Azure AI Search**: Retrieval-Augmented Generation (검색 증강 생성)
+  워크플로우를 가능하게 하는 벡터 기반 검색 엔진입니다. 이 도구는 벡터
+  유사성과 키워드 검색, 의미론적 순위 부여를 통한 관련성 향상, 문서
+  인덱싱 기능을 결합한 하이브리드 검색을 제공하여 에이전트가 기업 지식
+  소스로부터 근거 있고 사실에 근거한 정확한 응답을 제공할 수 있도록
+  보장합니다.
 
-In this lab, you'll create your first AI Agent using the Microsoft
-Foundry portal. You'll begin by uploading enterprise policy documents
-and ingesting them into Azure AI Search to prepare a knowledge base.
-Then, you'll configure the agent using the Microsoft Agent Framework to
-enable retrieval-augmented generation (RAG). Finally, you'll test the
-agent's responses and analyze execution logs to observe how it retrieves
-and processes information.
+- **Model Context Protocol (MCP)**: 에이전트가 외부 지식과 도구에
+  안전하게 접근할 수 있도록 하는 표준화된 인터페이스입니다. MCP는
+  엔터프라이즈 데이터 소스, Freshdesk와 같은 외부 API, 구조화된 스키마를
+  갖춘 맞춤형 도구와 연결되어 신뢰할 수 있고 감사 가능한 상호작용을
+  보장하고 확장 가능한 엔터프라이즈 AI 시스템의 기반을 형성합니다.
 
-**Lab Objectives**
+- **채팅 응답 에이전트**: 로컬 개발 및 테스트를 위한 단일 턴, 상태 없는
+  에이전트 모델입니다. 이 장치는 맥락을 유지하지 않고 독립적으로 요청을
+  처리하며, 로컬 환경에서 실행되고 즉시 응답합니다. 영구 에이전트로
+  프로덕션으로 나아가기 전에 코어 로직 프로토타이핑과 동작 검증에
+  이상적입니다.
 
-You'll perform the following tasks in this lab.
+- **지속 에이전트**: Microsoft Foundry의 클라우드 호스팅 장기 서비스가
+  대화 전반에 걸쳐 상태를 유지하는 방식입니다. MCP를 통한 외부 도구
+  통합, Agent-to-Agent 협업, 내장 모니터링과 함께 엔터프라이즈 규모의
+  신뢰성을 지원하여, 상태 기반 다중 턴 대화 경험이 필요한 생산
+  애플리케이션의 기반을 제공합니다.
 
-- Task 1: Create the Azure resources
+- **플래너 에이전트**: 사용자 쿼리를 분석하여 적절한 전문 에이전트로
+  라우팅하는 지능형 오케스트레이터입니다. AI 추론과 키워드 휴리스틱을
+  활용해 HR, 재무, 컴플라이언스 등 다양한 영역에서 쿼리를 분류하여
+  최적의 업무 분배를 보장하고 중앙 조정 지점 역할을 합니다.
 
-- Task 2: Create an AI Agent in Microsoft Foundry
+- **작업자 에이전트**: HR, 재무, 컴플라이언스 등 특정 분야에 전문성을
+  가진 도메인 전문가들. 각 에이전트는 도메인별 지침, 전문 도구, 관련
+  지식 소스를 가지고 있습니다. 이들은 A2A 통신을 통해 플래너 에이전트와
+  협력하며, 복잡한 도메인 특화 문의에 대해 권위 있고 정확한 답변을
+  제공합니다.
 
-- Task 3: Connect Azure AI Search for RAG
+- **Azure OpenAI**: 보안 API 엔드포인트를 통해 고급 LLM에 접근할 수 있는
+  엔터프라이즈급 서비스입니다. 채팅 완료, 임베딩 모델, 콘텐츠 필터링,
+  준수 기능을 제공합니다. Microsoft Foundry와 원활하게 통합되어
+  에이전트가 GPT-4를 활용하면서도 데이터 프라이버시와 거버넌스 통제를
+  유지할 수 있습니다.
 
-- Task 4: Test and Observe Agent Execution Logs
+# 실습 5: Microsoft Foundry를 이용한 검색 증강 AI 에이전트 구축하기
 
-## Task 1: Create the Azure resources
+**개요**
 
-In this task, you will create all the Azure resources that are required
-to perform this lab.
+이 실험실에서는 Microsoft Foundry 포털을 사용해 첫 AI 에이전트를 만들어
+보게 됩니다. 먼저 기업 정책 문서를 업로드하여 Azure AI Search에 입력하여
+지식 베이스를 준비하는 것부터 시작해야 합니다. 그 후 Microsoft Agent
+Framework를 사용하여 retrieval-augmented generation (RAG)을 활성화하도록
+에이전트를 구성합니다. 마지막으로, 에이전트의 응답을 테스트하고 실행
+로그를 분석하여 정보를 어떻게 검색하고 처리하는지 관찰하게 됩니다.
 
-### Task 1.1: Create Storage account
+**실습 목표**
 
-1.  Login to the Azure portal at +++https://portal.azure.com+++ using
-    the below credentials and select **Storage accounts**.
+이 실습에서 다음과 같은 작업을 수행할 것입니다.
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+- 작업 1: Azure 리소스를 생성하기
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
+- 작업 2: Microsoft Foundry에 AI 에이전트를 생성하기
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image1.png)
+- 작업 3: RAG을 위한 Azure AI Search를 연결하기
 
-2.  Select **Create**.
+- 작업 4: 에이전트 실행 로그를 테스트 및 관찰하기
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image2.png)
+## 작업 1: Azure 리소스를 생성하기
 
-3.  Enter the below details and select **Review + create**. Select
-    **Create** in the next screen.
+이 작업에서는 이 실습을 수행하는 데 필요하는 모든 Azure 리소스를 생성할
+것입니다.
 
-	- Storage account name - +++aistorage@lab.LabInstance.Id+++
+### 적업 1.1: 스토리지 계정 생성하기
 
-	- Preferred storage type - Select **Azure Blob Storage or Azure Data
-	  Lake Storage Gen2**
+1.  다음 자격 증명을 사용하여 +++https://portal.azure.com+++로 Azure
+    portal에 로그인하고 Storage account를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image3.png)
+- 사용자 이름 - +++@lab.CloudPortalCredential(User1).Username+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image4.png)
+- TAP - <+++@lab.CloudPortalCredential(User1).TAP>+++
 
-4.  Once the resource is created, select **Go to resource**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image5.png)
+2.  **Create**를 선택하세요.
 
-5.  Select **Upload**, select **Create new** to create a new container.
-    Name it as +++**datasets**+++ and then select **Ok**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image6.png)
+3.  다음 정보를 입력하고 **Review + create**를 선택하세요. 다음 화면에서
+    Create를 선택하세요.
 
-    ![A screenshot of a login box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image7.png)
+- Storage account name - +++aistorage@lab.LabInstance.Id+++
 
-6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 2** and click **Upload**.
+- Preferred storage type – **Azure Blob Storage or Azure Data Lake
+  Storage Gen2**를 선택하세요
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image8.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image3.png)
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image4.png)
 
-    ![A screenshot of a upload box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image9.png)
+4.  리소스가 생성하면 **Go to resource**를 선택하세요.
 
-Now, the Storage account is create successfully and loaded with the
-policy documents.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-### Task 1.2: Create Foundry resource
+5.  **Upload**를 선택하고 새로운 컨테이너를 생성하려면 **Create new**를
+    선태하세요. +++**datasets**+++로 이름을 정한 후 **OK**를 선택하세요.
 
-In this task, you will create a Foundry resource which is required to
-access the Microsoft Foundry.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-1.  From the Home page of the Azure
-    portal(+++https://portal.azure.com+++), select **Foundry**.
+![A screenshot of a login box AI-generated content may be
+incorrect.](./media/image7.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image10.png)
+6.  **Browse for files**을 선택하고 **C:\Labfiles\Day 2**에서 정책
+    파일을 선택하고 **Upload**를 클릭하세요.
 
-2.  Select **Foundry** from the left pane, and then select **Create** to
-    create the Foundry resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image11.png)
+![A screenshot of a upload box AI-generated content may be
+incorrect.](./media/image9.png)
 
-3.  Enter the below details and select **Review + create**.
+이제 Storage account가 성공적으로 생성되고 정책 문서와 로드되었습니다.
 
-    - Name - +++agentic-@lab.LabInstance.Id+++
+### 작업 1.2: Foundry 리소스를 생성하기
 
-    - Default project name - +++agentic-ai-project-@lab.LabInstance.Id+++
+이 작업에서는 Microsoft Foundry에 접근하기 위해 필요한 Foundry 리소스를
+생성할 것입니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image12.png)
+1.  Azure 포털 (+++https://portal.azure.com+++)의 홈페이지에서
+    **Foundry**를 선택하세요.
 
-4.  Select **Create** once validated.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image13.png)
+2.  왼쪽 창에서 **Foundry**를 선택하고 Foundry 리소스를 생성하려면
+    **Create**를 선택하세요.
 
-5.  Ensure that the resource is created.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image14.png)
+3.  다음 정보를 입력하고 **Review + create**를 선택하세요.
 
-6.  Open the **agentic-ai-project-@lab.LabInstance.Id** and select
-    **Go to Foundry portal**.
+- Name – <+++agentic-@lab.LabInstance.Id>+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image15.png)
+- Default project name – <+++agentic-ai-project-@lab.LabInstance.Id>+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-7.  In the Microsoft Foundry, select Models + endpoints from the left
-    pane. Select + **Deploy model** -> **Deploy base model**.
+4.  검증되면 **Create**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image17.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-8.  Search for +++gpt-4o-mini+++, select it and click on Confirm to
-    deploy the model.
+5.  리소스가 생성해졌는디 확인하세요.
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image18.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-9.  Select **Deploy** in the deployment window.
+6.  [**agentic-ai-project-@lab.LabInstance.Id**](mailto:agentic-ai-project-@lab.LabInstance.Id)를
+    열고 **Go to Foundry portal**을 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image19.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-10. Similarly, search for +++text-embedding-ada-002+++ and deploy it.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image16.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image20.png)
+7.  Microsoft Foundry의 왼쪽 창에서 Models + endpoints를 선택하세요. +
+    **Deploy model** -\> **Deploy base model**을 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-In this task, you have successfully created the Foundry resource and
-deployed a chat and an embedding model in it.
+8.  +++gpt-4o-mini+++를 검색하고 선택하고 모델을 배포하려면 Confirm을
+    클릭하세요.
 
-### Task 1.3: Create Application insights
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image18.png)
 
-In this task, you will create an Application insights resource, which is
-required for monitoring.
+9.  배포 창에서 **Deploy**를 선택하세요.
 
-1.  From the Home page of the Azure portal, select **Subscriptions** and
-    select the assigned subscription.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image22.png)
+10. 마찬가지로 +++text-embedding-ada-002+++를 검색하고 배포하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-2.  Select **Resource providers** from the left pane.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image24.png)
+이 작업에서는 Foundry 리소스를 성공적으로 생성하고 채팅과 임베딩 모델을
+배포하였습니다.
 
-3.  Search for +++Operational+++, select the 3 dots next to
-    **Microsoft.OperationalInsights** and click **Register**.
+### 작업 1.3: 애플리케이션 인사이트를 생성하기
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image25.png)
+이 작업에서는 모니터링에 필요한 에플리케이션 인사이트 리소스를 생성할
+것입니다.
 
-4.  From the left pane of the Microsoft Foundry, select **Monitoring**.
+1.  Azure portal의 홈페이지에서 **Subscriptions**을 선택하고 할당된
+    구독을 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image26.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-5.  Select **Create New** -> provide the name as
-    +++agent-insights-@lab.LabInstance.Id+++ and then select
-    **Create**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    ![A screenshot of a application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image27.png)
+2.  왼쪽 창에서 **Resource providers**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image29.png)
+3.  +++Operational+++를 검색하고 **Microsoft.OperationalInsights** 옆에
+    있는 3 점을 선택하고 **Register**를 클릭하세요.
 
-In this task, you have created the Application Insight resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-### Task 1.4: Create Search resource
+4.  Microsoft Foundry의 왼쪽 창에서 **Monitoring**을 선택하세요.
 
-Before an AI Agent can answer enterprise questions accurately, it must
-access trusted data sources. Azure AI Search enables Retrieval-Augmented
-Generation (RAG) by indexing documents such as policies, contracts, and
-manuals. An index acts like a searchable catalog that breaks content
-into chunks, adds metadata, and enables the agent to retrieve the right
-information during a conversation.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-In this task, index the uploaded documents using Azure AI Search to
-create a searchable knowledge base.
+5.  **Create New** -\>를 선택하고 이름을
+    <+++agent-insights-@lab.LabInstance.Id>+++로 입력하고 **Create**를
+    선택하세요.
 
-1.  From the Home page of the Azure portal, select **Foundry**.
+![A screenshot of a application AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image30.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-2.  Select **AI Search** from the left pane and then select **+
-    Create.**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image31.png)
+이 작업에서는 애플리케이션 인사이트 리소스를 생성했습니다.
 
-3.  Enter the below details, select **Review + create**.
+### 작업 1.4: Search 리소스를 생성하기
 
-	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
+AI 에이전트가 기업 질문에 정확히 답하기 전에, 신뢰할 수 있는 데이터
+소스에 접근해야 합니다. Azure AI Search는 정책, 계약서, 매뉴얼과 같은
+문서를 색인화하여 Retrieval-Augmented Generation (RAG)을 가능하게
+합니다. 인덱스는 검색 가능한 카탈로그처럼 작용하여 콘텐츠를 조각으로
+나누고 메타데이터를 추가하며, 대화 중에 에이전트가 올바른 정보를 검색할
+수 있게 합니다.
 
-	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
-    
-	**Note:** Please select a region that allows the Standard pricing tier
+이 작업에서는 Azure AI 검색을 사용해 업로드된 문서를 색인화하여 검색
+가능한 지식 베이스를 생성할 것입니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image32.png)
+1.  Azure 포털의 홈페이지에서 **Foundry**를 선택하세요.
 
-4.  Select **Create** once the validation passes. Select Go to resource
-    once the resource is created.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image33.png)
+2.  왼쪽 창에서 **AI Search**를 선택하고 **+ Create**를 선택하세요**.**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image34.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-5.  Select **Import data (new)**.
+3.  다음 정보를 입력하고 **Review + create**를 선택하세요.
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image35.png)
+- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
 
-6.  Select the **Azure Blob Storage** under **Choose data source**.
+- Region - East US2
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image36.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image32.png)
 
-7.  In the next pane, select the **RAG** option as we are building a
-    retrieval-based agent.
+4.  검증이 되면 **Create**를 선택하세요. 리소스가 생성하면 Go to
+    resource를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image37.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
- Here is what each of these options for -
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image34.png)
 
-1.  **Keyword Search:** Used for traditional search experiences based on
-    exact keywords. It indexes text so users can find information
-    through keyword matching, without AI reasoning.
+5.  **Import data (new)**를 선택하세요.
 
-2.  **RAG (Retrieval-Augmented Generation):** Combines document
-    retrieval with AI generation.It ingests text (and simple OCR images)
-    so an AI agent can provide grounded, context-aware answers.
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image35.png)
 
-3.  **Multimodal RAG:** Extends RAG to handle complex visual content
-    like diagrams, tables, workflows, or charts. It enables AI to
-    interpret both text and visual elements for richer, insight-based
-    responses.
+6.  **Choose data source** 아래의 **Azure Blob Storage**를 선택하세요.
 
-8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
-    and **datasets** **under Blob container** and select **Next**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image38.png)
+7.  검색 기반 에이전트를 개발 중이라 다음 창에서 **RAG** 옵션을
+    선택하세요.
 
-9.  Select the below details and select **Next**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image37.png)
 
-	- Kind - **Azure AI Foundry (Preview)**
+> 각 옵션의 목적은 다음과 같습니다 -
 
-	- Azure AI Foundry/Hub project -
-	  **agentic-ai-project-@lab.LabInstance.Id**
+1.  **키워트 검색:** 정확한 키워드를 기반으로 한 전통적인 검색 경험에
+    사용됩니다. 이 시스템은 테스트를 색인화하여 사용자가 AI 추론 없이
+    키워트 매칭을 통해 정보를 찾을 수 있도록 합니다.
 
-	- Model deployment - **text-embedding-002-ada**
+2.  **RAG (Retrieval-Augmented Generation):** 문서 검색과 AI 생성을
+    결합합니다. 텍스트 (및 간단한 OCR 이미지)를 흡수하여 AI 에이전트가
+    현실적이고 맥락 인식에 맞는 답변을 제공할 수 있습니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image39.png)
+3.  **Multimodal RAG:** RAG를 확장하여 다이어그램, 표, 워크플로우,
+    차트와 같은 복잡한 시각 콘텐츠를 처리할 수 있습니다. AI는 텍스트와
+    시각적 요소를 모두 해석하여 더 풍부하고 통찰력 기반의 응답을
+    가능하게 합니다.
 
-10. Select **Next** in the next screens until the **Review and create**
-    screen appears.
+&nbsp;
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image40.png)
+8.  **Storage account** 및 **datasets** **under Blob containe**r의
+    <aistorage@lab.LabInstance.Id>를 선태하고 **Next**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image41.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-11. Select **Create** in the **Review and create** screen.
+9.  다음 정보를 선택하고 **Next**를 선택하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image42.png)
+- Kind – Azure AI Foundry (Preview)
 
-12. Select **Close** in the Create succeeded dialog.
+- Azure AI Foundry/Hub project –
+  <agentic-ai-project-@lab.LabInstance.Id>
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image43.png)
+- Model deployment – text-embedding-002-ada
 
-You've successfully ingested the dataset into Azure AI Search and
-created a searchable index. In the next task, you'll create an AI agent
-and connect this index as its knowledge source.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-## Task 2: Create an AI Agent in Microsoft Foundry
+10. **Review and create** 화면이 나타날 떄까지 다음 화면에서 **Next**를
+    선택하세요.
 
-In this task, you will create a new AI Agent in Microsoft Foundry and
-configure its core purpose, instructions, and model using the Microsoft
-Agent Framework interface.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image40.png)
 
-1.  Navigate back to your resource group, from the resource list,
-    select **agentic--@lab.LabInstance.Id** foundry resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image44.png)
+11. **Review and create** 화면에서 **Create**를 선택하세요.
 
-2.  In the next pane, click on **Go to Foundry portal**. You will now be
-    navigated to the Microsoft Foundry portal, where you will be
-    creating your first agent.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image45.png)
+12. Create succeeded 대화상자에서 **Close**를 선택하세요.
 
-3.  Once navigated to Foundry Portal, select **Agents** from the
-    left menu you will already see an agent **pre created**. If not
-    created, then please click on the **+ New agent** option to get
-    it created.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image46.png)
+데이터세트를 Azure AI Search에 성공적으로 인상하고 검색 가능한 인덱스를
+생성했습니다. 다음 작업에서는 AI 에이전트를 생성하고 이 인덱스를 지식
+소스로 연결할 것입니다.
 
-4.  Select the newly created **agent**, and a configuration pane will be
-    opened on the right. Provide the following details.
+## 작업 2: Microsoft Foundry에 AI 에이전트를 생성하기
 
-	
-	| Column 1 | Column 2 |
-	| -------- | -------- |
-	| **Agent name **  |     +++**EnterpriseAgent**+++     |
-	| **Instructions **   |   +++You are an enterprise knowledge assistant. Retrieve relevant policy information before answering questions.+++       |
+이 작업에서는 Microsoft Foundry에서 새로운 AI 에이전트를 생성하고,
+Microsoft Agent Framework 인터페이스를 사용해 그 핵심 목적, 지침, 모델을
+구성하게 됩니다.
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image47.png)
+1.  리소스 그룹으로 돌아가서 리소스 목록에서 **agentic-** foundry
+    리소스를 선택하세요.
 
-5.  You've successfully created an agent in Microsoft Foundry. Next,
-    it's time to enrich it with knowledge by connecting your indexed
-    data in the upcoming task.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-## Task 3: Connect Azure AI Search for RAG
+2.  다음 창에서 **Go to Foundry portal**을 클릭하세요. 이제 Microsoft
+    Foundry 포털로 이동하여 첫 번째 에이전트를 생성하게 됩니다.
 
-In this task, you will integrate Azure AI Search with your agent using
-the knowledge integration panel, enabling retrieval-augmented responses
-through MCP (Model Context Protocol).
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-1.  In the same agent configuration pane, scroll down and click on **+
-    Add** for **Knowledge** parameter.
+3.  Foundry Portal로 이동하면 왼쪽 메뉴에서 **Agents (1)**를 선택하면
+    이미 미리 생성된 에이전트가 보입니다. 만약 생성되지 않았다면 **+ New
+    agent (2)** 옵션을 클릭하여 생성하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image48.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-2.  In the **Add knowledge** pane, select **Azure AI Search** as you
-    have the index prepared in the AI Search resource.
+4.  새로 생성된 **에이전트**를 선택하면 오른쪽에 설정 창이 열립니다.
+    다음 정보를 입력하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image49.png)
+[TABLE]
 
-3.  In the next pane, for **Azure AI Search resource
-    connection** option, click on **drop-down arrow** and
-    select **Connect other Azure AI Search resource**.
+> ![A screenshot of a computer program AI-generated content may be
+> incorrect.](./media/image47.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image50.png)
+5.  Microsoft Foundry에서 에이전트를 성공적으로 생성하셨습니다.
+    다음으로, 다가오는 작업에서 인덱싱된 데이터를 연결하여 지식을
+    풍부하게 할 때입니다.
 
-4.  In the next pane, review that the correct AI Search resource is
-    selected and click on **Add connection**.
+## 작업 3: RAG을 위한 Azure AI Search를 연결하기
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image51.png)
+이 작업에서는 지식 통합 패널을 통해 Azure AI Search를 에이전트와
+통합하여 MCP (Model Context Protocol)를 통한 검색 증강 응답을 가능하게
+합니다.
 
-5.  In the **Adding Azure AI Search** step, configure the following
-    details and click on **Connect** once completed.
+1.  같은 에이전트 설정 창에서 아래로 **Knowledge** 매개변수를 위해 **+
+    Add**를 클릭하세요.
 
-	| **Detail** | **Value** |
-	| -------- | -------- |
-	| **Azure AI Search resource connection**   |     **AIknowledge@lab.LabInstance.Id**     |
-	| **Azure AI Search index** |    **rag index**     |
-	| **Display name**   |    +++**knowledge-index**+++      |
-	| **Search type**   |    **Hybrid (vector + keword )**      |
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image48.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image52.png)
+2.  **Add knowledge** 창에서 AI Search 리소스에 인덱스가 준비되어 있으니
+    **Azure AI Search**를 선택하세요.
 
-6.  The agent is now successfully enriched with knowledge using the
-    Azure AI Search index, which acts as a searchable knowledge base for
-    retrieving accurate information during conversations.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image49.png)
 
-## Task 4: Test and Observe Agent Execution Logs
+3.  다음 창에서 **Azure AI Search resource connection** 옵션을 위헤
+    **drop-down arrow (1)**를 클릭하고 **Connect other Azure AI Search
+    resource (2)**를 선택하세요.
 
-In this task, you will test your agent by asking policy-related
-questions and reviewing structured logs to verify tool usage, search
-calls, and grounded responses.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-1.  Before testing the agent, connect Application Insights to enable
-    detailed logs and trace visibility.
+4.  다음 창에서 올바른 AI Search 리소스가 선택되었는지 확인하고 **Add
+    connection**을 클릭하세요.
 
-2.  In Microsoft Foundry portal, select **Monitoring** from left
-    menu, select **agent-insights-@lab.LabInstance.Id** and click on **Connect**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image51.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image53.png)
+5.  **Adding Azure AI Search** 단계에서 다음 정보를 구성하고 완료되면
+    **Connect (5)**를 클릭하세요.
 
-3.  Once done, select, **Agents** from left menu, and then choose
-    the **EnterpriseAssistant** agent and click on **Try in
-    playground**.
+[TABLE]
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image54.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image52.png)
 
-4.  A chat panel will open where you can enter your prompts. The agent
-    will now respond using the documents and datasets you've connected.
+6.  에이전트는 이제 Azure AI Search 인덱스를 활용해 대화 중 정확한
+    정보를 검색할 수 있는 지식 기반으로 성공적으로 정보를 풍부하게 하고
+    있습니다.
 
-	Sample prompts -
+## 작업 4: 에이전트 실행 로그를 테스트 및 관찰하기
 
-	- +++What is the employee travel reimbursement policy?+++
+이 작업에서는 정책 관련 질문을 하고 구조화된 로그를 검토하여 도구 사용,
+검색 호출, 근거 있는 응답을 검증하여 에이전트를 테스트하게 됩니다.
 
-	- +++Summarize the contract approval rules and cite the document.+++
+1.  에이전트를 테스트하기 전에 Application Insights를 연결하여 상세한
+    로그와 추적 가시성을 활성화하세요.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image55.png)
+2.  Microsoft Foundry 포털에서 왼쪽 메뉴에서 **Monitoring (1)**을
+    선택하고 **agent-insights- (2)**를 선택하고 **Connect (3)**을
+    클릭하세요.
 
-5.  Once the agent responds to questions, click on **Thread logs** from
-    the top menu to check the logs and traces of the current thread.
+![](./media/image53.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image56.png)
+3.  완료 후 왼쪽 메뉴에서 **Agents (1)**을 선택한
+    후 **EnterpriseAssistant (2)** 에이전트를 선택한 후 **Try in
+    playground (3)**을 클릭하세요.
 
-6.  Explore and review these metrics, traces, and evaluations which
-    showcase a detailed overiew on the agent log.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image54.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image57.png)
+4.  채팅 패널이 열리면 프롬프트를 입력할 수 있습니다. 에이전트는
+    연결하신 문서와 데이터셋을 사용해 응답할 것입니다.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image58.png)
+샘플 프롬프트 -
 
-7.  Now, navigate to the **monitoring** pane, where you have connected
-    application insights before, and select the **Resource usage** tab
-    and review all the metrics and values.
+- +++What is the employee travel reimbursement policy?+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image59.png)
+- +++Summarize the contract approval rules and cite the document.+++
 
-8.  You've successfully built a RAG-based agent powered by curated
-    enterprise datasets. Next, you'll take this further by enabling
-    multi-agent collaboration, where agents can delegate, reason, and
-    work together intelligently.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image55.png)
 
-Summary
+5.  상담원이 질문에 응답하면, 상단 메뉴에서 **Thread logs**를 클릭하여
+    현재 스레드의 로그와 트레이스를 확인하세요.
 
-In this lab, you successfully created your first AI Agent in Microsoft
-Foundry and connected it to an indexed knowledge base. You uploaded
-documents, ingested them into Azure AI Search, and enabled RAG through
-Microsoft Agent Framework integration. By testing the agent and
-reviewing execution logs, you gained firsthand experience in how agents
-retrieve grounded information and generate enterprise-ready responses.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image56.png)
 
+6.  에이전트 로그에 상세한 개요 정보를 보여주는 이러한 지표, 추적 및
+    평가를 탐색하고 검토하세요.
 
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image57.png)
 
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image58.png)
+
+7.  이제 이전에 연결된 애플리케이션 인사이트가 있던
+    **monitoring **창으로 이동해 **Resource usage** 탭을 선택하고 모든
+    지표와 값을 검토하세요.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image59.png)
+
+8.  여러분은 엄선된 엔터프라이즈 데이터셋을 기반으로 한 RAG 기반
+    에이전트를 성공적으로 구축하셨습니다. 다음으로, 다중 에이전트 협업을
+    가능하게 하여 에이전트들이 위임하고 논리적이며 지능적으로 함께 일할
+    수 있도록 할 것입니다.
+
+**요약**
+
+이 실습에서 Microsoft Foundry에서 첫 AI 에이전트를 성공적으로 만들고
+인덱스된 지식 베이스와 연결하셨습니다. 문서를 업로드하고, Azure AI
+Search에 입력한 후 Microsoft Agent Framework 통합을 통해 RAG를
+활성화했습니다. 에이전트를 테스트하고 실행 로그를 검토함으로써,
+에이전트가 어떻게 안정적인 정보를 수집하고 기업용 응답을 생성하는지 직접
+경험할 수 있었습니다.
