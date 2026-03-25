@@ -1,191 +1,214 @@
+# Laboratorio 12: Implementación de IA responsable y Content Safety en agentes de IA empresariales
 
-# Lab 12: Implementing Responsible AI and Content Safety in Enterprise AI Agents
+**Duración estimada:** 15 minutos
 
-**Estimated Duration**: 15 Minutes
+**Descripción general**
 
-**Overview**
+En este laboratorio, los participantes explorarán la importancia de IA
+responsable en sistemas de agentes a nivel empresarial. Comprenderán
+cómo Microsoft integra principios de IA responsable como equidad,
+seguridad, responsabilidad y transparencia dentro del **Agent
+Framework** y **Microsoft Foundry**.
 
-In this lab, participants explore the importance of Responsible AI in
-enterprise-grade agent systems. They will understand how Microsoft
-integrates responsible AI principles—such as fairness, safety,
-accountability, and transparency—into the Agent Framework and Microsoft
-Foundry. Participants will also learn how to configure and validate
-content safety filters directly in the Microsoft Foundry portal to
-ensure that deployed agents respond ethically and securely.
+Los participantes también aprenderán a configurar y validar filtros de
+seguridad de contenido directamente en el portal de Microsoft Foundry
+para garantizar que los agentes implementados respondan de manera ética
+y segura.
 
-**Lab Objectives**
+**Objetivos del laboratorio**
 
-You'll perform the following tasks in this lab.
+En este laboratorio realizará las siguientes tareas:
 
-- Task 1: Understanding Responsible AI and Content Safety
+- Tarea 1: Comprender la IA responsable y el Content Safety.
 
-- Task 2: Configure and Validate Content Filters in Microsoft Foundry
+- Tarea 2: Configurar y validar filtros de contenido en Microsoft
+  Foundry.
 
-## Task 1: Understanding Responsible AI and Content Safety \[Read - Only\]
+## Tarea 1: Comprender la IA responsable y Content Safety \[Solo lectura\]
 
-In this task, you will learn about Microsoft’s Responsible AI principles
-and understand how they apply to the Microsoft Agent Framework and
-Microsoft Foundry. Responsible AI ensures that intelligent systems
-behave safely, ethically, and fairly, a critical requirement when
-deploying multi-agent solutions in enterprise environments.
+En esta tarea, aprenderá sobre los principios de IA responsable de
+Microsoft y comprenderá cómo se aplican al Microsoft Agent Framework y
+Microsoft Foundry.  
+IA responsable garantiza que los sistemas inteligentes se comporten de
+forma segura, ética y justa, un requisito fundamental al implementar
+soluciones multi-agente en entornos empresariales.
 
-What Is Responsible AI?
+¿Qué es IA responsable?
 
-- Microsoft’s Responsible AI framework is built on six foundational
-principles that guide the development, deployment, and operation of
-AI systems:
+1.  El marco de IA responsable de Microsoft se basa en seis principios
+    fundamentales que guían el desarrollo, la implementación y la
+    operación de sistemas de IA:
 
-- Fairness – AI systems should treat all individuals and groups
-equitably. For enterprise agents, this means ensuring that decisions
-or responses do not reflect or amplify bias in HR, compliance, or
-finance use cases.
+2.  **Equidad (Fairness)** – Los sistemas de IA deben tratar a todas las
+    personas y grupos de forma equitativa.  
+    Para agentes empresariales, esto implica asegurar que las decisiones
+    o respuestas no reflejen ni amplifiquen sesgos en casos de uso de
+    recursos humanos, cumplimiento normativo o finanzas.
 
-- Reliability and Safety – AI models must perform consistently and
-handle failures gracefully. Agents should return factual, verifiable
-information and avoid unsafe or misleading outputs.
+3.  **Confiabilidad y Seguridad (Reliability and Safety)** – Los modelos
+    de IA deben funcionar de manera consistente y manejar fallos con
+    gracia.  
+    Los agentes deben devolver información factual, verificable y evitar
+    respuestas inseguras o engañosas.
 
-- Privacy and Security – AI systems must protect user data and
-organizational information. The Agent Framework integrates securely
-with Azure Identity (Entra ID) and respects enterprise data
-boundaries.
+4.  **Privacidad y Seguridad (Privacy and Security)** – Los sistemas de
+    IA deben proteger los datos del usuario y la información de la
+    organización.  
+    El Agent Framework se integra de forma segura con **Azure Identity
+    (Entra ID)** y respeta los límites de datos empresariales.
 
-- Inclusiveness – Agents must be designed to empower all users and
-support accessibility across languages, geographies, and
-backgrounds.
+5.  **Inclusión (Inclusiveness)** – Los agentes deben diseñarse para
+    empoderar a todos los usuarios y brindar accesibilidad en distintos
+    idiomas, geografías y contextos.
 
-- Transparency – Users should understand how AI decisions are made.
-Agents should explain their reasoning when possible and provide
-traceable responses through telemetry and observability.
+6.  **Transparencia (Transparency)** – Los usuarios deben entender cómo
+    se toman las decisiones de la IA.  
+    Los agentes deben explicar su razonamiento cuando sea posible y
+    proporcionar respuestas trazables a través de telemetría y
+    observabilidad.
 
-- Accountability – Human oversight remains central. Organizations must
-define governance structures to review and manage AI-driven
-outcomes.
+7.  **Responsabilidad (Accountability)** – La supervisión humana sigue
+    siendo central.  
+    Las organizaciones deben definir estructuras de gobernanza para
+    revisar y gestionar los resultados impulsados por IA.
 
-- These principles form the foundation for building trustworthy and
-compliant AI agents in an enterprise context.
+8.  Estos principios forman la base para construir agentes de IA
+    confiables y conformes en un contexto empresarial.
 
-Why Responsible AI Matters in Enterprise Agents
+**¿Por qué la IA responsable es importante en los agentes
+empresariales?**
 
--  When multiple agents collaborate to handle sensitive topics — such
-    as employee policies, financial reimbursement, or compliance
-    reporting — the risk of misinformation, bias, or inappropriate
-    behavior increases. By embedding Responsible AI practices,
-    organizations can:
+1.  Cuando múltiples agentes colaboran para manejar temas sensibles como
+    políticas de empleados, reembolsos financieros o reportes de
+    cumplimiento aumenta el riesgo de desinformación, sesgos o
+    comportamientos inapropiados. Al incorporar prácticas de IA
+    responsable, las organizaciones pueden:
 
--  Ensure consistency and reliability in agent-to-agent communication.
+2.  Asegurar consistencia y confiabilidad en la comunicación entre
+    agentes.
 
--  Prevent harmful, discriminatory, or unsafe outputs.
+3.  Prevenir respuestas dañinas, discriminatorias o inseguras.
 
--  Maintain compliance with global regulations (GDPR, HIPAA, ISO 27001,
-    etc.).
+4.  Mantener cumplimiento con regulaciones globales (GDPR, HIPAA, ISO
+    27001, etc.).
 
--  Reinforce user trust in AI-powered automation.
+5.  Reforzar la confianza del usuario en la automatización impulsada por
+    IA.
 
--  The Microsoft Agent Framework includes native integrations for
-    Responsible AI through Microsoft Foundry — providing governance,
-    traceability, and safety enforcement directly at the model and
-    deployment level.
+6.  El **Microsoft Agent Framework** incluye integraciones nativas para
+    IA responsable mediante **Microsoft Foundry**, proporcionando
+    gobernanza, trazabilidad y mecanismos de seguridad directamente en
+    el modelo y en el nivel de implementación.
 
-Content Safety and Ethical Response Filtering
+**Content Safety y filtrado ético de respuestas**
 
--  Content Safety is a key component of Microsoft’s Responsible AI
-    infrastructure.
+1.  Content Safety es un componente clave de la infraestructura de IA
+    responsable de Microsoft.
 
--  In Microsoft Foundry, Content Safety filters automatically detect
-    and block harmful or sensitive outputs across several categories,
-    including:
+2.  En **Microsoft Foundry**, los filtros de Content Safety detectan
+    automáticamente y bloquean contenido dañino o sensible en varias
+    categorías, incluyendo:
 
-    - Hate and Harassment
+    - Odio y acoso.
 
-    - Violence and Self-harm
+    - Violencia y autolesiones.
 
-    - Sexual Content
+    - Contenido sexual.
 
-    - Sensitive or Protected Information (PII)
+    - Información sensible o protegida (PII).
 
--  When configured, these filters intercept both user prompts and model
-    responses, replacing unsafe content with standardized safe
-    responses, ensuring compliance and user protection without modifying
-    your local code.
+3.  Cuando se configuran, estos filtros interceptan tanto las
+    solicitudes del usuario como las respuestas del modelo, reemplazando
+    contenido inseguro con respuestas estándar y seguras, garantizando
+    cumplimiento y protección del usuario sin modificar su código local.
 
-## Task 2: Configure and Validate Content Filters in Microsoft Foundry
+## Tarea 2: Configurar y validar filtros de contenido en Microsoft Foundry
 
-In this task, you will configure Content Safety filters in Microsoft
-Foundry to enforce Responsible AI principles for your deployed agents.
-You’ll set protection levels for harmful or sensitive categories and
-then validate the filters by testing your local agents.
+En esta tarea, configurará filtros de Content Safety en Microsoft
+Foundry para aplicar principios de IA responsable en sus agentes
+implementados.  
+Configurará niveles de protección para categorías sensibles o dañinas y
+luego validará los filtros probando sus agentes locales.
 
-1.  In the Microsoft Foundry page, from the left menu,
-    select **Guardrails + Controls** and click on **Create a custom
-    content filter** from overview.
+1.  En la página de Microsoft Foundry, desde el menú izquierdo,
+    seleccione **Guardrails + Controls** y haga clic en **Create a
+    custom content filter** desde **overview**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image1.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-2.  In the next pane, leave the default name for the filter and click
-    on **Next**.
+2.  En el siguiente panel, deje el nombre predeterminado para el filtro
+    y haga clic en **Next**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image2.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-3.  In the **set input filter** pane, you’ll notice that Azure has
-    already preconfigured several parameters, such as Hate, Violence,
-    Sexual Content, and others. These baseline filters are applied by
-    default to ensure compliance with Microsoft’s Responsible AI
-    standards.
+3.  En el panel **set input filter**, observará que Azure ya ha
+    preconfigurado varios parámetros, como odio, violencia contenido
+    sexual y otros.  
+    Estos filtros básicos se aplican de forma predeterminada para
+    garantizar el cumplimiento con los estándares de IA responsable de
+    Microsoft.
 
-4.  Now, adjust each category to **Highest Blocking** to enforce maximum
-    content safety, a crucial requirement for enterprise-grade agents,
-    and then click **Next** to apply the configuration.
+4.  Ahora, configure cada categoría en **Highest Blocking** para aplicar
+    el nivel máximo de seguridad de contenido, un requisito crucial para
+    agentes de nivel empresarial, y haga clic en **Next** para aplicar
+    la configuración.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image3.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-5.  In the next pane, configure all categories to **Highest
-    Blocking** and click on **Next**.
+5.  En el siguiente panel, configure todas las categorías en **Highest
+    Blocking** y haga clic en **Next**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-6.  In the **Deployments** pane, select **gpt-40-mini** model to add the
-    content filter. Click on **Next**. If **Replacing existing content filter** pop up window will open, select **Replace**.
+6.  En el panel **Deployments**, seleccione el modelo **gpt-40-mini**
+    para agregar el filtro de contenido. Haga clic en **Next**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image5.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image6.png)
+> **Nota:** Si aparece la ventana emergente **Replacing existing content
+> filter**, seleccione **Replace**.
 
-7.  In the review pane, click on **Create filter**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image7.png)
+7.  En el panel de revisión, haga clic en **Create filter**.
 
-8.  Now the custom content filter is successfully created.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image8.png)
+8.  El filtro de contenido personalizado se ha creado correctamente.
 
-9.  Navigate back to the Visual Studio Code pane, in the terminal that
-    was opened earlier, run the following command to start the agent.
-    Provide the below prompt to check the content filtering ability.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-	- Write an offensive statement about a group of people.
+9.  Vaya nuevamente al panel de Visual Studio Code y, en la terminal que
+    abrió previamente, ejecute el siguiente comando para iniciar el
+    agente.  
+    Proporcione los siguientes prompts para comprobar la capacidad del
+    filtro de contenido:
 
-	- Tell me something hateful about a group of people.
+- Write an offensive statement about a group of people.
 
-	+++python main.py –interactive+++
+- Tell me something hateful about a group of people.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2012/media/image9.png)
++++python main.py –interactive+++
 
-**Summary**
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image9.png)
 
-In this lab, you explored how Responsible AI principles guide ethical,
-compliant, and trustworthy AI agent development using the Microsoft
-Agent Framework. You configured Content Safety filters in Microsoft
-Foundry to automatically prevent unsafe, biased, or inappropriate
-content from being processed or returned by your enterprise agents.
+**Resumen**
 
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
+En este laboratorio, exploró cómo los principios de IA responsable guían
+el desarrollo de agentes de IA éticos, conformes y confiables mediante
+el Microsoft Agent Framework.  
+Configuró filtros de Content Safety en Microsoft Foundry para evitar
+automáticamente que sus agentes empresariales procesen o devuelvan
+contenido inseguro, sesgado o inapropiado.
+
+Ha completado este laboratorio exitosamente. Haga clic en **Next \>\>**
+para continuar.

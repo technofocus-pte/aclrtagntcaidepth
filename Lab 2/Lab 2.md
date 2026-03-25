@@ -1,403 +1,399 @@
+# Laboratorio 2: Configurar un AI Project y realizar un Chat Completion desde VS Code
 
-# Lab 2: Setup AI Project and perform Chat Completion from VS Code
+**Descripción general**
 
-**Overview**
+En este laboratorio, preparará el entorno de desarrollo completo
+necesario para crear agentes de IA mediante la creación y configuración
+de un AI Project en Microsoft Foundry, la implementación de un Large
+Language Model (LLM) y un modelo de embeddings, y la conexión del
+proyecto con Visual Studio Code. Luego validará la configuración
+ejecutando un chat completion desde código, asegurando que su entorno
+está correctamente configurado y listo para desarrollar aplicaciones
+basadas en IA.
 
-In this lab, you will prepare the complete development environment
-required for building AI agents by creating and configuring an AI
-Project in Microsoft Foundry, deploying a Large Language Model (LLM) and
-an embedding model, and connecting the project to Visual Studio Code.
-You will then validate the setup by running a simple chat completion
-from code, ensuring that your environment is correctly configured and
-ready for developing AI-powered applications.
+Objetivos del laboratorio
 
-Lab Objectives
+Realizará las siguientes tareas en este laboratorio:
 
-You'll perform the following tasks in this lab.
+- Tarea 1: Configurar el AI Project en Microsoft Foundry.
 
-- Task 1: Setting up the AI Project in the Microsoft Foundry
+- Tarea 2: Implementar un LLM y modelos de embeddings.
 
-- Task 2: Deploying an LLM and embedding models
+- Tarea 3: Instalar dependencias, crear un entorno virtual y crear un
+  archivo de variables de entorno.
 
-- Task 3: Install dependencies, create a virtual environment, and create
-  an environment variables file
+## Tarea 1: Configurar el AI Project en Microsoft Foundry
 
-## Task 1: Setting up the AI Project in the Microsoft Foundry
+En esta tarea, creará y configurará un **AI Project** dentro de
+**Microsoft Foundry**. Esto implica configurar los recursos necesarios,
+definir parámetros del proyecto y asegurar que el entorno esté listo
+para implementar modelos de IA. Al finalizar esta tarea, tendrá un AI
+Project completamente inicializado, que servirá como base para el
+desarrollo y experimentación posterior.
 
-In this task, you will create and configure an AI Project within
-Microsoft Foundry. This involves setting up the necessary resources,
-defining project parameters, and ensuring that the environment is ready
-for deploying AI models. By the end of this task, you will have a fully
-initialized AI Project, serving as the foundation for further
-development and experimentation.
+1.  En la página del Azure Portal, en el cuadro Search resources en la
+    parte superior del portal, ingrese **Microsoft Foundry (1)** y luego
+    seleccione **Microsoft Foundry (2)** en Services.
 
-1.  On the Azure Portal page (+++https://portal.azure.com+++), in the Search resources box at the top of
-    the portal, enter +++Microsoft Foundry+++, and then
-    select **Microsoft Foundry** under Services.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image1.png)
+2.  En el panel de navegación izquierdo para **Use with Foundry**,
+    seleccione **AI Hubs** **(1)**. En la página AI Hubs, haga clic en
+    **Create** **(2)** y seleccione **Hub** **(3)** en el menú
+    desplegable.
 
-2.  In the left navigation pane for the **Use with Foundry**,
-    select **AI Hubs**. On the AI Hubs page, click on **Create** and select **Hub** from the drop-down.
+![](./media/image2.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image2.png)
+3.  En el panel **Create an Azure AI hub**, ingrese los siguientes
+    detalles en **Basics** **(1)**:
 
-3.  On the **Create an Azure AI hub** pane enter the following details
-    under **Basics**:
+    - Subscription: **Deje la suscripción predeterminada (2)**
 
-    - Subscription : **Leave default subscription** 
+    - Resource Group : **AgenticAI** **(3)**
 
-    - Resource Group : **AgenticAI**
+    - Region : **East US2** (4)
 
-    - Region : **@lab.CloudResourceGroup(AgenticAI).Location**
+    - Name : ** <+++ai-foundry-hub@lab.LabInstance.Id>+++ (5)**
 
-    - Name : +++ai-foundry-hub@lab.LabInstance.Id+++
+    - Connect AI Services incl. OpenAI: Haga clic en **Create
+      New** **(6)**.
 
-    - Connect AI Services incl. OpenAI : Click on **Create
-      New**.
+    - Connect AI Services incl. OpenAI: Proporcione el
+      nombre **<+++my-ai-service@lab.LabInstance.Id>+++ (7)**.
 
-    - Connect AI Services incl. OpenAI : Provide a
-      name +++my-ai-service@lab.LabInstance.Id+++.
+    - Haga clic en **Save** **(8)**, seguido de **Next:Storage** **(9)**
 
-    - Click on **Save**, followed by **Next:Storage** 
+> ![](./media/image3.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image3.png)
+4.  Haga clic en la pestaña **Review + Create**, seguido de **Create.**
 
-4.  Click on **Review + Create** tab followed by **Create.**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image4.png)
+![](./media/image5.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image5.png)
+5.  Espere a que la implementación se complete y luego haga clic en **Go
+    to resource**.
 
-5.  Wait for the deployment to complete and then click on **Go to
+![](./media/image6.png)
+
+6.  En el panel **Overview**, haga clic en **Launch Azure AI Foundry**.
+    Esto lo llevará al portal de **Microsoft Foundry**.
+
+![](./media/image7.png)
+
+7.  Desplácese hacia abajo y haga clic en **+ New project** en el Hub
+    Overview.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
+
+8.  Proporcione el nombre del
+    proyecto **<+++ai-foundry-project@lab.LabInstance.Id>+++,** luego
+    haga clic en **Create (2)**.
+
+![](./media/image9.png)
+
+9.  Una vez creado el proyecto, desplácese hacia abajo y copie el
+    **Project connection string**, luego péguelo en un **bloc de notas**
+    o en un lugar seguro, ya que será necesario en tareas posteriores.
+
+![A screenshot of a project AI-generated content may be
+incorrect.](./media/image10.png)
+
+## Tarea 2: Implementar un LLM y modelos de embeddings
+
+En esta tarea, implementará un Large Language Model (LLM) y un modelo de
+embeddings dentro de su proyecto en Microsoft Foundry. Estos modelos se
+utilizarán en aplicaciones impulsadas por IA y en funcionalidades de
+búsqueda vectorial en los laboratorios posteriores.
+
+1.  En su proyecto de Microsoft Foundry, navegue a la sección **My
+    assets** **(1)**, luego seleccione **Models + endpoints** **(2)**.
+    Haga clic en **Deploy model** **(3)** y seleccione **Deploy base
+    model** **(4)**.
+
+![](./media/image11.png)
+
+2.  En la ventana **Select a model**, busque **gpt-4o** **(1),**
+    seleccione **gpt-4o** **(2)** y haga clic en **Confirm** **(3)**.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
+
+3.  En la ventana **Deploy model gpt-4o**, seleccione **Customize**.
+
+![](./media/image13.png)
+
+- Deployment Name: **gpt-4o** **(1)**
+
+- Deployment type: **Global Standard** **(2)**
+
+- **Model version**: Cambie a **2024-08-06 (Default) (3)**
+
+- **Tokens per Minute Rate Limit**: 200K (4)
+
+- Haga clic en **Connect and Deploy** (5)
+
+![](./media/image14.png)
+
+4.  Haga clic en **Model + Endpoints** **(1)** donde podrá ver el modelo
+    **gpt-4o** **(2)** implementado.
+
+![](./media/image15.png)
+
+5.  Regrese al **Azure Portal**, busque **Open AI** **(1)** y seleccione
+    **Azure Open AI** **(2)**.
+
+![](./media/image16.png)
+
+6.  En la página **Microsoft Foundry | Azure OpenAI**, seleccione **+
+    Create** **(1)** y luego **Azure OpenAI** **(2)**.
+
+![](./media/image17.png)
+
+7.  En la página **Create Azure OpenAI**, proporcione las siguientes
+    configuraciones y haga clic en **Next** (6):
+
+[TABLE]
+
+> ![](./media/image18.png)
+
+8.  Haga clic en **Next** hasta que aparezca la pestaña **Review +
+    submit**.
+
+9.  En **Review + submit**, haga clic en **Create.**
+
+![](./media/image19.png)
+
+10. Espere a que la implementación sea exitosa y seleccione **Go to
     resource**.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image6.png)
+![](./media/image20.png)
 
-6.  On the Overview pane, click on **Launch Azure AI Foundry**. This
-    will navigate you to the Microsoft Foundry portal.
+11. En la página del recurso **my-openai-service**, seleccione **Go to
+    Foundry portal**.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image7.png)
+![](./media/image21.png)
 
-7.  Scroll down and click on **+ New project** on the Hub Overview.
+12. En su proyecto de **AI Foundry**, navegue a la sección **Shared
+    resources**, luego seleccione **Deployments** **(1)**. Haga clic en
+    **Deploy model** **(2)** y seleccione **Deploy base model** **(3)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image8.png)
+![](./media/image22.png)
 
-8.  Provide the project name
-    as +++ai-foundry-project@lab.LabInstance.Id+++, then click
-    on **Create**.
+**Nota:  
+**El asistente de importar y vectorizar en Azure AI Search, que se
+utilizará en los próximos laboratorios, aún no soporta modelos de
+embeddings dentro del AI Foundry Project. Por ello, debemos crear un
+servicio de Azure OpenAI e implementar allí un modelo de text
+embeddings. Este modelo se utilizará más adelante para crear nuestro
+índice vectorial.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image9.png)
+13. En la ventana **Select a model**, busque **text-embedding-3-large**
+    **(1)**, luego seleccione **text-embedding-3-large** **(2)** y haga
+    clic en **Confirm** **(3).**
 
-9.  Once the project is created, scroll down and copy the **Project
-    connection string**, then paste them into Notepad or a secure
-    location, as they will be required for upcoming tasks.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    ![A screenshot of a project AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image10.png)
+14. En **Deploy model text-embedding-3-large**,
 
-## Task 2: Deploying an LLM and embedding models
+    - Deployment type: **Standard (1).**
 
-In this task, you will deploy a large language model (LLM) and an
-embedding model within your Microsoft Foundry project. These models will
-be used for AI-driven applications and vector-based search capabilities
-in upcoming labs.
+    - Tokens per Minutes Rate Limit: **120K (2).**
 
-1.  In your **Microsoft Foundry project**, navigate to the **My
-    assets** section, then select **Models +
-    endpoints**. Click **Deploy model** , and
-    choose **Deploy base model**  to proceed.
+    - Seleccione **Deploy (3).**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image11.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-2.  On a **Select a model** window, search for +++gpt-4o+++ ,
-    select **gpt-4o** and select **Confirm** 
+15. Haga clic en **Deployment** **(1),** donde podrá ver el modelo
+    **text-embedding-3-large** **(2)** implementado.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image12.png)
+![](./media/image25.png)
 
-3.  On **Deploy model gpt-4o** window, select **Customize**.
+## Tarea 3: Instalar dependencias, crear un entorno virtual y crear un archivo de variables de entorno
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image13.png)
+En esta tarea, instalará las dependencias necesarias, configurará un
+**virtual environment**, y creará el archivo de variables de entorno.
+Esto garantiza un entorno controlado y la gestión segura de
+configuraciones para su AI Project.
 
-	- Deployment Name: **gpt-4o** 
+1.  En su **Lab VM**, inicie **Visual Studio Code**.
 
-	- Deployment type: **Global Standard**
+2.  Haga clic en **File** **(1)**, luego **Open Folder**.
 
-	- Change the **Model version to 2024-08-06 (Default)** 
+![](./media/image26.png)
 
-	- Change the Tokens per Minute Rate Limit to **200K** 
+3.  Navegue a **C:\LabFiles\Day-1** **(1)**, seleccione la carpeta
+    **azure-ai-agents-labs** **(2)** y haga clic en **Select folder**
+    **(3)**.
 
-	- Click on **Connect and Deploy** 
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image14.png)
+4.  Haga clic en **Yes, I Trust the authors**.
 
-4.  Click on **Model + Endpoints** , there you can see the
-    deployed **gpt-4o** model.
+![](./media/image28.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image15.png)
+5.  Haga clic en las **elipses (...)** **(1)**, luego en la **Terminal**
+    **(2)** y finalmente en **New Terminal** **(3)**.
 
-5.  Navigate back to **Azure Portal** and search for +++Open
-    AI+++  and select **Azure Open AI** resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image16.png)
+6.  Asegúrese de estar en el directorio del proyecto
+    **azure-ai-agents-labs**. Ejecute los siguientes comandos de
+    PowerShell para crear y activar el entorno virtual:
 
-6.  On the **Microsoft Foundry | Azure OpenAI** page, select **+
-    Create**  then select **Azure OpenAI** to create
-    Azure OpenAI resource.
+7.  python -m venv venv
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image17.png)
++++venv/Scripts/activate+++
 
-7.  On **Create Azure OpenAI** page, provide the following settings and
-    click on **Next** :
+![](./media/image30.png)
 
-    
-    | Detail | Value |
-    | ------ | ------ |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Resource Group** | **@lab.CloudResourceGroup(AgenticAI).Name** |
-    | **Region** | **@lab.CloudResourceGroup(AgenticAI).Location** |
-    | **Name** | +++my-openai-service@lab.LabInstance.Id+++ |
-    | **Pricing Tier** | **Standard S0** |
+8.  Ejecute el siguiente comando de PowerShell para instalar los
+    paquetes necesarios:
 
+9.  pip install -r requirements.txt
 
++++pip install azure-ai-ml azure-identity+++
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image18.png)
+![A screen shot of a computer code AI-generated content may be
+incorrect.](./media/image31.png)
 
-8.  Click on **Next** till Review + submit tab appears.
+10. Ejecute el siguiente comando de PowerShell para instalar o
+    actualizar pip a la última versión:
 
-9.  On the **Review + submit** page, click on **Create**
++++python.exe -m pip install --upgrade pip+++
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image19.png)
+![](./media/image32.png)
 
-10. Wait until the deployment got succeeded and select **Go to
-    resource**.
+11. Ejecute el siguiente comando para iniciar sesión en su cuenta de
+    Azure:
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image20.png)
++++az login+++
 
-11. On the **my-openai-service** resource page, select **Go to Foundry
-    portal**.
+12. Seleccione la cuenta de usuario para autorizar.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image21.png)
+13. Una vez completada la autorización, regrese a **Visual Studio
+    Code**.
 
-12. In your AI Foundry project, navigate to the **Shared
-    resources** section, then select **Deployments** .
-    Click **Deploy model**, and choose **Deploy base
-    model**  to proceed.
+![](./media/image33.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image22.png)
+14. Abra el archivo **Sample.env** y proporcione las variables de
+    entorno necesarias.
 
-	>[!Note]: The import and vectorize wizard in Azure AI Search, which will
-	be used in subsequent labs, does not yet support text embedding models
-	within your AI Foundry project. Because of this, we need to create an
-	Azure OpenAI service and deploy a text embedding model there. We will
-	use this text embedding model later when we create our vector index.
+![](./media/image34.png)
 
-13. On a **Select a model** window, search
-    for **text-embedding-3-large** , then
-    select **text-embedding-3-large** and
-    select **Confirm** 
+- Navegue al portal de **Microsoft Foundry**, haga clic en el modelo
+  **gpt-4o** **(2)** desde la sección **Models + endpoints** **(1)**
+  bajo **My assets**, copie el **Endpoint** del panel derecho y luego
+  copie y pegue el **Target URI (1)** y la **Key (2)** en un bloc de
+  notas.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image23.png)
+![](./media/image35.png)
 
-14. On **Deploy model text-embedding-3-large** window,
+![](./media/image36.png)
 
-    - Deployment type: Select **Standard**
+15. En el archivo **Sample.env**:
 
-    - Tokens per Minutes Rate Limit: **120K**
+    - AIPROJECT_CONNECTION_STRING: Proporcione el valor del **Project
+      connection string** copiado en el **Paso 9 de la Tarea 1**.
 
-    - Select **Deploy** to deploy the model.
+    - CHAT_MODEL_ENDPOINT: Proporcione el **Target URI** del modelo
+      **gpt-4o** copiado en el paso anterior.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image24.png)
-
-15. Click on **Deployment**, you can see the
-    deployed **text-embedding-3-large** model.
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image25.png)
-
-## Task 3: Install dependencies, create a virtual environment, and create an environment variables file
-
-In this task, you will install the required dependencies, set up a
-virtual environment, and create an environment variables file. This
-ensures a controlled development environment and securely manages
-configuration settings for your AI project.
-
-1.  On your **Lab VM**, launch **Visual Studio Code**.
-
-2.  Click on **File** , then **Open Folder**.
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image26.png)
-
-3.  Navigate to C:\LabFiles\Day-1, select
-    the **azure-ai-agents-labs** folder and then click
-    on **Select folder** .
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image27.png)
-
-4.  Click on **Yes, I Trust the authors**,
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image28.png)
-
-5.  Click on the **elipses(...)** , then **Terminal** and
-    then **New Terminal** .
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image29.png)
-
-6.  Make sure your in **azure-ai-agents-labs** project directory. Run
-    the below powershell commands to create and activate your virtual
-    environment:
-
-	+++python -m venv venv+++
-
-	+++venv/Scripts/activate+++
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image30.png)
-
-8.  Run the below powershell command. This installs all the required packages:
-
-    +++pip install -r requirements.txt+++
-
-	+++pip install azure-ai-ml azure-identity+++
-
-    ![A screen shot of a computer code AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image31.png)
-
-10. Run the below powershell command to install or upgrade pip to the
-    latest version.
-
-	+++python.exe -m pip install --upgrade pip+++
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image32.png)
-
-11. Run the below command to log into your Azure account.
-
-	+++az login+++
-
-12. Select the user account to authorize.
-
-13. Once the Authorization is completed, navigate back to the Visual
-    studio code.
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image33.png)
-
-14. Open the **Sample.env** file and provide the necessary environment
-    variables.
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image34.png)
-
-	- Navigate to Microsoft foundry portal, click
-	  on **gpt-4o** model from the **Models + endpoints(1)** section
-	  under My assets, copy and paste the **Target URI** and **Key** in a notepad
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image35.png)
-
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image36.png)
-
-15. On the **Sample.env** file,
-
-    - AIPROJECT_CONNECTION_STRING: Provide **Project connection
-      string** value you have copied in Task 1
-
-    - CHAT_MODEL_ENDPOINT: Provide the **Target
-      URI** of **gpt-4o** model you have copied in the previous step
-
-    - CHAT_MODEL_API_KEY: Provide the **Key** value of **gpt-4o** model
-      you have copied in the previous step
+    - CHAT_MODEL_API_KEY: Proporcione la **Key copiada** en el paso
+      anterior.
 
     - CHAT_MODEL: **gpt-4o**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image37.png)
+![](./media/image37.png)
 
-16. Save changes to the **Sample.env** file.
+16. Guarde los cambios en **Sample.env**.
 
-17. Run the below powershell command. This creates your **.env** file:
+17. Ejecute el siguiente comando de PowerShell para crear su archivo
+    **.env**:
 
-	+++cp sample.env .env+++
++++cp sample.env .env+++
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image38.png)
+![](./media/image38.png)
 
-18. Later Open the **Lab 1 - Project Setup.ipynb** file. The **Lab 1 -
-    Project Setup.ipynb** notebook guides you through setting up an AI
-    Project in Microsoft Foundry, deploying an LLM and embedding models,
-    and configuring VS Code connectivity. It also includes a simple Chat
-    Completion API call to verify the setup. Running this notebook
-    ensures that your environment is correctly configured for developing
-    AI-powered applications.
+18. Luego, abra el archivo **Lab 1 - Project Setup.ipynb**. Este
+    notebook lo guía en la configuración del AI Project en Microsoft
+    Foundry, la implementación del LLM y del embedding model, y la
+    configuración de la conectividad de VS Code. También incluye una
+    llamada simple a la API de Chat Completion para verificar la
+    configuración.
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image39.png)
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image39.png)
 
-19. Select the **Select kernel** setting available in the top right
-    corner and select **Install/enable selected extensions
-    (python+jupyter)**.
+19. Seleccione **Select kernel** **(1)** en la esquina superior derecha
+    y seleccione **Install/enable selected extensions (python+jupyter)**
+    **(2).**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image40.png)
+![](./media/image40.png)
 
-20. Select **Python Environments** to ensure that Jupyter Notebook runs
-    in the correct Python interpreter with the necessary dependencies
-    installed.
+20. Seleccione **Python Environments** para asegurarse de que el Jupyter
+    Notebook se ejecute en el intérprete de Python correcto con las
+    dependencias instaladas.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image41.png)
+![](./media/image41.png)
 
-21. Select **venv (Python 3.x.x)** from the list as this version is
-    likely required for compatibility with Microsoft Foundry SDK and
-    other dependencies.
+21. Seleccione **venv (Python 3.x.x)** de la lista, ya que esta versión
+    probablemente es necesaria para la compatibilidad con el SDK de
+    Microsoft Foundry.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image42.png)
+![](./media/image42.png)
 
-    >[!Note]: If **venv (Python 3.x.x)** does not appear in the list. Close
-and Open the Visual studio code.
+**Nota:** Si **venv (Python 3.x.x**) no aparece en la lista, cierre y
+vuelva a abrir **Visual Studio Code.**
 
-22. Run the first cell to import necessary Python libraries for working
-    with Azure AI services.
+22. Ejecute la primera celda para importar las librerías necesarias de
+    Python para trabajar con Azure AI Services.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image43.png)
+![](./media/image43.png)
 
-23. Run the below cell to retrieve the project connection string and
-    model name from environment variables. These values are needed to
-    interact with the Large Language Model (LLM) securely, without
-    hardcoding sensitive information.
+23. Ejecute la siguiente celda para recuperar el **project connection
+    string** y el nombre del modelo desde las variables de entorno.
+    Estos valores son necesarios para interactuar con el LLM de manera
+    segura sin exponer información sensible.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image44.png)
+![](./media/image44.png)
 
-24. Run the below cell to connect to your Microsoft Foundry project
-    using the connection string. This establishes a secure connection
-    with AIProjectClient, enabling interactions with your project
-    resources.
+24. Ejecute la siguiente celda para conectarse a su proyecto de
+    Microsoft Foundry utilizando el connection string. Esto establece
+    una conexión segura con **AIProjectClient**.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image45.png)
+![](./media/image45.png)
 
-25. Run the below cell to interact with the GPT-4o model using your
-    Microsoft Foundry project. This code initializes a chat client,
-    sends a request for a joke about a teddy bear, and prints the
-    response. Finally see the output provided from the chat model.
+25. Ejecute la siguiente celda para interactuar con el modelo **GPT-4o**
+    en su proyecto Microsoft Foundry. Este código inicializa un chat
+    client, envía una solicitud para un chiste sobre un oso de peluche y
+    muestra la respuesta.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image46.png)
+![](./media/image46.png)
 
-	>[!Note]: The output in this step is generated dynamically by the AI model and may vary each time.
+> **Nota:** El resultado de este paso se genera dinámicamente por el
+> modelo de IA y puede variar cada vez.
 
-**Summary**
+**Resumen**
 
-In this lab, you successfully set up a complete AI development
-environment by creating and configuring an AI Project in Microsoft
-Foundry, deploying a GPT-4o Large Language Model and
-text-embedding-3-large embedding model, and establishing secure
-connectivity from Visual Studio Code. You installed the required
-dependencies, created a virtual environment, and configured environment
-variables to manage sensitive information securely. Finally, you
-validated the setup by running a simple Chat Completion API call,
-confirming that your environment is correctly configured and ready for
-developing AI-powered applications.
+En este laboratorio, configuró un entorno completo de desarrollo de IA
+mediante la creación y configuración de un AI Project en Microsoft
+Foundry, la implementación del modelo GPT-4o y del modelo de
+text-embedding-3-large, y la conexión segura desde Visual Studio Code.
+Instaló las dependencias requeridas, creó un entorno virtual y configuró
+un archivo de variables de entorno para manejar la información sensible
+de forma segura.
 
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
+Finalmente, validó la configuración ejecutando una llamada simple a la
+API de Chat Completion, confirmando que su entorno está listo para
+desarrollar aplicaciones impulsadas por IA.
 
-
-
+Ha completado este laboratorio correctamente. Haga clic en **Next \>\>**
+para continuar.

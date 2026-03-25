@@ -1,783 +1,1025 @@
+# Laboratorio 6: Desarrollo de sistemas multiagente con comunicación Agent-to-Agent (A2A)
 
-# Lab 6: Developing Multi-Agent Systems with Agent-to-Agent (A2A) Communication
+**Duración estimada:** 30 minutos
 
-**Estimated Duration**: 30 Minutes
+**Descripción general**
 
-**Overview**
+En este laboratorio, creará un sistema multiagente utilizando el
+**Microsoft Agent Framework**. Definirá roles de agentes independientes
+(Planner, HR y Compliance), los implementará y configurará
+**comunicación A2A (Agent-to-Agent)** para permitir que un agente llame
+a otros. Finalmente, probará un escenario donde una consulta de usuario
+es delegada a través de la red de agentes y revisará trazas y registros
+para confirmar el enrutamiento correcto.
 
-In this lab, you'll build a multi-agent system using the Microsoft Agent
-Framework. You'll define distinct agent roles (Planner, HR, Compliance),
-deploy them, and configure A2A (Agent-to-Agent) communication to allow
-one agent to call others. You'll test a scenario where a user query is
-delegated through the agent network, and then inspect traces and logs to
-confirm correct routing.
+El **Microsoft Agent Framework SDK** es el nuevo kit oficial para crear
+agentes inteligentes y modulares capaces de razonar, ejecutar acciones y
+colaborar con otros agentes.  
+  
+Proporciona:
 
-The Microsoft Agent Framework SDK is the new official development kit
-for building intelligent, modular agents that can reason, take actions,
-and collaborate with other agents. It provides:
+- **Arquitectura Unificada de Agentes:** Sustituye AutoGen, Semantic
+  Kernel y los orquestadores fragmentados.
 
-- Unified Agent Architecture - Replaces AutoGen, Semantic Kernel, and
-  fragmented orchestrators
+- **Compatibilidad nativa con Microsoft Foundry:** Permite implementar
+  agentes directamente en el Agent Service de Foundry.
 
-- Built-in Support for Microsoft Foundry - Deploy agents directly into
-  Foundry's Agent Service
+- **Herramientas mediante MCP (Model Context Protocol):** Integración
+  estandarizada con datos, APIs y sistemas.
 
-- Tooling via MCP (Model Context Protocol) - Standardized integration
-  with data, APIs, systems
+- **Comunicación A2A nativa:** Los agentes pueden invocar a otros
+  agentes como colaboradores autónomos.
 
-- Native A2A Communication - Agents can call other agents as autonomous
-  collaborators
+Este SDK está diseñado para soportar sistemas de agentes de nivel
+empresarial, con confiabilidad, observabilidad y gobernanza incorporadas
+desde el inicio.
 
-This SDK is designed to support enterprise-grade, production-ready agent
-systems, with reliability, observability, and governance baked in from
-the start.
+Objetivos del laboratorio
 
-Lab Objectives
+En este laboratorio realizará las siguientes tareas:
 
-You'll perform the following tasks in this lab.
+- Tarea 1: Abrir el proyecto preconfigurado en VS Code.
 
-- Task 1: Open the Preconfigured VS Code Project
+- Tarea 2: Crear el Planner Agent.
 
-- Task 2: Create Planner Agent
+- Tarea 3: Crear los Worker Agents de HR y Compliance.
 
-- Task 3: Create HR & Compliance Worker Agents
+- Tarea 4: Definir la lógica de enrutamiento A2A (Agent Graph /
+  Workflow).
 
-- Task 4: Define A2A Routing Logic (Agent Graph / Workflow)
+- Tarea 5: Probar la conversación multiagente e inspeccionar logs.
 
-- Task 5: Test Multi-Agent Conversation & Inspect Logs
+## Tarea 1: Abrir el proyecto preconfigurado en VS Code
 
-## Task 1: Open the Preconfigured VS Code Project
+En esta tarea revisará la estructura de carpetas preconfiguradas para
+comprender dónde se almacenan las definiciones de agentes, flujos de
+trabajo y herramientas. Esto le prepara para extender el sistema
+utilizando el Microsoft Agent Framework SDK.
 
-In this task, you will review the preconfigured folder structure to
-understand where agent definitions, workflows, and tools are organized.
-This prepares you to extend the system using the Microsoft Agent
-Framework SDK.
+1.  Desde el escritorio de la LabVM, abra **Visual Studio Code**.
 
-1.  From the LabVM Desktop, open **Visual Studio Code**.
+2.  Una vez que Visual Studio Code esté abierto, haga clic en **File
+    (1)** y seleccione la opción **Open Folder (2)** para abrir la
+    carpeta del proyecto.
 
-2.  Once Visual Studio Code is open, click on **File**  and
-    select the **Open Folder**  option to open the code file
-    folder.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image1.png)
+3.  Una vez en el panel de carpetas abiertas, navegue hasta
+    C:\Labfiles\Day 2\Enterprise-Agent-Code-Files y haga clic en
+    **Select Folder**.
 
-3.  Once in the open folder pane, navigate to C:\Labfiles\Day
-    2\Enterprise-Agent-Code-Files and click on **select folder**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image2.png)
+4.  Cuando se abra, aparecerá una ventana emergente. Haga clic en **Yes,
+    I trust the authors**.
 
-4.  Once opened, a pop-up window will be opened, click on the **Yes, I
-    trust authors** option.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image3.png)
-
-5.  Please review the folder structure of the enterprise agent.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image4.png)
-
-6.  Right-Click on **.env.example** file and select **Rename** to rename the file.
-
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image5.png)
-
-7.  Once done, rename the file from **.env.example** -- **.env** to
-    make this environment file active for this agent.
-
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image6.png)
-
-8.  Replace the content of the .env file with the below content.
-
-	```
-	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
-	AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
-	AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
-	AZURE_OPENAI_API_VERSION=2025-03-01-preview
-	```
-
-	From the Microsoft Foundry Overview page, copy the API Key and replace
-	the
-
-	place holder **< Replace with Azure OpenAI key >** in the env file.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image7.png)
-
-9.  Once done, select **File**  and then
-    click **Save**  to save the file.
-
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image8.png)
-
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image9.png)
-
-## Task 2: Create Planner Agent
-
-In this task, you will define the Planner Agent that interprets user
-queries and decides which specialist agent to delegate tasks to. You
-will configure the agent using the Agent Framework SDK with
-role-specific instructions.
-
-1.  From the list, select **planner_agent.py** under the **agents** folder.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image10.png)
-
-2.  Add the following Python code to configure the planner agent.
-
-	```
-	import os
-	import asyncio
-	from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
-
-	async def build_planner_agent():
-	   client = AzureOpenAIResponsesClient(
-		  api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-		  endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-		  deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
-		  api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-	   )
-	   return client.create_agent(
-		  name="PlannerAgent",
-		  instructions=(
-				"You are an intelligent routing agent. Analyze user queries and route them to the appropriate specialist. "
-				"Available specialists:\n"
-				"- HR: Employee policies, leave, benefits, working hours, performance, hiring\n"
-				"- FINANCE: Reimbursements, expenses, budgets, travel costs, meal allowances, equipment purchases\n"
-				"- COMPLIANCE: GDPR, data privacy, regulatory requirements, legal compliance, audits\n\n"
-				"Return exactly one word: HR, FINANCE, or COMPLIANCE. "
-				"Consider keywords like: money, cost, budget, reimburse, expense, payment, allowance → FINANCE\n"
-				"Keywords like: leave, sick, vacation, policy, employee, benefits → HR\n"
-				"Keywords like: GDPR, privacy, compliance, legal, audit, regulation → COMPLIANCE"
-		  ),
-	   )
-
-	async def classify_target(planner_agent, user_query: str) -> str:
-	   result = await planner_agent.run(
-		  "Analyze and route this query:\n\n"
-		  f"User query: {user_query}\n\n"
-		  "Return exactly one word: HR, FINANCE, or COMPLIANCE."
-	   )
-	   # Extract the text content from the AgentRunResponse object
-	   text = str(result).strip().lower()
-	   
-	   # Advanced classification with fallback logic
-	   if "finance" in text or "financial" in text:
-		  return "FINANCE"
-	   elif "hr" in text or "human" in text:
-		  return "HR"
-	   elif "compliance" in text or "legal" in text:
-		  return "COMPLIANCE"
-	   else:
-		  # Fallback keyword analysis if agent response is unclear
-		  query_lower = user_query.lower()
-		  finance_keywords = ["reimburs", "expense", "cost", "budget", "money", "payment", "allowance", "travel", "meal", "flight", "hotel"]
-		  hr_keywords = ["leave", "sick", "vacation", "employee", "benefit", "policy", "hire", "performance", "work"]
-		  compliance_keywords = ["gdpr", "privacy", "compliance", "legal", "audit", "regulation", "data protection"]
-		  
-		  finance_score = sum(1 for keyword in finance_keywords if keyword in query_lower)
-		  hr_score = sum(1 for keyword in hr_keywords if keyword in query_lower)
-		  compliance_score = sum(1 for keyword in compliance_keywords if keyword in query_lower)
-		  
-		  if finance_score > hr_score and finance_score > compliance_score:
-				return "FINANCE"
-		  elif hr_score > compliance_score:
-				return "HR"
-		  else:
-				return "COMPLIANCE"
-	```
-
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image11.png)
-
-	**Purpose of Planner Agent:**
-
-	- This agent is designed to analyze user queries and decide which
-	  specialist agent (HR, Finance, or Compliance) should handle the
-	  response.
-
-	**Agent Creation Using AzureOpenAIResponsesClient:**
-
-	- The build_planner_agent() function initializes the Planner using the
-	  Agent Framework SDK with API-based credentials loaded from environment
-	  variables.
-
-	**LLM-Guided Routing (Primary Logic):**
-
-	- The Planner agent is instructed to return exactly one word - HR,
-	  FINANCE, or COMPLIANCE - based on keywords and context in the query.
-
-	**classify_target() for Decision Making:**
-
-	- This function first uses an await agent.run() call to ask the Planner
-	  which specialist to select. If the response is unclear, it applies a
-	  fallback keyword-based analysis.
-
-	**Hybrid AI + Heuristic Strategy:**
-
-	- The design ensures reliable routing, combining model reasoning with
-	  manual keyword scoring, making the Planner robust even when AI output
-	  is vague.
-
-3.  Once done, select **File**  and then
-    click **Save**  to save the file.
-
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image8.png)
-
-## Task 3: Create Worker Agents
-
-In this task, you will develop domain-specific agents responsible for
-HR, Finance, and Compliance knowledge. Each agent will be registered in
-the Agent Registry to enable discovery and delegation through A2A
-communication.
-
-1.  From the list, select **hr_agent.py** under the agent folder and add
-    the following Python code to configure hr agent. Add the following
-    Python code to configure hr agent.
-
-	```
-	import os
-	import asyncio
-	from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
-
-	async def build_hr_agent():
-	   client = AzureOpenAIResponsesClient(
-		  api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-		  endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-		  deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
-		  api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-	   )
-	   return client.create_agent(
-		  name="HRAgent",
-		  instructions=(
-				"You are an expert HR policy specialist with deep knowledge of employment law and best practices. "
-				"Answer questions about:\n"
-				"- Leave policies (sick, vacation, parental, bereavement)\n"
-				"- Employee benefits (health insurance, retirement, wellness programs)\n" 
-				"- Performance management and reviews\n"
-				"- Hiring, onboarding, and termination procedures\n"
-				"- Working hours, overtime, and flexible work arrangements\n"
-				"- Employee relations and conflict resolution\n"
-				"- Training and development programs\n\n"
-				"Provide specific, actionable guidance with policy references where applicable. "
-				"Be empathetic and professional in your responses."
-		  ),
-	   )
-	```
-
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image12.png)
-
-	**Purpose of the HR Agent:**
-
-	- This agent acts as a dedicated HR policy expert, trained to respond to
-	  questions related to employee welfare, leave structures, benefits, and
-	  workplace procedures.
-
-	**Agent Initialization with Azure Responses Client:**
-
-	- The build_hr_agent() function initializes the agent using
-	  AzureOpenAIResponsesClient, authenticated through API keys and
-	  endpoint values stored in environment variables.
-
-	**Domain-Specific Specialization:**
-
-	- The instructions section clearly defines the HR agent's scope -
-	  including leave types, benefits, onboarding, employee relations, and
-	  performance management - ensuring it responds only to HR-related
-	  queries.
-
-	**Professional and Empathetic Tone:**
-
-	- The agent is designed to mimic real HR communication standards,
-	  providing guidance that is accurate, professional, and empathetic,
-	  ideal for internal organizational assistants.
-
-	**Foundation for Multi-Agent Collaboration:**
-
-	- Once built, this HR agent will be invoked by the Planner Agent,
-	  allowing automated delegation in multi-agent workflows when HR-related
-	  queries are detected.
-
-2.  Once done, select **File**  and then
-    click **Save**  to save the file.
-
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image8.png)
-
-3.  From the list, select **finance_agent.py** under the agent folder
-    and add the following Python code to configure the compliance agent.
-    Add the following Python code to configure the finance agent.
-
-	```
-	import os
-	import asyncio
-	from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
-
-	async def build_finance_agent():
-	   client = AzureOpenAIResponsesClient(
-		  api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-		  endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-		  deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
-		  api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-	   )
-	   return client.create_agent(
-		  name="FinanceAgent",
-		  instructions=(
-				"You are a finance and reimbursement specialist. Answer questions about "
-				"expense policies, reimbursement limits, budget approvals, travel expenses, "
-				"meal allowances, equipment purchases, and financial procedures. Provide "
-				"specific amounts, policies, and actionable guidance."
-		  ),
-	   )
-	```
-
-    ![A computer screen shot of a program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image13.png)
-
-	**Specialized Finance Role:**
-
-	- This agent is designed to handle all finance-related topics, including
-	  reimbursement policies, travel budgets, allowances, and purchase
-	  approvals.
-
-	**Initialization via Agent Framework SDK:**
-
-	- The build_finance_agent() function creates an agent using
-	  AzureOpenAIResponsesClient, leveraging API key authentication from
-	  secure environment variables.
-
-	**Policy-Focused Instructions:**
-
-	- The agent's instructions clearly limit its responsibility to financial
-	  procedures, ensuring accurate answers about costs, payments, budgets,
-	  and corporate expense rules.
-
-	**Precision and Actionable Outputs:**
-
-	- Unlike general-purpose agents, this finance assistant is instructed to
-	  provide specific policy values, such as limits, eligibility, or
-	  approval flows, making it practical for employees.
-
-	**Supports Planner Delegation (A2A):**
-
-	- This agent will be invoked automatically when the Planner detects
-	  finance-related keywords or queries, enabling seamless multi-agent
-	  collaboration in the system.
-
-	4.  Once done, select **File**  and then
-		click **Save**  to save the file.
-
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image8.png)
-
-5.  From the list, select **compliance_agent.py** under the agent folder
-    and add the following Python code to configure the compliance agent.
-    Add the following Python code to configure the compliance agent.
-
-	```
-	import os
-	import asyncio
-	from agent_framework.azure import AzureOpenAIResponsesClient  # type: ignore
-
-	async def build_compliance_agent():
-	   client = AzureOpenAIResponsesClient(
-		  api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-		  endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-		  deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
-		  api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-	   )
-	   return client.create_agent(
-		  name="ComplianceAgent", 
-		  instructions=(
-				"You are a senior compliance and legal specialist with expertise in multiple jurisdictions. "
-				"Provide authoritative guidance on:\n"
-				"- GDPR and data protection regulations (EU, UK, US state laws)\n"
-				"- Privacy policies and data processing agreements\n"
-				"- Regulatory compliance (SOX, HIPAA, PCI-DSS, ISO standards)\n"
-				"- Risk assessment and audit requirements\n"
-				"- Contract law and vendor agreements\n"
-				"- Information security policies\n"
-				"- Cross-border data transfers and adequacy decisions\n"
-				"- Breach notification requirements\n\n"
-				"Always provide factual, well-researched answers with relevant legal citations. "
-				"Include practical implementation steps and potential risks. Use formal, professional tone."
-		  ),
-	   )
-	```
-
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image14.png)
-
-	**Purpose of the Agent:**
-
-	- This agent serves as a dedicated legal and compliance authority,
-	  responsible for handling queries related to GDPR, regulatory
-	  frameworks, contract law, risk assessments, and security standards.
-
-	**Agent Initialization:**
-
-	- The build_compliance_agent() function uses AzureOpenAIResponsesClient
-	  with API key authentication to register the Compliance agent through
-	  the Microsoft Agent Framework SDK.
-
-	**Regulatory Expertise Defined in Instructions:**
-
-	- The instructions provide a clear compliance scope - including global
-	  privacy regulations (GDPR, HIPAA, SOX), audit readiness, legal
-	  agreements, and breach protocols - ensuring high-trust responses.
-
-	**Tone and Output Expectations:**
-
-	- This agent is configured to deliver answers in a formal, authoritative
-	  tone, including legal citations or implementation recommendations when
-	  applicable.
-
-	**Role in Multi-Agent System:**
-
-	- During A2A delegation, the Planner Agent will route legal or
-	  compliance-related queries to this specialist, maintaining accuracy
-	  and governance in enterprise decision workflows.
-
-6.  Once done, select **File**  and then
-    click **Save**  to save the file.
-
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image8.png)
-
-## Task 4: Define A2A Routing Logic (Agent Graph / Workflow)
-
-Agent-to-Agent (A2A) is a core capability of the Microsoft Agent
-Framework that allows one agent to autonomously delegate tasks to
-another agent.
-
-In this task, you will implement routing logic using an Agent Workflow
-so the Planner can autonomously call HR or Compliance agents based on
-query intent. This establishes true multi-agent collaboration.
-
-1.  From the list, select **main.py** under the agent folder and add the
-    following Python code to configure the A2A communication flow agent.
-    Add the following Python code to configure agent routing logic.
-
-	```
-	import asyncio
-	import time
-	import logging
-	from typing import Dict, Any
-	from utils.env import load_env
-	from agents.planner_agent import build_planner_agent, classify_target
-	from agents.hr_agent import build_hr_agent
-	from agents.compliance_agent import build_compliance_agent
-	from agents.finance_agent import build_finance_agent
-
-	# Configure logging
-	logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-	async def run_multi_agent(query: str, agents: Dict[str, Any]) -> Dict[str, Any]:
-	   """
-	   Advanced multi-agent system with routing, timing, and comprehensive response handling.
-	   """
-	   start_time = time.time()
-	   
-	   try:
-		  # Step 1: Route the query
-		  logging.info(f"Routing query: {query[:50]}...")
-		  target = await classify_target(agents["planner"], query)
-		  logging.info(f"Query routed to: {target}")
-		  
-		  # Step 2: Get response from appropriate agent
-		  agent_mapping = {
-				"HR": ("hr", "HRAgent"),
-				"FINANCE": ("finance", "FinanceAgent"), 
-				"COMPLIANCE": ("compliance", "ComplianceAgent")
-		  }
-		  
-		  if target in agent_mapping:
-				agent_key, agent_name = agent_mapping[target]
-				answer = await agents[agent_key].run(query)
-		  else:
-				# Fallback to HR if routing unclear
-				logging.warning(f"Unknown target '{target}', falling back to HR")
-				answer = await agents["hr"].run(query)
-				target = "HR"
-				agent_name = "HRAgent"
-		  
-		  # Step 3: Process response
-		  response_time = time.time() - start_time
-		  
-		  return {
-				"query": query,
-				"routed_to": target,
-				"agent_name": agent_name,
-				"answer": str(answer),
-				"response_time": round(response_time, 2),
-				"timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-				"success": True
-		  }
-		  
-	   except Exception as e:
-		  logging.error(f"Error processing query: {e}")
-		  return {
-				"query": query,
-				"routed_to": "ERROR",
-				"agent_name": "ErrorHandler",
-				"answer": f"I apologize, but I encountered an error processing your request: {str(e)}",
-				"response_time": round(time.time() - start_time, 2),
-				"timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-				"success": False
-		  }
-
-	def format_response(result: Dict[str, Any]) -> str:
-	   """Format the agent response for display."""
-	   status_icon = "✅" if result["success"] else "❌"
-	   
-	   formatted = f"""
-	{status_icon} Agent Response Summary:
-	┌─ Routed to: {result['routed_to']} ({result['agent_name']})
-	├─ Response time: {result['response_time']}s
-	├─ Timestamp: {result['timestamp']}
-	└─ Status: {'Success' if result['success'] else 'Error'}
-
-	💬 Answer:
-	{result['answer']}
-	"""
-	   return formatted
-
-	async def run_interactive_mode(agents: Dict[str, Any]):
-	   """Interactive mode for real-time queries."""
-	   print("\n🤖 Enterprise Agent System - Interactive Mode")
-	   print("Available agents: HR, Finance, Compliance")
-	   print("Type 'quit' to exit, 'help' for commands\n")
-	   
-	   while True:
-		  try:
-				query = input("Enter your question: ").strip()
-				
-				if query.lower() in ['quit', 'exit', 'q']:
-				   print("👋 Goodbye!")
-				   break
-				elif query.lower() == 'help':
-				   print("""
-	📋 Available Commands:
-	- Ask any question about HR, Finance, or Compliance
-	- 'quit' or 'exit' - Exit the system
-	- 'help' - Show this help message
-
-	🎯 Example questions:
-	- "What's the travel reimbursement limit for meals?"
-	- "How many vacation days do employees get?"  
-	- "Do we need GDPR compliance for EU customers?"
-	""")
-				   continue
-				elif not query:
-				   continue
-				   
-				result = await run_multi_agent(query, agents)
-				print(format_response(result))
-				
-		  except KeyboardInterrupt:
-				print("\n👋 Goodbye!")
-				break
-		  except Exception as e:
-				logging.error(f"Interactive mode error: {e}")
-				print(f"❌ Error: {e}")
-
-	async def run_batch_tests(agents: Dict[str, Any]):
-	   """Run predefined test queries."""
-	   test_queries = [
-				"How much reimbursement is allowed for international flights?",
-				"Is employee data protected under GDPR?",
-				"How many sick leave days do employees get?"
-
-	   ]
-	   
-	   print("🧪 Running batch tests...\n")
-	   
-	   for i, query in enumerate(test_queries, 1):
-		  print(f"{'='*80}")
-		  print(f"TEST {i}/{len(test_queries)}: {query}")
-		  print(f"{'='*80}")
-		  
-		  result = await run_multi_agent(query, agents)
-		  print(format_response(result))
-		  
-		  # Small delay between queries for better readability
-		  if i < len(test_queries):
-				await asyncio.sleep(0.5)
-
-	async def main():
-	   """Main application entry point with enhanced features."""
-	   print("🚀 Initializing Enterprise Agent System...")
-	   
-	   try:
-		  # Load environment and build agents
-		  load_env()
-		  logging.info("Building agent network...")
-		  
-		  agents = {
-				"planner": await build_planner_agent(),
-				"hr": await build_hr_agent(), 
-				"compliance": await build_compliance_agent(),
-				"finance": await build_finance_agent()
-		  }
-		  
-		  logging.info("✅ All agents initialized successfully")
-		  
-		  # Check if running interactively or in batch mode
-		  import sys
-		  if len(sys.argv) > 1 and sys.argv[1] == "--interactive":
-				await run_interactive_mode(agents)
-		  else:
-				await run_batch_tests(agents)
-				
-	   except Exception as e:
-		  logging.error(f"System initialization failed: {e}")
-		  print(f"❌ Failed to start system: {e}")
-
-	if __name__ == "__main__":
-	   asyncio.run(main())
-
-	```
-
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image15.png)
-
-	**Central Execution Engine:**
-
-	- This script acts as the core orchestrator, coordinating all agents
-	  (Planner, HR, Finance, Compliance) and managing multi-agent routing
-	  using the Microsoft Agent Framework.
-
-	**Agent Network Initialization:**
-
-	- It loads environment settings, builds each agent with await
-	  build\_\*\_agent(), and registers them into a shared dictionary for
-	  easy delegation.
-
-	**Advanced A2A Routing:**
-
-	- The run_multi_agent() function routes user queries to the correct
-	  specialist through the Planner, then awaits the specialist agent's
-	  response. It captures routing, timing, success status, and final
-	  answer.
-
-	**Multiple Execution Modes:**
-
-	- Batch Mode: Runs predefined test queries.
-
-	- Interactive Mode (--interactive): Enables real-time chat for live
-	  testing and exploration.
-
-	**Production-Ready Resilience:**
-
-	- Includes response formatting, timestamps, error fallback mechanisms,
-	  and logging - laying a strong foundation for observability, telemetry,
-	  and AgentOps in later exercises.
-
-2.  Once done, select **File**  and then
-    click **Save**  to save the file.
-
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image8.png)
-
-## Task 5: Test Multi-Agent Conversation & Inspect Logs
-
-In this task, you will run end-to-end test queries through the
-multi-agent system and observe agent collaboration using logs and
-telemetry in Microsoft Foundry.
-
-1.  You have successfully configured the multi-agent system with a
-    planner agent and worker agents. Now, you'll test the working of
-    this multi-agent system.
-
-	****Note:**** Although the multi-agent system is now configured with LLM capabilities, it does not yet have MCP integration or access to external knowledge sources such as datasets or Azure AI Search indexes. At this stage, the agents will rely solely on their general model intelligence to answer questions.
-
-2.	Rename the **requirements.txt.txt** to **requirements.txt**.
-
-3.	Replace the existing content in the file with the below content and **Save** it.
-
-	```
-	python-dotenv
-	a2a-sdk==0.3.9
-	agent-framework==1.0.0b251016
-	agent-framework-a2a==1.0.0b251016
-	agent-framework-azure-ai==1.0.0b251016
-	agent-framework-copilotstudio==1.0.0b251016
-	agent-framework-core==1.0.0b251016
-	agent-framework-devui==1.0.0b251016
-	agent-framework-mem0==1.0.0b251016
-	agent-framework-purview==1.0.0b251016
-	agent-framework-redis==1.0.0b251016
-	azure-ai-agents==1.2.0b5
-	azure-ai-projects==1.1.0b4
-	azure-core==1.37.0
-	azure-core-tracing-opentelemetry==1.0.0b12
-	azure-identity==1.25.1
-	azure-monitor-opentelemetry==1.8.3
-	azure-monitor-opentelemetry-exporter==1.0.0b46
-	```
-
-4.  Select the **...** option from the top menu to extend the menu.
-    Select **Terminal** and click on **New Terminal**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image16.png)
-
-5.  Once the terminal is open, execute the command,
-
-	+++pip install -r requirements.txt+++ to install all the required
-	packages.
-
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image17.png)
-
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image18.png)
-
-6.  Once the installation is completed successfully, run the following
-    command to run the agent and review the responses for the test
-    prompts provided in the code file.
-
-	+++python main.py+++
-
-    ![A computer screen shot of a program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image19.png)
-
-	Check the **Routed to** parameter and review how the agent is
-determining and routing the requests to respective worker agents.
-
-7.  Now, run the agent again in interactive mode by adding
-    the --interactive flag. This lets you input the question and get the
-    response back. Provide the below prompt as a question once it asks.
-
-    - Command:
-
-	+++python main.py --interactive+++
-
-	- Prompt:
-
-	+++How much reimbursement is allowed for international flights?+++
-
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image20.png)
-
-8.  Once after getting the response, in the next prompt, add q to quit
-    the agent or stop the agent.
-
-    ![A black screen with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%206/media/image21.png)
-
-**Summary**
-
-In this lab, you defined three agents (Planner, HR, and Compliance)
-using the Microsoft Agent Framework SDK and registered them. You built a
-routing workflow to delegate user queries via Agent-to-Agent calls. You
-tested a multi-agent scenario and inspected logs to confirm correct
-message routing and execution flow.
-
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
+
+5.  Revise la estructura de carpetas del agente empresarial.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
+
+6.  Haga clic derecho sobre el archivo **.env.example (1)** y seleccione
+    **Rename (2)** para cambiar el nombre del archivo.
+
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image5.png)
+
+7.  Una vez hecho, cambie el nombre del archivo de **.env.example a
+    .env** para activar este archivo de configuración de entorno para el
+    agente.
+
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
+
+8.  Reemplace el contenido del archivo **.env** con el siguiente:
+
+> AZURE_OPENAI_ENDPOINT=https://agentic-
+> @lab.LabInstance.Id.cognitiveservices.azure.com/
+>
+> AZURE_OPENAI_API_KEY=**\<Replace with Azure OpenAI key\>**
+>
+> AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
+>
+> AZURE_OPENAI_API_VERSION=2025-03-01-preview
+
+Desde la página de **Microsoft Foundry Overview**, copie la **API Key**
+y reemplace el marcador \<**Replace with Azure OpenAI key**\> en el
+archivo .env.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
+
+9.  Una vez hecho, seleccione **File (1)** y luego haga clic en **Save
+    (2)** para guardar el archivo.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image8.png)
+
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
+
+## Tarea 2: Crear Planner Agent
+
+En esta tarea, definirá un **Planner Agent**, que interpreta las
+consultas del usuario y decide a qué agente especialista delegar tareas.
+Configurará el agente utilizando el **Agent Framework SDK** con
+instrucciones específicas según su rol.
+
+1.  Desde la lista, seleccione **planner_agent.py** en la carpeta de
+    agentes.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
+
+2.  Agregue el siguiente código Python para configurar el Planner Agent:
+
+> import os
+>
+> import asyncio
+>
+> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
+> ignore
+>
+> async def build_planner_agent():
+>
+> client = AzureOpenAIResponsesClient(
+>
+> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+>
+> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+>
+> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+>
+> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+>
+> )
+>
+> return client.create_agent(
+>
+> name="PlannerAgent",
+>
+> instructions=(
+>
+> "You are an intelligent routing agent. Analyze user queries and route
+> them to the appropriate specialist. "
+>
+> "Available specialists:\n"
+>
+> "- HR: Employee policies, leave, benefits, working hours, performance,
+> hiring\n"
+>
+> "- FINANCE: Reimbursements, expenses, budgets, travel costs, meal
+> allowances, equipment purchases\n"
+>
+> "- COMPLIANCE: GDPR, data privacy, regulatory requirements, legal
+> compliance, audits\n\n"
+>
+> "Return exactly one word: HR, FINANCE, or COMPLIANCE. "
+>
+> "Consider keywords like: money, cost, budget, reimburse, expense,
+> payment, allowance → FINANCE\n"
+>
+> "Keywords like: leave, sick, vacation, policy, employee, benefits →
+> HR\n"
+>
+> "Keywords like: GDPR, privacy, compliance, legal, audit, regulation →
+> COMPLIANCE"
+>
+> ),
+>
+> )
+>
+> async def classify_target(planner_agent, user_query: str) -\> str:
+>
+> result = await planner_agent.run(
+>
+> "Analyze and route this query:\n\n"
+>
+> f"User query: {user_query}\n\n"
+>
+> "Return exactly one word: HR, FINANCE, or COMPLIANCE."
+>
+> )
+>
+> \# Extract the text content from the AgentRunResponse object
+>
+> text = str(result).strip().lower()
+>
+> \# Advanced classification with fallback logic
+>
+> if "finance" in text or "financial" in text:
+>
+> return "FINANCE"
+>
+> elif "hr" in text or "human" in text:
+>
+> return "HR"
+>
+> elif "compliance" in text or "legal" in text:
+>
+> return "COMPLIANCE"
+>
+> else:
+>
+> \# Fallback keyword analysis if agent response is unclear
+>
+> query_lower = user_query.lower()
+>
+> finance_keywords = \["reimburs", "expense", "cost", "budget", "money",
+> "payment", "allowance", "travel", "meal", "flight", "hotel"\]
+>
+> hr_keywords = \["leave", "sick", "vacation", "employee", "benefit",
+> "policy", "hire", "performance", "work"\]
+>
+> compliance_keywords = \["gdpr", "privacy", "compliance", "legal",
+> "audit", "regulation", "data protection"\]
+>
+> finance_score = sum(1 for keyword in finance_keywords if keyword in
+> query_lower)
+>
+> hr_score = sum(1 for keyword in hr_keywords if keyword in query_lower)
+>
+> compliance_score = sum(1 for keyword in compliance_keywords if keyword
+> in query_lower)
+>
+> if finance_score \> hr_score and finance_score \> compliance_score:
+>
+> return "FINANCE"
+>
+> elif hr_score \> compliance_score:
+>
+> return "HR"
+>
+> else:
+>
+> return "COMPLIANCE"
+
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image11.png)
+
+- **Propósito del Planner Agent:**
+
+Este agente está diseñado para analizar las consultas de los usuarios y
+decidir qué agente especialista (HR, Finance o Compliance) debe manejar
+la respuesta.
+
+**Creación del agente utilizando AzureOpenAIResponsesClient:**
+
+- La función build_planner_agent() inicializa el Planner utilizando el
+  Agent Framework SDK con credenciales basadas en API cargadas desde
+  variables de entorno.
+
+**Enrutamiento guiado por LLM (Lógica principal):**
+
+- Se indica al Planner agent que devuelva exactamente una palabra — HR,
+  FINANCE o COMPLIANCE — basada en palabras clave y contexto de la
+  consulta.
+
+**classify_target() para toma de decisiones:**
+
+- Esta función primero utiliza una llamada await agent.run() para
+  preguntar al Planner qué especialista seleccionar. Si la respuesta no
+  es clara, aplica un análisis de respaldo basado en palabras clave.
+
+> **Estrategia de IA híbrida + heurística:**
+
+- El diseño asegura un enrutamiento confiable, combinando razonamiento
+  del modelo con puntuación manual de palabras clave, haciendo que el
+  Planner sea sólido incluso cuando la salida de la IA es vaga.
+
+3.  Una vez hecho, seleccione **File (1)** y luego haga clic en **Save
+    (2)** para guardar el archivo.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image8.png)
+
+## Tarea 3: Crear Worker Agents
+
+En esta tarea, desarrollará agentes específicos de dominio responsables
+del conocimiento de HR, Finance y Compliance. Cada agente se registrará
+en el Agent Registry para habilitar su descubrimiento y delegación
+mediante comunicación A2A.
+
+1.  Desde la lista, seleccione **hr_agent.py** dentro de la carpeta
+    agent y agregue el siguiente código Python para configurar el agente
+    HR:
+
+> import os
+>
+> import asyncio
+>
+> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
+> ignore
+>
+> async def build_hr_agent():
+>
+> client = AzureOpenAIResponsesClient(
+>
+> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+>
+> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+>
+> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+>
+> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+>
+> )
+>
+> return client.create_agent(
+>
+> name="HRAgent",
+>
+> instructions=(
+>
+> "You are an expert HR policy specialist with deep knowledge of
+> employment law and best practices. "
+>
+> "Answer questions about:\n"
+>
+> "- Leave policies (sick, vacation, parental, bereavement)\n"
+>
+> "- Employee benefits (health insurance, retirement, wellness
+> programs)\n"
+>
+> "- Performance management and reviews\n"
+>
+> "- Hiring, onboarding, and termination procedures\n"
+>
+> "- Working hours, overtime, and flexible work arrangements\n"
+>
+> "- Employee relations and conflict resolution\n"
+>
+> "- Training and development programs\n\n"
+>
+> "Provide specific, actionable guidance with policy references where
+> applicable. "
+>
+> "Be empathetic and professional in your responses."
+>
+> ),
+>
+> )
+
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
+
+> **Propósito del HR Agent:**
+
+- Este agente actúa como un experto dedicado en políticas de HR,
+  entrenado para responder a preguntas relacionadas con el bienestar de
+  los empleados, estructuras de permisos, beneficios y procedimientos
+  internos.
+
+> **Inicialización del agente con Azure Responses Client:**
+
+- La función build_hr_agent() inicializa el agente usando
+  AzureOpenAIResponsesClient, autenticado mediante claves API y valores
+  de endpoint almacenados en variables de entorno.
+
+> **Especialización por dominio:**
+
+- La sección de instrucciones define claramente el alcance del HR agent
+  incluyendo tipos de permisos, beneficios, incorporación, relaciones
+  laborales y gestión del desempeño, asegurando que responda únicamente
+  a consultas relacionadas con HR.
+
+> **Tono profesional y empático:**
+
+- El agente está diseñado para imitar estándares reales de comunicación
+  de HR, proporcionando orientación precisa, profesional y empática,
+  ideal para asistentes internos de la organización.
+
+> **Base para la colaboración multiagente:**
+
+- Una vez construido, este HR agent será invocado por el Planner Agent,
+  permitiendo delegación automatizada en flujos de trabajo multiagente
+  cuando se detecten consultas relacionadas con HR.
+
+2.  Una vez hecho, seleccione **File (1)** y luego haga clic en **Save
+    (2)** para guardar el archivo.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image8.png)
+
+3.  Desde la lista, seleccione **finance_agent.py** dentro de la carpeta
+    agent y agregue el siguiente código Python para configurar el agente
+    finance:
+
+> import os
+>
+> import asyncio
+>
+> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
+> ignore
+>
+> async def build_finance_agent():
+>
+> client = AzureOpenAIResponsesClient(
+>
+> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+>
+> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+>
+> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+>
+> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+>
+> )
+>
+> return client.create_agent(
+>
+> name="FinanceAgent",
+>
+> instructions=(
+>
+> "You are a finance and reimbursement specialist. Answer questions
+> about "
+>
+> "expense policies, reimbursement limits, budget approvals, travel
+> expenses, "
+>
+> "meal allowances, equipment purchases, and financial procedures.
+> Provide "
+>
+> "specific amounts, policies, and actionable guidance."
+>
+> ),
+>
+> )
+
+![A computer screen shot of a program AI-generated content may be
+incorrect.](./media/image13.png)
+
+> Rol especializado en finanzas:
+
+- Este agente está diseñado para manejar todos los temas relacionados
+  con finanzas, incluyendo políticas de reembolso, presupuestos de
+  viaje, asignaciones y aprobaciones de compras.
+
+> **Inicialización vía Agent Framework SDK:**
+
+- La función build_finance_agent() crea un agente usando
+  AzureOpenAIResponsesClient, aprovechando la autenticación con clave
+  API desde variables de entorno seguras.
+
+> **Instrucciones orientadas a políticas:**
+
+- Las instrucciones del agente limitan claramente su responsabilidad a
+  procedimientos financieros, asegurando respuestas precisas sobre
+  costos, pagos, presupuestos y reglas corporativas de gastos.
+
+> **Precisión y resultados accionables:**
+
+- A diferencia de agentes de propósito general, este asistente
+  financiero está instruido para proporcionar valores específicos de
+  políticas, como límites, elegibilidad o flujos de aprobación,
+  haciéndolo práctico para los empleados.
+
+> **Soporte a la delegación del Planner (A2A):**
+
+- Este agente será invocado automáticamente cuando el Planner detecte
+  palabras clave o consultas relacionadas con finanzas, habilitando
+  colaboración multiagente sin interrupciones.
+
+4.  Una vez hecho, seleccione **File (1)** y luego haga clic en **Save
+    (2)** para guardar el archivo.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image8.png)
+
+5.  Desde la lista, seleccione **compliance_agent.py** dentro de la
+    carpeta agent y agregue el siguiente código Python para configurar
+    el agente Compliance:
+
+> import os
+>
+> import asyncio
+>
+> from agent_framework.azure import AzureOpenAIResponsesClient \# type:
+> ignore
+>
+> async def build_compliance_agent():
+>
+> client = AzureOpenAIResponsesClient(
+>
+> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+>
+> endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+>
+> deployment_name=os.getenv("AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME"),
+>
+> api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+>
+> )
+>
+> return client.create_agent(
+>
+> name="ComplianceAgent",
+>
+> instructions=(
+>
+> "You are a senior compliance and legal specialist with expertise in
+> multiple jurisdictions. "
+>
+> "Provide authoritative guidance on:\n"
+>
+> "- GDPR and data protection regulations (EU, UK, US state laws)\n"
+>
+> "- Privacy policies and data processing agreements\n"
+>
+> "- Regulatory compliance (SOX, HIPAA, PCI-DSS, ISO standards)\n"
+>
+> "- Risk assessment and audit requirements\n"
+>
+> "- Contract law and vendor agreements\n"
+>
+> "- Information security policies\n"
+>
+> "- Cross-border data transfers and adequacy decisions\n"
+>
+> "- Breach notification requirements\n\n"
+>
+> "Always provide factual, well-researched answers with relevant legal
+> citations. "
+>
+> "Include practical implementation steps and potential risks. Use
+> formal, professional tone."
+>
+> ),
+>
+> )
+
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
+
+> **Propósito del agente:**
+
+- Este agente sirve como autoridad dedicada en temas legales y de
+  cumplimiento, responsable de manejar consultas relacionadas con GDPR,
+  marcos regulatorios, derecho contractual, evaluaciones de riesgo y
+  estándares de seguridad.
+
+> **Inicialización del agente:**
+
+- La función build_compliance_agent() utiliza AzureOpenAIResponsesClient
+  con autenticación por clave API para registrar el Compliance agent
+  mediante Microsoft Agent Framework SDK.
+
+> **Experiencia regulatoria definida en las instrucciones:**
+
+- Las instrucciones proporcionan un alcance de cumplimiento claro —
+  incluyendo regulaciones globales de privacidad (GDPR, HIPAA, SOX),
+  preparación de auditorías, acuerdos legales y protocolos de
+  notificación de incidentes, asegurando respuestas confiables.
+
+> **Tono y expectativas de salida:**
+
+- Este agente está configurado para entregar respuestas en tono formal y
+  autoritario, incluyendo citas legales o recomendaciones de
+  implementación cuando corresponda.
+
+> **Rol en sistema multiagente:**
+
+- Durante la delegación A2A, el Planner Agent enviará consultas legales
+  o de cumplimiento a este especialista, manteniendo precisión y
+  gobernanza en los flujos de decisión empresariales.
+
+6.  Una vez hecho, seleccione **File (1)** y luego haga clic en **Save
+    (2)** para guardar el archivo.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image8.png)
+
+## Tarea 4: Definir la lógica de enrutamiento A2A (Agent Graph / Workflow)
+
+Agent-to-Agent (A2A) es una capacidad central del Microsoft Agent
+Framework que permite a un agente delegar tareas autónomamente a otro
+agente.
+
+En esta tarea, implementará la lógica de enrutamiento utilizando un
+Agent Workflow para que el Planner pueda invocar de manera autónoma los
+agentes HR o Compliance según la intención de la consulta. Esto
+establece una verdadera colaboración multiagente.
+
+1.  Desde la lista, seleccione **main.py** dentro de la carpeta agent y
+    agregue el siguiente código Python para configurar el flujo de
+    comunicación A2A:
+
+> import asyncio
+>
+> import time
+>
+> import logging
+>
+> from typing import Dict, Any
+>
+> from utils.env import load_env
+>
+> from agents.planner_agent import build_planner_agent, classify_target
+>
+> from agents.hr_agent import build_hr_agent
+>
+> from agents.compliance_agent import build_compliance_agent
+>
+> from agents.finance_agent import build_finance_agent
+>
+> \# Configure logging
+>
+> logging.basicConfig(level=logging.INFO, format='%(asctime)s -
+> %(levelname)s - %(message)s')
+>
+> async def run_multi_agent(query: str, agents: Dict\[str, Any\]) -\>
+> Dict\[str, Any\]:
+>
+> """
+>
+> Advanced multi-agent system with routing, timing, and comprehensive
+> response handling.
+>
+> """
+>
+> start_time = time.time()
+>
+> try:
+>
+> \# Step 1: Route the query
+>
+> logging.info(f"Routing query: {query\[:50\]}...")
+>
+> target = await classify_target(agents\["planner"\], query)
+>
+> logging.info(f"Query routed to: {target}")
+>
+> \# Step 2: Get response from appropriate agent
+>
+> agent_mapping = {
+>
+> "HR": ("hr", "HRAgent"),
+>
+> "FINANCE": ("finance", "FinanceAgent"),
+>
+> "COMPLIANCE": ("compliance", "ComplianceAgent")
+>
+> }
+>
+> if target in agent_mapping:
+>
+> agent_key, agent_name = agent_mapping\[target\]
+>
+> answer = await agents\[agent_key\].run(query)
+>
+> else:
+>
+> \# Fallback to HR if routing unclear
+>
+> logging.warning(f"Unknown target '{target}', falling back to HR")
+>
+> answer = await agents\["hr"\].run(query)
+>
+> target = "HR"
+>
+> agent_name = "HRAgent"
+>
+> \# Step 3: Process response
+>
+> response_time = time.time() - start_time
+>
+> return {
+>
+> "query": query,
+>
+> "routed_to": target,
+>
+> "agent_name": agent_name,
+>
+> "answer": str(answer),
+>
+> "response_time": round(response_time, 2),
+>
+> "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+>
+> "success": True
+>
+> }
+>
+> except Exception as e:
+>
+> logging.error(f"Error processing query: {e}")
+>
+> return {
+>
+> "query": query,
+>
+> "routed_to": "ERROR",
+>
+> "agent_name": "ErrorHandler",
+>
+> "answer": f"I apologize, but I encountered an error processing your
+> request: {str(e)}",
+>
+> "response_time": round(time.time() - start_time, 2),
+>
+> "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+>
+> "success": False
+>
+> }
+>
+> def format_response(result: Dict\[str, Any\]) -\> str:
+>
+> """Format the agent response for display."""
+>
+> status_icon = "✅" if result\["success"\] else "❌"
+>
+> formatted = f"""
+>
+> {status_icon} Agent Response Summary:
+>
+> ┌─ Routed to: {result\['routed_to'\]} ({result\['agent_name'\]})
+>
+> ├─ Response time: {result\['response_time'\]}s
+>
+> ├─ Timestamp: {result\['timestamp'\]}
+>
+> └─ Status: {'Success' if result\['success'\] else 'Error'}
+>
+> 💬 Answer:
+>
+> {result\['answer'\]}
+>
+> """
+>
+> return formatted
+>
+> async def run_interactive_mode(agents: Dict\[str, Any\]):
+>
+> """Interactive mode for real-time queries."""
+>
+> print("\n🤖 Enterprise Agent System - Interactive Mode")
+>
+> print("Available agents: HR, Finance, Compliance")
+>
+> print("Type 'quit' to exit, 'help' for commands\n")
+>
+> while True:
+>
+> try:
+>
+> query = input("Enter your question: ").strip()
+>
+> if query.lower() in \['quit', 'exit', 'q'\]:
+>
+> print("👋 Goodbye!")
+>
+> break
+>
+> elif query.lower() == 'help':
+>
+> print("""
+>
+> 📋 Available Commands:
+>
+> \- Ask any question about HR, Finance, or Compliance
+>
+> \- 'quit' or 'exit' - Exit the system
+>
+> \- 'help' - Show this help message
+>
+> 🎯 Example questions:
+>
+> \- "What's the travel reimbursement limit for meals?"
+>
+> \- "How many vacation days do employees get?"
+>
+> \- "Do we need GDPR compliance for EU customers?"
+>
+> """)
+>
+> continue
+>
+> elif not query:
+>
+> continue
+>
+> result = await run_multi_agent(query, agents)
+>
+> print(format_response(result))
+>
+> except KeyboardInterrupt:
+>
+> print("\n👋 Goodbye!")
+>
+> break
+>
+> except Exception as e:
+>
+> logging.error(f"Interactive mode error: {e}")
+>
+> print(f"❌ Error: {e}")
+>
+> async def run_batch_tests(agents: Dict\[str, Any\]):
+>
+> """Run predefined test queries."""
+>
+> test_queries = \[
+>
+> "How much reimbursement is allowed for international flights?",
+>
+> "Is employee data protected under GDPR?",
+>
+> "How many sick leave days do employees get?"
+>
+> \]
+>
+> print("🧪 Running batch tests...\n")
+>
+> for i, query in enumerate(test_queries, 1):
+>
+> print(f"{'='\*80}")
+>
+> print(f"TEST {i}/{len(test_queries)}: {query}")
+>
+> print(f"{'='\*80}")
+>
+> result = await run_multi_agent(query, agents)
+>
+> print(format_response(result))
+>
+> \# Small delay between queries for better readability
+>
+> if i \< len(test_queries):
+>
+> await asyncio.sleep(0.5)
+>
+> async def main():
+>
+> """Main application entry point with enhanced features."""
+>
+> print("🚀 Initializing Enterprise Agent System...")
+>
+> try:
+>
+> \# Load environment and build agents
+>
+> load_env()
+>
+> logging.info("Building agent network...")
+>
+> agents = {
+>
+> "planner": await build_planner_agent(),
+>
+> "hr": await build_hr_agent(),
+>
+> "compliance": await build_compliance_agent(),
+>
+> "finance": await build_finance_agent()
+>
+> }
+>
+> logging.info("✅ All agents initialized successfully")
+>
+> \# Check if running interactively or in batch mode
+>
+> import sys
+>
+> if len(sys.argv) \> 1 and sys.argv\[1\] == "--interactive":
+>
+> await run_interactive_mode(agents)
+>
+> else:
+>
+> await run_batch_tests(agents)
+>
+> except Exception as e:
+>
+> logging.error(f"System initialization failed: {e}")
+>
+> print(f"❌ Failed to start system: {e}")
+>
+> if \_\_name\_\_ == "\_\_main\_\_":
+>
+> asyncio.run(main())
+
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image15.png)
+
+> **Motor central de ejecución:**
+
+- Este script actúa como el núcleo orquestador, coordinando todos los
+  agentes (Planner, HR, Finance, Compliance) y gestionando el
+  enrutamiento multiagente usando Microsoft Agent Framework.
+
+> **Inicialización de la red de agentes:**
+
+- Carga las configuraciones del entorno, construye cada agente con await
+  build\_\*\_agent() y los registra en un diccionario compartido para
+  facilitar la delegación.
+
+> **Enrutamiento A2A Avanzado:**
+
+- La función run_multi_agent() dirige las consultas del usuario al
+  especialista adecuado a través del Planner, luego espera la respuesta
+  del agente especialista. Captura enrutamiento, tiempo, estado de éxito
+  y respuesta final.
+
+> **Múltiples modos de ejecución:**
+
+- Modo Batch: Ejecuta consultas de prueba predefinidas.
+
+- Modo Interactivo (--interactive): Permite chat en tiempo real para
+  pruebas y exploración.
+
+> **Resiliencia lista para producción:**
+
+- Incluye formateo de respuesta, marcas de tiempo, mecanismos de
+  respaldo ante errores y logging, estableciendo una base sólida para
+  observabilidad, telemetría y AgentOps en ejercicios posteriores.
+
+2.  Una vez hecho, seleccione **File (1)** y luego haga clic en **Save
+    (2)** para guardar el archivo.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image8.png)
+
+## Tarea 5: Probar la conversación multiagente e inspeccionar logs
+
+En esta tarea, ejecutará consultas de prueba de extremo a extremo a
+través del sistema multiagente y observará la colaboración de los
+agentes mediante logs y telemetría en Microsoft Foundry.
+
+1.  Ha configurado correctamente el sistema multiagente con un Planner
+    agent y agentes especialistas. Ahora, probará el funcionamiento de
+    este sistema.
+
+> **Nota:** Aunque el sistema multiagente ahora tiene capacidades LLM,
+> todavía no cuenta con integración MCP ni acceso a fuentes externas de
+> conocimiento como datasets o índices de Azure AI Search. En esta
+> etapa, los agentes dependerán únicamente de su inteligencia general de
+> modelo para responder preguntas.
+
+2.  Seleccione la opción **... (1)** desde el menú superior para
+    expandir el menú. Seleccione **Terminal (2)** y haga clic en **New
+    Terminal (3)**.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
+
+3.  Una vez abierto el terminal, ejecute el comando,
+
++++pip install -r requirements.txt+++ para instalar todos los paquetes
+requeridos.
+
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image17.png)
+
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
+
+4.  Una vez finalizada la instalación correctamente, ejecute el
+    siguiente comando para ejecutar el agente y revisar las respuestas
+    de las pruebas proporcionadas en el archivo de código.
+
++++python main.py+++
+
+> ![A computer screen shot of a program AI-generated content may be
+> incorrect.](./media/image19.png)
+
+Revise el parámetro **Routed to** y observe cómo el agente determina y
+enruta las solicitudes a los agentes especialistas correspondientes.
+
+5.  Ahora, ejecute nuevamente el agente en modo interactivo agregando la
+    bandera --interactive. Esto le permitirá ingresar preguntas y
+    obtener respuestas en tiempo real. Proporcione el siguiente prompt
+    cuando se solicite.
+
+    - Comando:
+
+> +++python main.py –interactive+++
+
+- Prompt:
+
+> +++How much reimbursement is allowed for international flights?+++
+
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image20.png)
+
+6.  Una vez obtenida la respuesta, en el siguiente prompt, ingrese **q**
+    para salir o detener el agente.
+
+![A black screen with white text AI-generated content may be
+incorrect.](./media/image21.png)
+
+**Resumen**
+
+En este laboratorio, definió tres agentes (Planner, HR y Compliance)
+utilizando el Microsoft Agent Framework SDK y los registró. Creó un
+flujo de trabajo de enrutamiento para delegar consultas de usuarios
+mediante llamadas Agent-to-Agent. Probó un escenario multiagente e
+inspeccionó los logs para confirmar el enrutamiento correcto de los
+mensajes y el flujo de ejecución.

@@ -1,705 +1,785 @@
-# Lab 9: Implementing Single and Multi-Agent Workflows using Azure AI Framework
+# Laboratorio 9: Implementación de flujos de trabajo de agentes individuales y multiagentes usando Azure AI Framework
 
-**Estimated Duration**: 45 Minutes
+**Duración estimada:** 45 minutos
 
-**Overview**
+**Descripción general**
 
-You are an AI Engineer at Contoso Ltd., tasked with developing
-intelligent agent workflows using the Azure AI Framework. In this lab,
-you will create a single-agent system that integrates with external
-tools using MCP, and then design multi-agent workflows where multiple
-specialized agents collaborate or hand off tasks dynamically based on
-user intent.
+Usted es un **AI Engineer** en **Contoso Ltd.**, encargado de
+desarrollar **flujos de trabajo inteligentes de agentes** utilizando el
+**Azure AI Framework**.  
+En este laboratorio, creará un **sistema de agente individual** que se
+integra con herramientas externas mediante **MCP**, y luego diseñará
+**flujos de trabajo multiagente** donde múltiples agentes especializados
+colaboran o transfieren tareas dinámicamente según la **intención del
+usuario**.
 
-Lab Objectives
+**Objetivos del laboratorio**
 
-You'll perform the following tasks in this lab.
+En este laboratorio, realizará las siguientes tareas:
 
-- Task 1: Build and Test an Azure OpenAI Chat Agent
+• Tarea 1: Crear y probar un Azure OpenAI Chat Agent.
 
-- Task 2: Creating a Single-Agent Workflow with Tool Integration
+• Tarea 2: Crear un flujo de trabajo de agente individual con
+integración de herramientas.
 
-- Task 3: Multi-Agent Workflow Design
+• Tarea 3: Diseño de flujos de trabajo multiagente.
 
-  - Task 3.1: Orchestrating Multi-Agent Workflows
+- Tarea 3.1: Orquestación de flujos de trabajo multiagente.
 
-  - Task 3.2: Handoff Pattern Multi-Agent System
+- Tarea 3.2: Sistema multiagente con patrón de handoff.
 
-## Task 0: Lab environment setup
+## Tarea 0: Configuración del entorno del laboratorio
 
-1.  From C:\Labfiles\Day 2, extract the **OpenAIWorkshop-Framework**
-    file.
+1.  Desde C:\Labfiles\Day 2, extraiga el archivo
+    **OpenAIWorkshop-Framework**.
 
-2.  Click on the **Visual Studio Code** from the LabVM desktop.
+2.  Haga clic en **Visual Studio Code** desde el escritorio de la LabVM.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image1.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-3.  Select **File**  and click **Open Folder**  to open
-    the **OpenAIWorkshop-Framework** folder.
+3.  Seleccione **File (1)** y haga clic en **Open Folder (2)** para
+    abrir la carpeta **OpenAIWorkshop-Framework**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image2.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-4.  Navigate to C:\Labfiles\Day 2\OpenAIWorkshop-Framework path,
-    select **OpenAIWorkshop-Framework** and then **Select Folder**.
+4.  Navegue a C:\Labfiles\Day 2\OpenAIWorkshop-Framework, seleccione
+    **OpenAIWorkshop-Framework** y luego **Select Folder**.
 
-5.  Select **Yes, I trust the authors**.
+5.  Seleccione **Yes, I trust the authors**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image3.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-6.  Click on the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+6.  Haga clic en el **ellipsis (…) (1)**, luego en **Terminal (2)** y
+    después en **New Terminal (3)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-7.  Enter the below command to navigate to
-    the **applications** directory and install all required dependencies
-    from the **requirements.txt** file.
+7.  Ingrese los siguientes comandos para navegar al directorio de
+    **aplicaciones** e instalar las dependencias requeridas desde
+    **requirements.txt**:
 
-	```
-	cd agentic_ai/applications
-	pip install -r requirements.txt
-	```
+> cd agentic_ai/applications
+>
+> pip install -r requirements.txt
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image5.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-8.  The command may take 5-10 minutes to complete.
+8.  El comando puede tardar entre 5 y 10 minutos en completarse.
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image6.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-## Task 1: Build and Test an Azure OpenAI Chat Agent
+## Tarea 1: Crear y probar un Azure OpenAI Chat Agent
 
-In this task, you will build and test a simple Azure OpenAI chat agent
-in Visual Studio Code. You'll configure environment variables, connect
-the agent to your deployed model, and observe how it generates dynamic
-responses based on different prompts.
+En esta tarea, construirá y probará un agente simple de Azure OpenAI en
+Visual Studio Code.  
+Configurará variables de entorno, conectará el agente con su modelo
+implementado y observará cómo genera respuestas dinámicas según
+distintos prompts.
 
-1.  Navigate back to the **Visual Studio Code**.
+1.  Regrese a **Visual Studio Code**.
 
-2.  Make sure the pip install -r requirements.txt command has completed
-    successfully. If it's still running, please wait until it finishes.
+2.  Asegúrese de que el comando **pip install -r requirements.txt** haya
+    terminado correctamente. Si aún está ejecutándose, espere.
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image6.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
+
+3.  Desde el Explorer, expanda **agentic_ai (1) \> applications (2)**.
+    Haga clic derecho sobre **.env.sample (3)** y seleccione **Rename
+    (4)**.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-3.  From the **Explorer**, expand **agentic_ai** **applications** . Right click
-    on **.env.sample**  and the **Rename** .
+4.  Renómbrelo como **.env** y ábralo.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image7.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
+
+5.  Reemplace los valores de **AZURE_OPENAI_API_KEY (1)** y
+    **AZURE_OPENAI_ENDPOINT (2)** con los valores reales obtenidos desde
+    la página **Microsoft Foundry Overview**.
+
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image9.png)
+
+6.  Agregue **AZURE_OPENAI_CHAT_DEPLOYMENT** como **gpt-4o-mini (3)**.
+
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image10.png)
+
+7.  Seleccione **File (1)** y luego **Save (2)**.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
+
+8.  Haga clic derecho sobre la carpeta **application (1)** y seleccione
+    **New file (2)** para crear un archivo nuevo.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
+
+9.  Nombre el archivo como:  
+    +++simple_agent_test.py+++.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
+
+10. Copie y pegue el siguiente código en el archivo (no se traduce, se
+    mantiene intacto):
+
+> import asyncio
+>
+> import os
+>
+> from dotenv import load_dotenv
+>
+> from agent_framework.azure import AzureOpenAIChatClient
+>
+> from azure.identity import AzureCliCredential
+>
+> \# Load .env file (same folder or specify full path)
+>
+> load_dotenv(dotenv_path=".env")
+>
+> \# Retrieve values from .env
+>
+> endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+>
+> deployment_name = os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT")
+>
+> api_version = os.getenv("AZURE_OPENAI_API_VERSION")
+>
+> print("Using Azure OpenAI endpoint:", endpoint)
+>
+> print("Deployment name:", deployment_name)
+>
+> print("API version:", api_version)
+>
+> \# ✅ Correct parameter name is deployment_name (not deployment)
+>
+> agent = AzureOpenAIChatClient(
+>
+> api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+>
+> endpoint=endpoint,
+>
+> deployment_name=deployment_name,
+>
+> api_version=api_version
+>
+> ).create_agent(
+>
+> instructions="You are a helpful and funny assistant who tells short
+> jokes.",
+>
+> name="Joker"
+>
+> )
+>
+> async def main():
+>
+> result = await agent.run("Tell me a joke about the cloud.")
+>
+> print("\nAgent response:\n", result.text)
+>
+> asyncio.run(main())
 
-4.  Rename the file to **.env** and click on it to open the file.
+![A computer screen shot of a program AI-generated content may be
+incorrect.](./media/image14.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image8.png)
+11. Seleccione **File (1)** y luego **Save (2)**.
+
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-5.  Replace the value
-    of AZURE_OPENAI_API_KEY  and AZURE_OPENAI_ENDPOINT  with
-    the actual values. Fetch them from Microsoft Foundry **Overview**
-    page.
+12. Haga clic derecho sobre **simple_agent_test.py (1)** y seleccione
+    **Open in Integrated Terminal (2)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image9.png)
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image15.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image1.png)
+13. Pegue el siguiente comando para ejecutar el agente y observar su
+    resultado:
 
-7.  Select **File** and then **Save**.
++++python simple_agent_test.py+++
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
+14. Modifiquemos la instrucción para observar cómo responde el agente.
+    Proporcione la instrucción como **Tell me a joke about the Earth
+    (1)** (línea n.º 31), luego guarde el archivo. Después, ejecute el
+    comando siguiente **(2)** y revise la respuesta del agente **(3)**.
 
-## Task 2: Creating a Single-Agent Workflow with Tool Integration
++++python simple_agent_test.py+++
+
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image17.png)
 
-In this task, you'll build and test a single-agent workflow that
-integrates with external tools using the MCP (Model Context Protocol).
-You'll configure environment variables, run the MCP server, backend, and
-frontend locally, and observe how the agent leverages MCP tools to
-process user queries and deliver intelligent, context-aware responses.
+15. Esto demuestra cómo la respuesta del agente varía dependiendo de la
+    instrucción, mostrando su capacidad de adaptarse a distintos
+    prompts.
 
-1.  On the Visual Studio Code, expand **agents** **agent_framework** **single_agent.py**  and
-    view the Single-Agent Workflow with MCPStreamableHTTPTool tool
-    integrated .
+## Tarea 2: Crear un flujo de trabajo de agente individual con integración MCP
 
-    - MCPStreamableHTTPTool allows the agent to invoke external
-      HTTP-based services via the MCP server and include tool outputs in
-      the conversation.
+En esta tarea, creará y probará un flujo de trabajo de agente individual
+que se integra con herramientas externas mediante el **MCP (Model
+Context Protocol)**.  
+Configurará variables de entorno, ejecutará el servidor MCP, backend y
+frontend, y observará cómo el agente utiliza herramientas MCP para
+procesar consultas y generar respuestas contextualizadas.
 
-    - Passed to ChatAgent and used automatically based on instructions
-      and user prompts
+1.  En Visual Studio Code, expanda **agents (1) \> agent_framework (2)
+    \> single_agent (3)** y revise el código del flujo de trabajo de
+    agente individual con la herramienta **MCPStreamableHTTPTool (4)**.
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image18.png)
+    - MCPStreamableHTTPTool permite que el agente invoque servicios
+      externos basados en HTTP mediante el servidor MCP.
 
-2.  Go through the code to understand how it is integrated:
+    - Se pasa al ChatAgent y se usa automáticamente según instrucciones
+      o prompts.
 
-    - In the \_maybe_create_tools method:
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image19.png)
+2.  Revise cómo está integrada en el código:
 
-	- This creates a streamable HTTP tool connected to your MCP server.
+    - En el método **\_maybe_create_tools**:
 
-	- It allows the agent to make HTTP calls to external services (through
-	  MCP) as part of its workflow.
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
 
-	- The tool is passed to the ChatAgent during initialization:
+- Crea una herramienta HTTP “streamable” conectada al servidor MCP.
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image19.png)
+- Permite al agente hacer llamadas HTTP a servicios externos.
 
-	- The agent can then use this tool whenever a user prompt triggers a
-	  tool call.
+&nbsp;
 
-	- Streaming support with WebSocket: When a tool/function is called
-	  during a streamed conversation, it broadcasts the tool name and turn
-	  via \_chat_async_streaming.
+- La herramienta se pasa al **ChatAgent** durante la inicialización:
 
-3.  Navigate to the .env file , add the following Environment
-    variable to your .env file to specify **Single agent workflow** to
-    run (at around line 46 just before which the AGENT_MODULE varialbe is commented out):
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
 
-	+++AGENT_MODULE=agents.agent_framework.single_agent+++
+- El agente puede utilizarla cuando el prompt activa una llamada a una
+  herramienta.
 
-	- Add DISABLE_AUTH=true  environment variable, it is used to
-	  disable authentication in the application. It allows easier local
-	  development and testing.
+- Soporta streaming vía WebSocket: cuando se invoca la herramienta en
+  una conversación con streaming, se transmite el nombre de la
+  herramienta y el turno mediante: \_chat_async_streaming.
 
-	+++DISABLE_AUTH=true+++
+3.  Navegue al archivo **.env (1)** y agregue la siguiente variable para
+    especificar que se ejecutará el flujo de trabajo de agente
+    **individual (2)**:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image2.png)
++++AGENT_MODULE=agents.agent_framework.single_agent+++
 
-4.  Select **File** and then **Save**.
+- Agregue también la variable **DISABLE_AUTH=true (3)** para
+  deshabilitar autenticación durante desarrollo local:
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+> +++DISABLE_AUTH=true+++
 
-5.  Now you will start the **MCP server, backend,** and **React
-    frontend** to run the full agent environment locally, allowing the
-    UI to interact with agents and tools.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-6.  In the Visual Studio Code Window, click on the **ellipses (...)
-   **, then **Terminal**, and then **New Terminal**.
+4.  Seleccione **File (1)** y luego **Save (2)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-7.  Wait for completion of the previous step, and proceed to the next
-    step.
+5.  Ahora iniciará el servidor **MCP, el backend y el frontend** en
+    React para correr el entorno completo de agentes localmente.
 
-8.  **Start the MCP Server (Terminal 1)**: (mcp directory is at project
-    root level)
+6.  En Visual Studio Code, haga clic en **ellipsis (...) (1)**, luego
+    **Terminal (2)** y **New Terminal (3)**.
 
-    - Run the below command to launch the **MCP server**, which exposes
-      APIs that agents can call as tools. (Server runs
-      on [http://localhost:8000](http://localhost:8000/))
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-	+++cd mcp+++
+7.  Espere a que termine lo anterior y proceda con el siguiente paso.
 
-    +++pip install uv+++
-    
-	+++uv run python mcp_service.py+++
+8.  **Iniciar el MCP Server (Terminal 1):** (el directorio *mcp* está en
+    el nivel raíz del proyecto)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image3.png)
+- Ejecute el siguiente comando para iniciar el servidor MCP, el cual
+  expone APIs que los agentes pueden invocar como herramientas. (El
+  servidor se ejecuta en <http://localhost:8000>)
 
-9.  Let the command run, open a new terminal.
+> cd mcp
+>
+> uv run python mcp_service.py
+>
+> ![A screenshot of a computer program AI-generated content may be
+> incorrect.](./media/image21.png)
+>
+> **Nota:** Si encuentra algún error, por favor ejecute los siguientes
+> comandos:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
++++pip install uv+++
 
-10. **Start the Backend (Terminal 2)**:
++++uv run python mcp_service.py+++
 
-    - Run the below command to start the backend server that hosts your
-      agent workflows, session management, and API endpoints.
+9.  Deje el comando ejecutándose, abra una nueva terminal.
 
-	```
-	cd agentic_ai/applications
-	uv run python backend.py
-	```
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image22.png)
+10. **Iniciar el Backend (Terminal 2)**:
 
-	- Runs locally at: [http://localhost:7000](http://localhost:7000/).
+    - Ejecute el siguiente comando para iniciar el servidor backend que
+      aloja sus flujos de trabajo de agentes, la gestión de sesiones y
+      los endpoints de API.
 
-	- This is the core application logic that the frontend will communicate
-	  with. Make sure the **Connection is open**.
+> cd agentic_ai/applications
+>
+> uv run python backend.py
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image23.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-11. Let the command run, open a new terminal.
+- Se ejecuta localmente
+  en: [http://localhost:7000](http://localhost:7000/).
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+- Esta es la lógica principal de la aplicación con la que el frontend se
+  comunicará. Asegúrese de que la conexión esté activa.
 
-12. **Start the React Frontend (Terminal 3)**:
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image23.png)
 
-    - Enter the command given below to navigate to
-      the react-frontend directory.
+11. Deje el comando ejecutándose, abra una nueva terminal.
 
-	+++cd agentic_ai/applications/react-frontend+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-	- Execute the below commands to launch the **React frontend** for your
-	  agent UI. Provides a user interface to interact with the agents and
-	  see their responses in real time.
+12. **Iniciar el React Frontend (Terminal 3)**:
 
-	+++npm install+++
+    - Ingrese el siguiente comando para navegar al directorio
+      react-frontend:
 
-    +++npm run dev+++
+> +++cd agentic_ai/applications/react-frontend+++
 
-	- Compilation may take some time. Please ignore the warnings and wait
-	  until it completes. Once the **webpack compiled successfully**, the
-	  Agent application runs locally
-	  at: [http://localhost:3000](http://localhost:3000/).
+- Luego, ejecute el siguiente comando para iniciar la **interfaz React**
+  para su UI de agentes, la cual proporciona una interfaz para
+  interactuar con los agentes y ver sus respuestas en tiempo real:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+> +++npm start+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image5.png)
+- La compilación puede tardar algún tiempo. Ignore las advertencias y
+  espere hasta que finalice. Una vez que el **webpack haya compilado
+  correctamente**, la aplicación del agente se ejecutará localmente
+  en: [http://localhost:3000](http://localhost:3000/).
 
-14. Once all three terminals are running, the agent application will
-    launch in your browser, which you can use to interact with the agent
-    and test its capabilities.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image24.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image6.png)
+13. Después de que los tres terminales estén en ejecución, la aplicación
+    del agente se iniciará en su navegador, donde podrá interactuar con
+    el agente y probar sus capacidades.
 
-    >[!Note] Ensure all three terminals are running. If any of them stop,
-please rerun the respective command. If all three aren't active, you may
-encounter a connection error.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-15. Send a +++Hi+++ message and wait for a response from the agent.
+**Nota:** Asegúrese de que los tres terminales estén ejecutándose. Si
+alguno se detiene, vuelva a ejecutar el comando correspondiente. Si los
+tres no están activos, podría encontrar un error de conexión.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image16.png)
+14. Envíe el siguiente prompt en el chat **(1)** y vea la respuesta
+    **(2)**:
 
-15. Send the below prompt in the chat and view the response :
++++Customer 251, what's my billing summary?+++
 
-	+++Customer 251, what's my billing summary?+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image7.png)
+**Nota**: Asegúrese de que los tres terminales estén ejecutándose. Si
+alguno se detiene, vuelva a ejecutar el comando correspondiente. Si los
+tres no están activos, podría encontrar un error de conexión.
 
-    >[!Note] Ensure all three terminals are running. If any of them stop,
-please rerun the respective command. If all three aren't active, you may
-encounter a connection error.
+15. Verifique el resultado. Fue el **ChatAgent (self.\_agent)** quien
+    interpretó el prompt, posiblemente llamó a la herramienta **MCP** y
+    generó el resultado.
 
-16. View the output, It was the ChatAgent (self.\_agent) that
-    interpreted the prompt, possibly called the **MCP tool**, and
-    generated the output.
+    - El agente interpretó su solicitud como una consulta de facturación
+      para el **Customer 251**.
 
-    - The agent interpreted your request as a billing inquiry
-      for **Customer 251**.
+    - Utilizó la **herramienta MCP** para obtener datos estructurados de
+      facturación.
 
-    - It used the **MCP tool** to fetch structured billing data.
+    - El agente está funcionando como se espera: integra dinámicamente
+      resultados de herramientas y razonamiento de IA para responder a
+      preguntas específicas del usuario.
 
-    - The agent is working as intended - it dynamically integrates tool
-      outputs and AI reasoning to answer user-specific questions.
+16. Tras finalizar sus pruebas, vuelva a VS Code y termine todas las
+    sesiones de terminal en ejecución. Esto garantiza que el próximo
+    flujo de trabajo multiagente se ejecute sin interferencias.
 
-17. After completing your testing, return to VS Code and terminate all
-    running terminal sessions. This ensures that the upcoming
-    multi-agent workflow runs without any interference.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image27.png)
+## Tarea 3: Diseño de flujo de trabajo multiagente
 
-## Task 3: Multi-Agent Workflow Design
+En esta tarea diseñará e implementará flujos de trabajo avanzados
+multiagente que demuestran distintos patrones de coordinación. Comenzará
+orquestando múltiples agentes especializados mediante un gestor central
+para manejar consultas complejas de forma colaborativa, y luego
+explorará un sistema basado en handoff donde el control cambia
+dinámicamente entre agentes específicos de dominio según la intención
+del usuario.
 
-In this task, you will design and implement advanced multi-agent
-workflows that demonstrate different coordination patterns. You'll begin
-by orchestrating multiple specialized agents through a central manager
-to handle complex queries collaboratively, and then explore a
-handoff-based system where control shifts dynamically between
-domain-specific agents based on user intent.
+### Tarea 3.1: Orquestación de flujos de trabajo multiagente
 
-### Task 3.1: Orchestrating Multi-Agent Workflows
+En esta tarea orquestará un flujo de trabajo multiagente donde un
+orquestador central coordina múltiples agentes especializados para
+procesar colaborativamente consultas complejas del usuario y generar
+respuestas precisas basadas en herramientas.
 
-In this task, you will orchestrate a multi-agent workflow where a
-central orchestrator coordinates multiple specialized agents to
-collaboratively process complex user queries and generate accurate,
-tool-based responses.
+1.  Vaya a **agent (1) \> agent_framework (2) \> multi_agent (3) \>
+    magentic_group (4)** y vea el código **(5).**
 
-1.  Navigate to **agent  \> agent_framework  \> multi_agent  \>
-    magentic_group** and view the code .
+    - Este código representa un **framework de orquestación
+      multiagente** porque define un sistema donde múltiples agentes
+      especializados colaboran bajo la guía de un orquestador central.
 
-    - This code represents a **multi-agent orchestration** framework
-      because it defines a system where multiple specialized agents
-      collaborate under the guidance of a central orchestrator.
+> ![A screenshot of a computer program AI-generated content may be
+> incorrect.](./media/image28.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image28.png)
+- \_create_participants inicializa múltiples agentes especialistas
+  (CRM/Billing, Product/Promotions, Security/Authentication).
 
-	- \_create_participants initializes multiple specialist agents
-	  (CRM/Billing, Product/Promotions, Security/Authentication).
+- Cada agente:
 
-	- Each agent:
+  - Tiene un dominio y conjunto de herramientas específico.
 
-		- Has a specific domain and set of tools.
+  - Solo se comunica con el orquestador, no directamente con el usuario.
 
-		- Only communicates with the orchestrator, not directly with the user.
+  - Proporciona respuestas fácticas basadas en herramientas.
 
-		- Provides factual, tool-backed responses.
+- Estos son los agentes utilizados en este flujo de trabajo multiagente:
 
-	- Here are the agents used in this Multi-Agent workflow
+  - **CRM & Billing Agent –** Gestiona cuentas de clientes,
+    suscripciones, facturación, invoices, pagos y consultas relacionadas
+    mediante datos fácticos basados en herramientas.
 
-		- **CRM & Billing Agent** - Handles customer accounts, subscriptions,
-		billing, invoices, payments, and related queries using factual
-		tool-backed data.
+  - **Product & Promotions Agent –** Proporciona disponibilidad de
+    productos, promociones, descuentos, elegibilidad y términos usando
+    fuentes estructuradas.
 
-		- **Product & Promotions Agent** - Provides product availability,
-		promotions, discounts, eligibility, and terms using structured
-		sources.
+  - **Security & Authentication Agent –** Gestiona incidentes de
+    seguridad, problemas de autenticación, bloqueos de cuenta y
+    orientación de mitigación de riesgos usando logs y herramientas.
 
-		- **Security & Authentication Agent** - Manages security incidents,
-		authentication issues, account lockouts, and risk mitigation
-		guidance using logs and tools.
+2.  Vaya al archivo **.env (1)**, comente la variable del agente
+    individual **(2)** e ingrese el siguiente comando para agregar la
+    variable de **Orchestrating Multi-Agent (3)**.
 
-2.  Navigate to .env file , comment out the single agent
-    variable  and enter the below command to add **Orchestrating
-    Multi-Agent** variable .
++++AGENT_MODULE=agents.agent_framework.multi_agent.magentic_group+++
 
-	+++AGENT_MODULE=agents.agent_framework.multi_agent.magentic_group+++
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image8.png)
+3.  Seleccione **File (1)** y luego **Save (2)**.
 
-3.  Select **File** and then **Save**.
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+4.  Ahora lance la aplicación completa del agente iniciando sus tres
+    componentes principales siguiendo los pasos:
 
-4.  Now launch the full agent application by starting its three core
-    components by following the steps:
+5.  En la ventana de **Visual Studio Code**, haga clic en los puntos
+    suspensivos (...) **(1)**, luego en la **Terminal (2)** y finalmente
+    **New Terminal (3)**.
 
-5.  In the Visual Studio Code Window, click on the **ellipses (...)
-   **, then **Terminal**, and then **New Terminal**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+6.  **Inicie el MCP Server (Terminal 1):** (la carpeta *mcp* está en el
+    nivel raíz del proyecto)
 
-6.  **Start the MCP Server (Terminal 1)**: (mcp directory is at project
-    root level)
+    - Ejecute el siguiente comando para iniciar el **servidor MCP**, el
+      cual expone las APIs que los agentes pueden utilizar como
+      herramientas. (El servidor se ejecuta
+      en [http://localhost:8000](http://localhost:8000/))
 
-    - Run the below command to launch the **MCP server**, which exposes
-      APIs that agents can call as tools. (Server runs
-      on [http://localhost:8000](http://localhost:8000/))
+> cd mcp
+>
+> uv run python mcp_service.py
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+7.  Deje el comando ejecutándose, abra una nueva terminal.
 
-7.  Let the command run, open a new terminal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+8.  **Inicie el Backend (Terminal 2)**:
 
-8.  **Start the Backend (Terminal 2)**:
+    - Ejecute el siguiente comando para iniciar el backend que aloja sus
+      flujos de trabajo de agentes, la gestión de sesiones y los
+      endpoints de API.
 
-    - Run the below command to start the backend server that hosts your
-      agent workflows, session management, and API endpoints.
+> cd agentic_ai/applications
+>
+> uv run python backend.py
 
-	```
-	cd agentic_ai/applications
-	uv run python backend.py
-	```
+- Esta es la lógica central de la aplicación con la que se comunicará el
+  frontend. Asegúrese de que la **conexión esté abierta**.
 
-	- This is the core application logic that the frontend will communicate
-	  with. Make sure the **Connection is open**.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image23.png)
+9.  Deje el comando ejecutándose, abra una nueva terminal.
 
-9.  Let the command run, open a new terminal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+10. **Inicie el React Frontend (Terminal 3):**
 
-10. **Start the React Frontend (Terminal 3)**:
+    - Ingrese el siguiente comando para navegar al directorio
+      react-frontend.
 
-    - Enter the command given below to navigate to
-      the react-frontend directory.
+> +++cd agentic_ai/applications/react-frontend+++
 
-	+++cd agentic_ai/applications/react-frontend+++
+- Ingrese el siguiente comando para iniciar el **frontend React** para
+  su UI del agente. Esto proporciona una interfaz para interactuar con
+  los agentes y ver sus respuestas en tiempo real.
 
-	- Enter the below command to launch the **React frontend** for your
-	  agent UI. Provides a user interface to interact with the agents and
-	  see their responses in real time.
+> +++npm start+++
 
-	+++npm run dev+++
+- Una vez que **webpack compile exitosamente**, la aplicación del agente
+  se ejecutará localmente
+  en: [http://localhost:3000](http://localhost:3000/).
 
-	- Once the **webpack compiled successfully**, Agent application runs
-	  locally at: [http://localhost:3000](http://localhost:3000/).
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image24.png)
+11. Envíe el siguiente prompt en el chat y vea la respuesta en el panel
+    izquierdo:
 
-11. Send the below prompt in the chat and view the response in the left
-    pane:
++++Customer 251, what's my billing summary?+++
 
-	+++Customer 251, what's my billing summary?+++
+12. El orquestador actúa como un gestor o router. Lee la consulta del
+    usuario y decide qué agente especializado debe manejarla. Utiliza el
+    contexto y palabras clave (como “billing”, “promotion”, “login”)
+    para tomar esta decisión.
 
-12. The orchestrator is like the manager or router. It reads the user
-    query and decides which specialized agent should handle it. It uses
-    the context and keywords (like "billing", "promotion", "login") to
-    make this decision.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image9.png)
+13. El orquestador asigna la tarea a un agente de dominio. Envia la
+    consulta a uno de estos agentes internos:
 
-13. Select the **Magentic Group** option in the drop down availble in the top menu.
+    - crm_billing – billing, invoices, payments
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image15.png)
+    - product_promotions – products, discounts, offers
 
-13. Orchestrator assigns the task to a domain agent. The orchestrator
-    sends the query to one of these internal agents:
+    - security_authentication – security, login, account lockouts
 
-    - crm_billing - billing, invoices, payments
+14. Para su consulta (“billing summary”), el orquestador la enruta a
+    **crm_billing**.
 
-    - product_promotions - products, discounts, offers
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-    - security_authentication - security, login, account lockouts
+- El agente de dominio usa herramientas conectadas. Cada agente tiene
+  acceso a herramientas específicas (APIs) via el MCP server.
 
-14. For your query ("billing summary"), the orchestrator routes it
-    to **crm_billing**.
+- Ejemplo: **crm_billing** puede llamar get_customer_detail,
+  get_billing_summary, get_invoice_payment, etc.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+- El agente llama la herramienta correcta, obtiene datos estructurados y
+  forma una respuesta fáctica.
 
-	- The domain agent uses connected tools. Each agent has access to
-	  specific tools (APIs) via the MCP server.
+15. Tras completar sus pruebas, vuelva a VS Code y termine todas las
+    sesiones de terminal en ejecución. Esto garantiza que el siguiente
+    flujo de trabajo multiagente se ejecute sin interferencias.
 
-	- Example: crm_billing can call get_customer_detail,
-	  get_billing_summary, get_invoice_payment etc.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-	- The agent calls the right tool, fetches structured data, and forms a
-	  factual response.
+### Tarea 3.2: Sistema multiagente con patrón Handoff
 
-15. After completing your testing, return to VS Code and terminate all
-    running terminal sessions. This ensures that the upcoming
-    multi-agent workflow runs without any interference.
+En esta tarea explorará un sistema multiagente basado en handoff, donde
+las conversaciones se transfieren automáticamente entre agentes
+especializados (como Billing, Promotions o Security) según la intención
+del usuario, garantizando interacciones fluidas y conscientes del
+contexto entre dominios.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image27.png)
+- **¿Cómo funciona?**
 
-### Task 3.2: Handoff Pattern Multi-Agent System
+  - El usuario interactúa directamente con un agente de dominio, por
+    ejemplo, el CRM & Billing agent.
 
-In this task, you will explore a handoff-based multi-agent system, where
-conversations seamlessly transition between specialized agents (like
-Billing, Promotions, or Security) based on user intent, ensuring smooth,
-context-aware interactions across domains.
+  - Un intent classifier verifica si el nuevo mensaje del usuario
+    pertenece a otro dominio (como promotions o security).
 
-- **How It Works**
+  - Si es así, el sistema transfiere automáticamente (“handoff”) la
+    conversación al agente especialista adecuado.
 
-- User interacts with a domain agent directly - e.g., the CRM &
-Billing agent.
+  - Cada agente tiene herramientas filtradas relevantes a su dominio
+    (billing, promotions o security).
 
-- An intent classifier checks whether the user's new message belongs
-to another domain (like promotions or security).
+  - El handoff ocurre de forma fluida, con transferencia de contexto
+    para que el nuevo agente comprenda el historial de la conversación.
 
-- If so, the system automatically transfers ("handoffs") the
-conversation to the appropriate specialist agent.
+1.  Expanda **agents (1) \> agent_framework (2) \> multi_agent (3) \>
+    handoff_multi_domain_agent (4)** y vea el código (5).
 
-- Each agent has filtered tools relevant to its domain (billing,
-promotions, or security).
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-- Handoff happens smoothly, with context transfer so the new agent
-understands the conversation history.
+2.  Vaya al archivo **.env (1)**, comente la variable de Orchestrating
+    Multi-Agent **(2)** e ingrese el siguiente comando para agregar la
+    variable del sistema **Handoff Multi-Agent (3)**:
 
-1.  Expand **agents  \> agent_framework  \> multi_agent  \>
-    handoff_multi_domain_agent** and view the Code .
++++AGENT_MODULE=agents.agent_framework.multi_agent.handoff_multi_domain_agent+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image32.png)
+- Ingrese el siguiente comando para controlar cuánta conversación previa
+  se transfiere durante un handoff. **-1** indica que se transfieren
+  todos los turnos previos **(4)**.
 
-2.  Navigate to .env file , comment out the Orchestrating
-    Multi-Agent variable  and enter the below command to
-    add **Handoff Pattern Multi-Agent System** variable .
+> +++HANDOFF_CONTEXT_TRANSFER_TURNS=-1+++
 
-	+++AGENT_MODULE=agents.agent_framework.multi_agent.handoff_multi_domain_agent+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-	- Enter the command given below to control how much past conversation
-	  context is passed during a handoff. -1 refers it transfers all
-	  previous conversation turns .
+3.  Seleccione **File (1)** y luego **Save (2)**.
 
-	+++HANDOFF_CONTEXT_TRANSFER_TURNS=-1+++
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image14.png)
+4.  Ahora lance la aplicación completa del agente iniciando sus tres
+    componentes principales siguiendo los pasos:
 
-3.  Select **File** and then **Save**.
+5.  En la ventana de Visual Studio Code, haga clic en **(...) (1)**,
+    luego **Terminal (2)** y luego **New Terminal (3)**.
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image11.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-4.  Now launch the full agent application by starting its three core
-    components by following the steps:
+6.  **Inicie el MCP Server (Terminal 1)**: (El directorio **mcp** se
+    encuentra en la raíz del proyecto)  
+    Ejecute el siguiente comando para iniciar el servidor **MCP**, el
+    cual expone las APIs que los agentes pueden utilizar como
+    herramientas. (El servidor se ejecuta en
+    [http://localhost:8000](http://localhost:8000/))
 
-5.  In the Visual Studio Code Window, click on the **ellipses (...)
-   **, then **Terminal**, and then **New Terminal**.
+> cd mcp
+>
+> uv run python mcp_service.py
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+7.  Deje el comando ejecutándose, abra una nueva terminal.
 
-6.  **Start the MCP Server (Terminal 1)**: (mcp directory is at project
-    root level)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    - Run the below command to launch the **MCP server**, which exposes
-      APIs that agents can call as tools. (Server runs
-      on [http://localhost:8000](http://localhost:8000/))
+8.  **Inicie el Backend (Terminal 2)**:
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+    - Ejecute el siguiente comando para iniciar el backend server que
+      aloja sus flujos de trabajo de agentes, la gestión de sesiones y
+      los API endpoints.
 
-7.  Let the command run, open a new terminal.
+> cd agentic_ai/applications
+>
+> uv run python backend.py
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+- Esta es la lógica central de la aplicación con la que se comunicará el
+  frontend. Asegúrese de que la **conección esté abierta**.
 
-8.  **Start the Backend (Terminal 2)**:
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    - Run the below command to start the backend server that hosts your
-      agent workflows, session management, and API endpoints.
+9.  Deje el comando ejecutándose, abra un nuevo terminal.
 
-	```
-	cd agentic_ai/applications
-	uv run python backend.py
-	```
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-	- This is the core application logic that the frontend will communicate
-	  with. Make sure the **Connection is open**.
+10. **Inicie el React Frontend (Terminal 3)**:
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image23.png)
+    - Ingrese el comando indicado a continuación para navegar al
+      directorio react-frontend.
 
-9.  Let the command run, open a new terminal.
+> +++cd agentic_ai/applications/react-frontend+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image4.png)
+- Ingrese el siguiente comando para iniciar el **React frontend** para
+  su interfaz de agente. Proporciona una interfaz de usuario para
+  interactuar con los agentes y ver sus respuestas en tiempo real.
 
-10. **Start the React Frontend (Terminal 3)**:
+> +++npm start+++
 
-    - Enter the command given below to navigate to
-      the react-frontend directory.
+- Una vez que **webpack compile correctamente**, la aplicación del
+  agente se ejecutará localmente
+  en: [http://localhost:3000](http://localhost:3000/).
 
-	+++cd agentic_ai/applications/react-frontend+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-	- Enter the below command to launch the **React frontend** for your
-	  agent UI. Provides a user interface to interact with the agents and
-	  see their responses in real time.
+11. Envíe el siguiente prompt en el chat y vea la respuesta en el panel
+    izquierdo:
 
-    +++npm run dev+++
++++Customer 251, what's my billing summary?+++
 
-	- Once the **webpack compiled successfully**, Agent application runs
-	  locally at: [http://localhost:3000](http://localhost:3000/).
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image34.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image24.png)
+- Aquí, el Intent classifier enruta al dominio **crm_billing**.
 
-13. Select the **Handoff Multi Domain Agent** option in the drop down availble in the top menu.
+- La herramienta **get_billing_summary** se llama para el customer 251.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image10.png)
+12. Puede proporcionar la siguiente consulta para continuar con respecto
+    a billing:
 
-11. Send the below prompt in the chat and view the response in the left
-    pane:
++++Yes, I would like to view the invoice details+++
 
-	+++Customer 251, what's my billing summary?+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image35.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image34.png)
+**Note**: Si obtiene una respuesta como *I was unable to retrieve the
+invoice details because the referenced numbers are invoice IDs, not
+subscription IDs...*, proporcione el siguiente prompt:
 
-	- Here, Intent classifier routes to crm_billing domain
++++Yes, I would like to view the invoice details for customer 251+++
 
-	- get_billing_summary tool is called for customer 251
+13. Ahora intentemos una consulta relacionada con otro dominio para
+    probar cómo funciona el handoff.
 
-12. You can provide the following query for continuation with respect to
-    billing:
+14. Ingrese la siguiente consulta relacionada con Product & Promotions y
+    vea la respuesta:
 
-	+++I would like to view the invoice details+++
++++Are there any promotions available for my subscription plan+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image13.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image36.png)
 
-    >[!Note] If you get a response as I was unable to retrieve the invoice
-details because the referenced numbers are invoice IDs, not subscription
-IDs. Please provide the subscription ID, or let me know if you need
-details for a specific invoice so I can assist you correctly. Provide
-the following prompt.
+- Dado que la conversación previa fue manejada por el **CRM & Billing
+  Specialist**, el sistema detecta un cambio de dominio. Decide realizar
+  un handoff de la conversación al **Product & Promotions Specialist**.
 
-	+++I would like to view the invoice details for customer 251+++
+- El sistema transfiere opcionalmente el contexto previo (como qué
+  customer se está utilizando) al nuevo agente, dependiendo de la
+  configuración **HANDOFF_CONTEXT_TRANSFER_TURNS**.
 
-13. Let's now try a query related to another domain to test how the
-    handoff works.
+- El **Product & Promotions Specialist** solo tiene acceso a
+  herramientas relevantes a promociones, planes e información del
+  producto (por ejemplo: **get_promotions**,
+  **get_eligible_promotions**).
 
-14. Enter the following query related to Product & Promotions and view
-    the response.
+15. Tras completar sus pruebas, vuelva a VS Code y termine todas las
+    sesiones de terminal en ejecución. Esto garantiza que el próximo
+    flujo de trabajo multiagente se ejecute sin interferencias.
 
-	+++Are there any promotions available for my subscription plan+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image36.png)
+**Resumen**
 
-	- Since the previous conversation was handled by the CRM & Billing
-	  Specialist, the system detects a domain change. It decides to hand off
-	  the conversation to the Product & Promotions Specialist.
-
-	- The system optionally transfers previous conversation context (like
-	  which customer we're discussing) to the new agent, depending on the
-	  HANDOFF_CONTEXT_TRANSFER_TURNS setting.
-
-	- The Product & Promotions Specialist only has access to tools relevant
-	  to promotions, plans, and product information (e.g., get_promotions,
-	  get_eligible_promotions).
-
-15. After completing your testing, return to VS Code and terminate all
-    running terminal sessions. This ensures that the upcoming
-    multi-agent workflow runs without any interference.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%209/media/image27.png)
-
-**Summary**
-
-In this lab, you created a single-agent workflow that integrates with
-external tools using MCP and explored multi-agent designs where multiple
-specialized agents collaborate or hand off conversations based on user
-intent. You configured environment variables, launched the full agent
-environment, and tested how agents intelligently respond to
-domain-specific queries.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+En este laboratorio creó un flujo de trabajo de agente individual que se
+integra con herramientas externas usando MCP y exploró diseños
+multiagente donde múltiples agentes especializados colaboran o se
+transfieren conversaciones según la intención del usuario. Configuró
+variables de entorno, lanzó el entorno completo del agente y probó cómo
+los agentes responden de forma inteligente a consultas específicas de
+cada dominio.

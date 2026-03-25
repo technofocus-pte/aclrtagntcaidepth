@@ -1,618 +1,616 @@
-# Lab 5 Design Scalable AI Agents with Microsoft Foundry and Agent Framework
-
-**Overview**
-
-In this hands-on lab spanned across 3 days for designing and building
-scalable AI agents using Microsoft Foundry and the Microsoft Agent
-Framework. Participants will begin by creating their first AI agent
-through the Microsoft Foundry portal, where they will learn to upload
-enterprise policy documents and ingest them into Azure AI Search to
-prepare a searchable knowledge base. The workshop then progresses to
-building multi-agent systems using the Microsoft Agent Framework SDK,
-where multiple specialized agents collaborate through Agent-to-Agent
-(A2A) communication patterns. Learners will extend their agent
-capabilities by integrating external tools and data sources using the
-Model Context Protocol (MCP), connecting to both Azure AI Search for
-knowledge retrieval and external APIs like Freshdesk for ticket
-management. The training advances to deploying agents into the Microsoft
-Foundry Agent Service as persistent, cloud-hosted solutions with state
-management and enterprise-grade reliability. Finally, participants will
-implement advanced workflow patterns including orchestrated multi-agent
-systems with centralized coordination and handoff-based systems where
-conversations seamlessly transition between specialized agents based on
-user intent and domain expertise.
-
-**Objectives**
-
-By the end of this lab, you will be able to:
-
-- **Set Up AI Project and Perform Chat Completion from VS
-  Code:** Configure a production-ready AI development environment by
-  creating an Microsoft Foundry project, deploying GPT-4 and embedding
-  models, and establishing secure connections from Visual Studio Code.
-  You will validate the setup by executing chat completion calls,
-  ensuring seamless integration between your local development
-  environment and Azure AI services with proper authentication and
-  project configuration.
-
-- **Build a Health Insurance Plans Analyzer AI Agent:** Develop an
-  intelligent AI Agent specialized in analyzing and visualizing health
-  insurance data. You will create an agent that processes complex health
-  benefit plan information and automatically generates comparative bar
-  charts, demonstrating core AI agent capabilities including data
-  interpretation, natural language understanding, code execution, and
-  automated visualization generation for decision support.
-
-- **Develop a Multi-Agent Collaborative System:** Design and implement
-  an advanced multi-agent architecture where specialized AI agents work
-  together to analyze health plan documents and generate comprehensive
-  reports. You will build a Search Agent for intelligent document
-  retrieval using Azure AI Search, a Report Agent for generating
-  detailed analytical reports, a Validation Agent for ensuring
-  compliance and accuracy, and an Orchestrator Agent for managing
-  inter-agent communication and workflow coordination, showcasing
-  enterprise-grade agent collaboration patterns.
-
-**Prerequisites**
-
-Participants should have:
-
-- **Azure & Cloud Experience** - Familiarity with Azure Portal, Resource
-  Groups, and Azure AI services
-
-- **Programming Skills** - Basic Python knowledge (async/await,
-  environment variables, API calls)
-
-- **AI Concepts** - Understanding of LLMs, embeddings, RAG
-  (Retrieval-Augmented Generation), and prompt engineering
-
-- **Development Tools** - Proficiency with Visual Studio Code, terminal
-  usage, and Git
-
-- **Agent Framework Awareness** - Basic knowledge of agent
-  architectures, tools, and orchestration patterns
-
-Explanation of Components
-
-- **Microsoft Foundry**: Microsoft Foundry is a cloud platform for
-  developing, deploying, and managing enterprise AI agents. It provides
-  managed Agent Service runtime, centralized project management, and
-  Application Insights monitoring, ensuring enterprise-grade
-  reliability, security, and observability throughout the agent
-  lifecycle.
-
-- **Microsoft Agent Framework SDK**: The official Python SDK for
-  building intelligent, modular agents that replace AutoGen and Semantic
-  Kernel. It features native Agent-to-Agent communication, Model Context
-  Protocol integration, and Microsoft Foundry support, enabling
-  production-ready enterprise agent systems with standardized tool
-  usage.
-
-- **Azure AI Search**: A vector-based search engine enabling
-  Retrieval-Augmented Generation workflows. It provides hybrid retrieval
-  combining vector similarity and keyword search, semantic ranking for
-  improved relevance, and document indexing capabilities, ensuring
-  agents deliver grounded, factually accurate responses from enterprise
-  knowledge sources.
-
-- **Model Context Protocol (MCP)**: A standardized interface enabling
-  agents to access external knowledge and tools securely. MCP connects
-  to enterprise data sources, external APIs like Freshdesk, and custom
-  tools with structured schemas, ensuring reliable, auditable
-  interactions and forming the foundation for extensible enterprise AI
-  systems.
+# Diseñar agentes de IA escalables con Microsoft Foundry y Agent Framework
+
+**Descripción general**
+
+En este laboratorio práctico, desarrollado a lo largo de 3 días, se
+diseñarán y construirán agentes de IA escalables utilizando Microsoft
+Foundry y el Microsoft Agent Framework. Los participantes iniciarán
+creando su primer agente de IA a través del portal de Microsoft Foundry,
+donde aprenderán a cargar documentos de políticas empresariales e
+ingerirlos en Azure AI Search para preparar una base de conocimiento
+consultable.  
+El taller avanza luego hacia la construcción de sistemas multiagente
+utilizando el SDK de Microsoft Agent Framework, en los que múltiples
+agentes especializados colaboran mediante patrones de comunicación
+*Agent-to-Agent* (A2A). Los alumnos ampliarán las capacidades del agente
+integrando herramientas externas y fuentes de datos mediante el *Model
+Context Protocol* (MCP), conectándose tanto a Azure AI Search para la
+recuperación de conocimiento como a API externas, como Freshdesk, para
+la gestión de tickets.  
+La capacitación progresa hacia la implementación de agentes en el
+Microsoft Foundry Agent Service como soluciones persistentes en la nube,
+con administración de estado y confiabilidad a nivel empresarial.
+Finalmente, los participantes implementarán patrones avanzados de flujo
+de trabajo, incluidos sistemas multiagente orquestados con coordinación
+centralizada y sistemas basados en transferencia, donde las
+conversaciones pasan sin interrupciones entre agentes especializados
+según la intención del usuario y el dominio de experiencia.
+
+**Objetivos**
+
+Al finalizar este laboratorio, podrá:
+
+- **Configurar un proyecto de IA y ejecutar chat completion desde VS
+  Code:** Configurará un entorno de desarrollo de IA listo para
+  producción creando un proyecto de Microsoft Foundry, implementando
+  modelos GPT-4 y modelos de embedding, y estableciendo conexiones
+  seguras desde Visual Studio Code. Validará la configuración ejecutando
+  llamadas de chat completion, garantizando una integración fluida entre
+  su entorno local de desarrollo y los servicios de Azure AI con la
+  autenticación y configuración del proyecto correctas.
+
+- **Crear un agente de IA analizador de planes de seguros de salud:**
+  Desarrollará un agente de IA inteligente especializado en analizar y
+  visualizar datos de seguros de salud. Creará un agente que procesa
+  información compleja de planes de beneficios de salud y genera
+  automáticamente gráficos de barras comparativos, demostrando
+  capacidades fundamentales de un agente de IA, incluyendo
+  interpretación de datos, comprensión del lenguaje natural, ejecución
+  de código y generación automática de visualizaciones para el soporte
+  de decisiones.
+
+- **Desarrollar un sistema colaborativo multiagente:** Diseñará e
+  implementará una arquitectura multiagente avanzada donde agentes de IA
+  especializados trabajan en conjunto para analizar documentos de planes
+  de salud y generar reportes completos. Creará un Search Agent para la
+  recuperación inteligente de documentos utilizando Azure AI Search, un
+  Report Agent para generar reportes analíticos detallados, un
+  Validation Agent para garantizar precisión y cumplimiento, y un
+  Orchestrator Agent para gestionar la comunicación entre agentes y la
+  coordinación del flujo de trabajo, demostrando patrones de
+  colaboración entre agentes a nivel empresarial.
+
+**Requisitos previos**
+
+Los participantes deben tener:
+
+**• Experiencia con Azure y la nube:** Familiaridad con Azure Portal,
+grupos de recursos y servicios de Azure AI.  
+**• Habilidades de programación:** Conocimientos básicos de Python
+(async/await, variables de entorno, llamadas API).**  
+• Conceptos de IA:** Comprensión de LLMs, embeddings, RAG y prompt
+engineering.**  
+• Herramientas de desarrollo:** Dominio de Visual Studio Code, uso de
+terminal y Git.**  
+• Conocimiento del Agent Framework:** Conocimiento básico de
+arquitecturas de agentes, herramientas y patrones de orquestación.
+
+Explicación de los componentes:
+
+- **Microsoft Foundry:** Microsoft Foundry es una plataforma en la nube
+  para desarrollar, implementar y administrar agentes de IA
+  empresariales. Proporciona un entorno administrado de Agent Service,
+  administración centralizada de proyectos y monitoreo mediante
+  Application Insights, garantizando confiabilidad, seguridad y
+  observabilidad a nivel empresarial durante todo el ciclo de vida del
+  agente.
+
+- **Microsoft Agent Framework SDK:** El SDK oficial de Python para
+  construir agentes inteligentes y modulares que reemplaza AutoGen y
+  Semantic Kernel. Incluye comunicación nativa Agent-to-Agent,
+  integración con Model Context Protocol y compatibilidad con Microsoft
+  Foundry, permitiendo sistemas de agentes empresariales listos para
+  producción con uso estandarizado de herramientas.
+
+- **Azure AI Search:** Un motor de búsqueda vectorial que habilita
+  flujos de trabajo de Retrieval-Augmented Generation. Proporciona
+  recuperación híbrida combinando similitud vectorial y búsqueda por
+  palabras clave, ranking semántico para mejorar la relevancia y
+  capacidades de indexación de documentos, garantizando que los agentes
+  entreguen respuestas fundamentadas y precisas desde fuentes de
+  conocimiento empresariales.
 
-- **Chat Response Agent**: A single-turn, stateless agent model for
-  local development and testing. It processes requests independently
-  without retaining context, running within local environments and
-  responding immediately. Ideal for prototyping core logic and
-  validating behavior before advancing to production with persistent
-  agents.
+- **Model Context Protocol (MCP):** Una interfaz estandarizada que
+  permite a los agentes acceder de manera segura a conocimiento y
+  herramientas externas. MCP se conecta a fuentes de datos
+  empresariales, APIs externas como Freshdesk y herramientas
+  personalizadas con esquemas estructurados, garantizando interacciones
+  confiables y auditables, y formando la base de sistemas de IA
+  empresariales extensibles.
 
-- **Persistent Agent**: A cloud-hosted, long-lived service in Microsoft
-  Foundry maintaining state across conversations. It supports external
-  tool integration via MCP, Agent-to-Agent collaboration, and
-  enterprise-scale reliability with built-in monitoring, providing
-  foundations for production applications requiring stateful, multi-turn
-  conversational experiences.
+- **Chat Response Agent:** Un agente de respuesta de chat de una sola
+  interacción y sin estado para desarrollo y pruebas locales. Procesa
+  solicitudes de forma independiente sin mantener contexto, ejecutándose
+  en entornos locales y respondiendo de inmediato. Es ideal para
+  prototipar lógica principal y validar comportamiento antes de avanzar
+  a producción con agentes persistentes.
 
-- **Planner Agent**: An intelligent orchestrator analyzing user queries
-  to route them to appropriate specialist agents. It uses AI reasoning
-  and keyword heuristics to classify queries across domains like HR,
-  Finance, or Compliance, ensuring optimal task distribution and serving
-  as the central coordination point.
+- **Persistent Agent:** Un servicio alojado en la nube y de larga
+  duración en Microsoft Foundry que mantiene estado a lo largo de
+  conversaciones. Admite integración con herramientas externas mediante
+  MCP, colaboración Agent-to-Agent y confiabilidad a escala empresarial
+  con monitoreo integrado, proporcionando fundamentos para aplicaciones
+  de producción que requieren experiencias conversacionales con estado.
 
-- **Worker Agents**: Domain specialists with expertise in specific areas
-  like HR, Finance, or Compliance. Each agent has domain-specific
-  instructions, specialized tools, and relevant knowledge sources. They
-  collaborate with planner agents through A2A communication, delivering
-  authoritative, accurate responses for complex domain-specific
-  inquiries.
+- **Planner Agent**: Un orquestador inteligente que analiza consultas de
+  los usuarios para dirigirlas a los agentes especialistas
+  correspondientes. Utiliza razonamiento de IA y heurísticas de palabras
+  clave para clasificar consultas en dominios como recursos humanos,
+  finanzas o cumplimiento, garantizando una distribución óptima de
+  tareas y actuando como punto central de coordinación.
 
-- **Azure OpenAI**: Enterprise-grade service providing access to
-  advanced LLMs through secure API endpoints. It offers chat completion,
-  embedding models, content filtering, and compliance features.
-  Seamlessly integrates with Microsoft Foundry, enabling agents to
-  leverage GPT-4 while maintaining data privacy and governance controls.
+- **Worker Agents:** Especialistas de dominio con experiencia en áreas
+  específicas como recursos humanos, finanzas o cumplimiento. Cada
+  agente tiene instrucciones específicas, herramientas especializadas y
+  fuentes de conocimiento relevantes. Colaboran con los planner agents
+  mediante comunicación A2A, entregando respuestas precisas y
+  autorizadas para consultas complejas específicas del dominio.
 
-# Lab 5: Building a Retrieval-Augmented AI Agent with Microsoft Foundry
+- **Azure OpenAI:** Servicio de nivel empresarial que proporciona acceso
+  a modelos avanzados de LLM mediante endpoints API seguros. Ofrece chat
+  completion, modelos de embedding, filtrado de contenido y funciones de
+  cumplimiento. Se integra perfectamente con Microsoft Foundry,
+  permitiendo que los agentes aprovechen GPT-4 manteniendo privacidad y
+  controles de gobernanza de datos.
 
-**Overview**
+# Laboratorio 5: Creación de un agente de IA con RAG mediante Microsoft Foundry
 
-In this lab, you'll create your first AI Agent using the Microsoft
-Foundry portal. You'll begin by uploading enterprise policy documents
-and ingesting them into Azure AI Search to prepare a knowledge base.
-Then, you'll configure the agent using the Microsoft Agent Framework to
-enable retrieval-augmented generation (RAG). Finally, you'll test the
-agent's responses and analyze execution logs to observe how it retrieves
-and processes information.
+**Descripción general**
 
-**Lab Objectives**
+En este laboratorio, creará su primer agente de IA utilizando el portal
+de Microsoft Foundry. Comenzará cargando documentos de políticas
+empresariales e ingiriéndolos en Azure AI Search para preparar una base
+de conocimiento. Luego, configurará el agente utilizando el Microsoft
+Agent Framework para habilitar Retrieval-Augmented Generation (RAG).
+Finalmente, probará las respuestas del agente y analizará los registros
+de ejecución para observar cómo recupera y procesa información.
 
-You'll perform the following tasks in this lab.
+**Objetivos del laboratorio**
 
-- Task 1: Create the Azure resources
+Realizará las siguientes tareas en este laboratorio.
 
-- Task 2: Create an AI Agent in Microsoft Foundry
+- Tarea 1: Crear los recursos de Azure
 
-- Task 3: Connect Azure AI Search for RAG
+- Tarea 2: Crear un agente de IA en Microsoft Foundry
 
-- Task 4: Test and Observe Agent Execution Logs
+- Tarea 3: Conectar Azure AI Search para RAG
 
-## Task 1: Create the Azure resources
+- Tarea 4: Probar y observar los registros de ejecución del agente
 
-In this task, you will create all the Azure resources that are required
-to perform this lab.
+## Tarea 1: Crear los recursos de Azure
 
-### Task 1.1: Create Storage account
+En esta tarea, creará todos los recursos de Azure necesarios para
+realizar este laboratorio.
 
-1.  Login to the Azure portal at +++https://portal.azure.com+++ using
-    the below credentials and select **Storage accounts**.
+### Tarea 1.1: Crear una cuenta de almacenamiento
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+1.  Inicie sesión en Azure Portal +++https://portal.azure.com+++ usando
+    las credenciales indicadas y seleccione **Storage accounts**.
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
+- Username - +++@lab.CloudPortalCredential(User1).Username+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image1.png)
+- TAP - <+++@lab.CloudPortalCredential(User1).TAP>+++
 
-2.  Select **Create**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image2.png)
+2.  Seleccione **Create**.
 
-3.  Enter the below details and select **Review + create**. Select
-    **Create** in the next screen.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-	- Storage account name - +++aistorage@lab.LabInstance.Id+++
+3.  Ingrese los siguientes detalles y seleccione **Review + create**.
+    Luego seleccione **Create**.
 
-	- Preferred storage type - Select **Azure Blob Storage or Azure Data
-	  Lake Storage Gen2**
+- Storage account name - +++aistorage@lab.LabInstance.Id+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image3.png)
+- Preferred storage type – Seleccione **Azure Blob Storage or Azure Data
+  Lake Storage Gen2**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image4.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image3.png)
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image4.png)
 
-4.  Once the resource is created, select **Go to resource**.
+4.  Una vez creado el recurso, seleccione **Go to resource**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image5.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-5.  Select **Upload**, select **Create new** to create a new container.
-    Name it as +++**datasets**+++ and then select **Ok**.
+5.  Seleccione **Upload**, luego **Create new** para crear un nuevo
+    contenedor. Nómbrelo **datasets** y seleccione **Ok**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image6.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a login box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image7.png)
+![A screenshot of a login box AI-generated content may be
+incorrect.](./media/image7.png)
 
-6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 2** and click **Upload**.
+6.  Seleccione **Browse for files**, elija los archivos de políticas
+    desde **C:\Labfiles\Day 2** y haga clic en **Upload**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image8.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a upload box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image9.png)
+![A screenshot of a upload box AI-generated content may be
+incorrect.](./media/image9.png)
 
-Now, the Storage account is create successfully and loaded with the
-policy documents.
+La cuenta de almacenamiento se creó correctamente y ya contiene los
+documentos de políticas.
 
-### Task 1.2: Create Foundry resource
+### Tarea 1.2: Crear un recurso Foundry
 
-In this task, you will create a Foundry resource which is required to
-access the Microsoft Foundry.
+En esta tarea, creará un recurso Foundry necesario para acceder a
+Microsoft Foundry.
 
-1.  From the Home page of the Azure
-    portal(+++https://portal.azure.com+++), select **Foundry**.
+1.  Desde la página principal de Azure Portal
+    (+++https://portal.azure.com+++), seleccione **Foundry**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image10.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-2.  Select **Foundry** from the left pane, and then select **Create** to
-    create the Foundry resource.
+2.  Seleccione **Foundry** en el panel izquierdo y luego **Create**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image11.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-3.  Enter the below details and select **Review + create**.
+3.  Ingrese los siguientes detalles y seleccione **Review + create**.
 
-    - Name - +++agentic-@lab.LabInstance.Id+++
+- Name – <+++agentic-@lab.LabInstance.Id>+++
 
-    - Default project name - +++agentic-ai-project-@lab.LabInstance.Id+++
+- Default project name – <+++agentic-ai-project-@lab.LabInstance.Id>+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-4.  Select **Create** once validated.
+4.  Seleccione **Create**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-5.  Ensure that the resource is created.
+5.  Verifique que el recurso se haya creado.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image14.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-6.  Open the **agentic-ai-project-@lab.LabInstance.Id** and select
-    **Go to Foundry portal**.
+6.  Abra **<agentic-ai-project-@lab.LabInstance.Id>** y seleccione **Go
+    to Foundry portal**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image16.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image16.png)
 
-7.  In the Microsoft Foundry, select Models + endpoints from the left
-    pane. Select + **Deploy model** -> **Deploy base model**.
+7.  En Microsoft Foundry, seleccione **Models + endpoints**, luego **+
+    Deploy model → Deploy base model**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image17.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-8.  Search for +++gpt-4o-mini+++, select it and click on Confirm to
-    deploy the model.
+8.  Busque +++gpt-4o-mini+++, selecciónelo y haga clic en **Confirm**.
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image18.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image18.png)
 
-9.  Select **Deploy** in the deployment window.
+9.  Seleccione **Deploy**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image19.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-10. Similarly, search for +++text-embedding-ada-002+++ and deploy it.
+10. Del mismo modo, busque +++text-embedding-ada-002+++ e impleméntelo.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image20.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
 
-In this task, you have successfully created the Foundry resource and
-deployed a chat and an embedding model in it.
+En esta tarea, ha creado correctamente el recurso de Foundry y ha
+implementado un modelo de chat y un modelo de embeddings en él.
 
-### Task 1.3: Create Application insights
+### Tarea 1.3: Crear Application insights
 
-In this task, you will create an Application insights resource, which is
-required for monitoring.
+En esta tarea, creará un recurso de Application insights, que es
+necesario para el monitoreo.
 
-1.  From the Home page of the Azure portal, select **Subscriptions** and
-    select the assigned subscription.
+1.  Desde la página principal del Azure portal, haga clic en
+    **Subscriptions** y seleccione la suscripción asignada.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-2.  Select **Resource providers** from the left pane.
+2.  Desde el panel izquierdo, seleccione **Resource providers**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-3.  Search for +++Operational+++, select the 3 dots next to
-    **Microsoft.OperationalInsights** and click **Register**.
+3.  Busque **+++Operational+++**, seleccione los tres puntos junto a
+    **Microsoft.OperationalInsights** y haga clic en **Register**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image25.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-4.  From the left pane of the Microsoft Foundry, select **Monitoring**.
+4.  Desde el panel izquierdo de Microsoft Foundry, seleccione
+    **Monitoring**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image26.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-5.  Select **Create New** -> provide the name as
-    +++agent-insights-@lab.LabInstance.Id+++ and then select
-    **Create**.
+5.  Seleccione **Create New** → proporcione el nombre
+    <+++agent-insights-@lab.LabInstance.Id>+++ y, posteriormente,
+    seleccione **Create**.
 
-    ![A screenshot of a application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image27.png)
+![A screenshot of a application AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image29.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-In this task, you have created the Application Insight resource.
+En esta tarea, usted ha creado el recurso de **Application Insights**.
 
-### Task 1.4: Create Search resource
+### Tarea 1.4: Crear un recurso Search
 
-Before an AI Agent can answer enterprise questions accurately, it must
-access trusted data sources. Azure AI Search enables Retrieval-Augmented
-Generation (RAG) by indexing documents such as policies, contracts, and
-manuals. An index acts like a searchable catalog that breaks content
-into chunks, adds metadata, and enables the agent to retrieve the right
-information during a conversation.
+Antes de que un AI Agent pueda responder preguntas empresariales con
+precisión, debe acceder a fuentes de datos confiables. **Azure AI
+Search** habilita **Retrieval-Augmented Generation (RAG)** al indexar
+documentos como políticas, contratos y manuales. Un índice actúa como un
+catálogo consultable que divide el contenido en fragmentos, agrega
+metadatos y permite que el agente recupere la información correcta
+durante una conversación.
 
-In this task, index the uploaded documents using Azure AI Search to
-create a searchable knowledge base.
+En esta tarea, usted indexará los documentos cargados utilizando **Azure
+AI Search** para crear una base de conocimiento consultable.
 
-1.  From the Home page of the Azure portal, select **Foundry**.
+1.  Desde la página principal del Azure portal, seleccione **Foundry**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image30.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-2.  Select **AI Search** from the left pane and then select **+
-    Create.**
+2.  Seleccione **AI Search** desde el panel izquierdo y luego seleccione
+    **+ Create.**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image31.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-3.  Enter the below details, select **Review + create**.
+3.  Ingrese los siguientes detalles y seleccione **Review + create**:
 
-	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
+- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
 
-	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
-    
-	**Note:** Please select a region that allows the Standard pricing tier
+- Region - East US2
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image32.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image32.png)
 
-4.  Select **Create** once the validation passes. Select Go to resource
-    once the resource is created.
+4.  Seleccione **Create** una vez que la validación finalice. Seleccione
+    **Go to resource** cuando el recurso haya sido creado.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image33.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image34.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image34.png)
 
-5.  Select **Import data (new)**.
+5.  Seleccione **Import data (new)**.
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image35.png)
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image35.png)
 
-6.  Select the **Azure Blob Storage** under **Choose data source**.
+6.  Seleccione **Azure Blob Storage** en **Choose data source**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image36.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-7.  In the next pane, select the **RAG** option as we are building a
-    retrieval-based agent.
+7.  En el siguiente panel, seleccione la opción **RAG**, ya que se está
+    creando un agente basado en recuperación.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image37.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image37.png)
 
- Here is what each of these options for -
+A continuación, se describe el propósito de cada una de estas opciones:
 
-1.  **Keyword Search:** Used for traditional search experiences based on
-    exact keywords. It indexes text so users can find information
-    through keyword matching, without AI reasoning.
+a\. **Keyword Search:** Utilizado para experiencias de búsqueda
+tradicionales basadas en coincidencias exactas de palabras clave. Indexa
+texto para que el usuario pueda localizar información mediante
+coincidencias de palabras, sin razonamiento de IA.  
+b. **RAG (Retrieval-Augmented Generation):** Combina recuperación de
+documentos con generación de IA. Ingresa texto (y OCR simple) para que
+un agente de IA proporcione respuestas fundamentadas y con contexto.  
+c. **Multimodal RAG:** Amplía RAG para manejar contenido visual complejo
+como diagramas, tablas, flujos de trabajo o gráficos. Permite que la IA
+interprete tanto elementos textuales como visuales para ofrecer
+respuestas más completas.
 
-2.  **RAG (Retrieval-Augmented Generation):** Combines document
-    retrieval with AI generation.It ingests text (and simple OCR images)
-    so an AI agent can provide grounded, context-aware answers.
+8.  Seleccione <aistorage@lab.LabInstance.Id> en **Storage account** y
+    **datasets** en **Blob container**, y seleccione **Next**.
 
-3.  **Multimodal RAG:** Extends RAG to handle complex visual content
-    like diagrams, tables, workflows, or charts. It enables AI to
-    interpret both text and visual elements for richer, insight-based
-    responses.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
-    and **datasets** **under Blob container** and select **Next**.
+9.  Seleccione los siguientes detalles y seleccione **Next.**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image38.png)
+- Kind – Azure AI Foundry (Preview)
 
-9.  Select the below details and select **Next**.
+- Azure AI Foundry/Hub project –
+  <agentic-ai-project-@lab.LabInstance.Id>
 
-	- Kind - **Azure AI Foundry (Preview)**
+- Model deployment – text-embedding-002-ada
 
-	- Azure AI Foundry/Hub project -
-	  **agentic-ai-project-@lab.LabInstance.Id**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-	- Model deployment - **text-embedding-002-ada**
+10. Seleccione **Next** en las pantallas siguientes hasta llegar a
+    **Review and create**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image39.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image40.png)
 
-10. Select **Next** in the next screens until the **Review and create**
-    screen appears.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image40.png)
+11. Seleccione **Create** en la pantalla **Review and create**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image41.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-11. Select **Create** in the **Review and create** screen.
+12. Seleccione **Close** en el cuadro de diálogo **Create succeeded**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image42.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-12. Select **Close** in the Create succeeded dialog.
+Usted ha ingestido correctamente el conjunto de datos en **Azure AI
+Search** y creado un índice consultable. En la siguiente tarea, creará
+un AI Agent y conectará este índice como su fuente de conocimiento.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image43.png)
+## Tarea 2: Crear un AI Agent en Microsoft Foundry
 
-You've successfully ingested the dataset into Azure AI Search and
-created a searchable index. In the next task, you'll create an AI agent
-and connect this index as its knowledge source.
+En esta tarea, usted creará un nuevo AI Agent en Microsoft Foundry y
+configurará su propósito principal, instrucciones y modelo utilizando la
+interfaz del Microsoft Agent Framework.
 
-## Task 2: Create an AI Agent in Microsoft Foundry
+1.  Regrese a su grupo de recursos y, desde la lista de recursos,
+    seleccione el recurso **agentic**-foundry.
 
-In this task, you will create a new AI Agent in Microsoft Foundry and
-configure its core purpose, instructions, and model using the Microsoft
-Agent Framework interface.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-1.  Navigate back to your resource group, from the resource list,
-    select **agentic--@lab.LabInstance.Id** foundry resource.
+2.  En el panel siguiente, haga clic en **Go to Foundry portal**. Será
+    dirigido al Microsoft Foundry portal, donde creará su primer agente.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image44.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-2.  In the next pane, click on **Go to Foundry portal**. You will now be
-    navigated to the Microsoft Foundry portal, where you will be
-    creating your first agent.
+3.  Una vez dentro del Foundry Portal, seleccione **Agents (1)** desde
+    el menú izquierdo. Verá un agente previamente creado; si no aparece,
+    haga clic en **+ New agent (2)** para crearlo.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image45.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-3.  Once navigated to Foundry Portal, select **Agents** from the
-    left menu you will already see an agent **pre created**. If not
-    created, then please click on the **+ New agent** option to get
-    it created.
+4.  Seleccione el **agente** recién creado y se abrirá un panel de
+    configuración en el lado derecho. Proporcione los siguientes
+    detalles:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image46.png)
+[TABLE]
 
-4.  Select the newly created **agent**, and a configuration pane will be
-    opened on the right. Provide the following details.
+> ![A screenshot of a computer program AI-generated content may be
+> incorrect.](./media/image47.png)
 
-	
-	| Column 1 | Column 2 |
-	| -------- | -------- |
-	| **Agent name **  |     +++**EnterpriseAgent**+++     |
-	| **Instructions **   |   +++You are an enterprise knowledge assistant. Retrieve relevant policy information before answering questions.+++       |
+5.  Usted ha creado correctamente un agente en Microsoft Foundry. En la
+    siguiente tarea, lo enriquecerá con conocimiento conectando su
+    índice previamente creado.
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image47.png)
+## Tarea 3: Conectar Azure AI Search para RAG
 
-5.  You've successfully created an agent in Microsoft Foundry. Next,
-    it's time to enrich it with knowledge by connecting your indexed
-    data in the upcoming task.
+En esta tarea, usted integrará **Azure AI Search** con su agente
+utilizando el panel de integración de conocimiento, habilitando
+respuestas con recuperación aumentada mediante **MCP (Model Context
+Protocol)**.
 
-## Task 3: Connect Azure AI Search for RAG
+1.  En el mismo panel de configuración del agente, desplácese hacia
+    abajo y haga clic en **+ Add** para el parámetro **Knowledge**.
 
-In this task, you will integrate Azure AI Search with your agent using
-the knowledge integration panel, enabling retrieval-augmented responses
-through MCP (Model Context Protocol).
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image48.png)
 
-1.  In the same agent configuration pane, scroll down and click on **+
-    Add** for **Knowledge** parameter.
+2.  En el panel **Add knowledge**, seleccione **Azure AI Search**, ya
+    que usted tiene el índice preparado en dicho recurso.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image48.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image49.png)
 
-2.  In the **Add knowledge** pane, select **Azure AI Search** as you
-    have the index prepared in the AI Search resource.
+3.  En el siguiente panel, en **Azure AI Search resource connection**,
+    haga clic en la flecha desplegable **(1)** y seleccione **Connect
+    other Azure AI Search resource (2)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image49.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-3.  In the next pane, for **Azure AI Search resource
-    connection** option, click on **drop-down arrow** and
-    select **Connect other Azure AI Search resource**.
+4.  En el siguiente panel, revise que el recurso correcto de AI Search
+    esté seleccionado y haga clic en **Add connection**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image50.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image51.png)
 
-4.  In the next pane, review that the correct AI Search resource is
-    selected and click on **Add connection**.
+5.  En el paso **Adding Azure AI Search**, configure los siguientes
+    parámetros y haga clic en **Connect (5)** al finalizar:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image51.png)
+[TABLE]
 
-5.  In the **Adding Azure AI Search** step, configure the following
-    details and click on **Connect** once completed.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image52.png)
 
-	| **Detail** | **Value** |
-	| -------- | -------- |
-	| **Azure AI Search resource connection**   |     **AIknowledge@lab.LabInstance.Id**     |
-	| **Azure AI Search index** |    **rag index**     |
-	| **Display name**   |    +++**knowledge-index**+++      |
-	| **Search type**   |    **Hybrid (vector + keword )**      |
+6.  El agente ahora ha sido enriquecido correctamente con el índice de
+    Azure AI Search, el cual actúa como una base de conocimiento
+    consultable para recuperar información precisa durante las
+    conversaciones.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image52.png)
+## Tarea 4: Probar y observar los registros de ejecución del agente
 
-6.  The agent is now successfully enriched with knowledge using the
-    Azure AI Search index, which acts as a searchable knowledge base for
-    retrieving accurate information during conversations.
+En esta tarea, usted probará su agente formulando preguntas relacionadas
+con políticas y revisará los registros estructurados para verificar el
+uso de herramientas, llamadas de búsqueda y respuestas fundamentadas.
 
-## Task 4: Test and Observe Agent Execution Logs
+1.  Antes de probar el agente, conecte **Application Insights** para
+    habilitar registros detallados y visibilidad de trazas.
 
-In this task, you will test your agent by asking policy-related
-questions and reviewing structured logs to verify tool usage, search
-calls, and grounded responses.
+2.  En Microsoft Foundry portal, seleccione **Monitoring (1)** desde el
+    menú izquierdo, seleccione **agent-insights- (2)** y haga clic en
+    **Connect (3)**.
 
-1.  Before testing the agent, connect Application Insights to enable
-    detailed logs and trace visibility.
+![](./media/image53.png)
 
-2.  In Microsoft Foundry portal, select **Monitoring** from left
-    menu, select **agent-insights-@lab.LabInstance.Id** and click on **Connect**
+3.  Una vez completado, seleccione **Agents (1)** desde el menú
+    izquierdo, elija el agente **EnterpriseAssistant (2)** y haga clic
+    en **Try in playground (3)**.
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image53.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image54.png)
 
-3.  Once done, select, **Agents** from left menu, and then choose
-    the **EnterpriseAssistant** agent and click on **Try in
-    playground**.
+4.  Se abrirá un panel de chat donde usted podrá ingresar sus
+    indicaciones. El agente responderá utilizando los documentos y
+    conjuntos de datos que usted ha conectado.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image54.png)
+Ejemplos de indicaciones:
 
-4.  A chat panel will open where you can enter your prompts. The agent
-    will now respond using the documents and datasets you've connected.
+- +++What is the employee travel reimbursement policy?+++
 
-	Sample prompts -
+- +++Summarize the contract approval rules and cite the document.+++
 
-	- +++What is the employee travel reimbursement policy?+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image55.png)
 
-	- +++Summarize the contract approval rules and cite the document.+++
+5.  Una vez que el agente responda, haga clic en **Thread logs** desde
+    el menú superior para revisar los registros y trazas del hilo
+    actual.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image55.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image56.png)
 
-5.  Once the agent responds to questions, click on **Thread logs** from
-    the top menu to check the logs and traces of the current thread.
+6.  Explore y revise estas métricas, trazas y evaluaciones, que
+    presentan una vista detallada del registro del agente.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image56.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image57.png)
 
-6.  Explore and review these metrics, traces, and evaluations which
-    showcase a detailed overiew on the agent log.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image58.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image57.png)
+7.  Ahora, navegue al panel de monitoring, donde previamente conectó
+    **Application Insights**, y seleccione la pestaña **Resource usage**
+    para revisar todas las métricas y valores.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image58.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image59.png)
 
-7.  Now, navigate to the **monitoring** pane, where you have connected
-    application insights before, and select the **Resource usage** tab
-    and review all the metrics and values.
+8.  Usted ha creado exitosamente un agente basado en RAG, respaldado por
+    conjuntos de datos empresariales seleccionados. En la siguiente
+    etapa, habilitará la colaboración entre múltiples agentes,
+    permitiendo delegación, razonamiento y trabajo conjunto inteligente.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image59.png)
+**Resumen**
 
-8.  You've successfully built a RAG-based agent powered by curated
-    enterprise datasets. Next, you'll take this further by enabling
-    multi-agent collaboration, where agents can delegate, reason, and
-    work together intelligently.
-
-Summary
-
-In this lab, you successfully created your first AI Agent in Microsoft
-Foundry and connected it to an indexed knowledge base. You uploaded
-documents, ingested them into Azure AI Search, and enabled RAG through
-Microsoft Agent Framework integration. By testing the agent and
-reviewing execution logs, you gained firsthand experience in how agents
-retrieve grounded information and generate enterprise-ready responses.
-
-
-
+En este laboratorio, usted creó su primer AI Agent en Microsoft Foundry
+y lo conectó a una base de conocimiento indexada. Cargó documentos, los
+ingestó en Azure AI Search y habilitó RAG mediante la integración con
+Microsoft Agent Framework. Al probar el agente y revisar los registros
+de ejecución, obtuvo experiencia directa en cómo los agentes recuperan
+información fundamentada y generan respuestas preparadas para entornos
+empresariales.
