@@ -1,595 +1,628 @@
+# Laboratório 11: AgentOps – Observabilidade e gerenciamento
 
-# Lab 11: AgentOps – Observability and Management
+**Duração estimada:** 60 minutos
 
-**Estimated Duration**: 60 Minutes
+**Visão geral**
 
-**Overview**
+Neste laboratório, você se concentrará no AgentOps, a disciplina de
+monitoramento, governança e gerenciamento de agentes de AI em ambientes
+de produção. Você explorará como habilitar a observabilidade e a
+telemetria usando a integração incorporada do Microsoft Agent Framework
+com o Application Insights usando o **OpenTelemetry**.
 
-In this lab, you will focus on AgentOps, the discipline of monitoring,
-governing, and managing AI agents in production environments. You’ll
-explore how to enable observability and telemetry using the Microsoft
-Agent Framework’s built-in integration with Application Insights
-using **OpenTelemetry**.
+Sobre o OpenTelemetry no Microsoft Agent Framework
 
-About OpenTelemetry in Microsoft Agent Framework
+O Microsoft Agent Framework integra-se nativamente ao OpenTelemetry, o
+padrão aberto para rastreamento distribuído, métricas e logs. Essa
+integração fornece visibilidade completa do comportamento dos agentes ao
+capturar automaticamente dados de telemetria, como rastreamentos de
+spans, chamadas de ferramentas, respostas do modelo e desempenho dos
+fluxos de trabalho. Com essa integração, os desenvolvedores podem
+exportar dados de observabilidade diretamente para o Azure Monitor,
+Application Insights ou qualquer outro backend compatível com
+OpenTelemetry. Essa abordagem padronizada ajuda a rastrear cada ação dos
+agentes em sistemas multiagente complexos, permitindo otimização de
+desempenho, solução de problemas e auditoria de conformidade com
+configuração mínima.
 
-The Microsoft Agent Framework natively integrates with OpenTelemetry,
-the open standard for distributed tracing, metrics, and logging. It
-provides end-to-end visibility into agent behavior by automatically
-capturing telemetry data such as span traces, tool calls, model
-responses, and workflow performance. Using this integration, developers
-can export observability data directly to Azure Monitor, Application
-Insights, or any other OpenTelemetry-compatible backend. This
-standardized approach helps track every agent action across complex
-multi-agent systems, enabling performance tuning, troubleshooting, and
-compliance auditing with minimal configuration.
+Objetivos do laboratório
 
-Lab Objectives
+Você executará as seguintes tarefas neste laboratório:
 
-You'll perform the following tasks in this lab.
+- Tarefa 1: habilitar a observabilidade do agente com o OpenTelemetry
 
-- Task 1: Enable Observability of Agent with OpenTelemetry
+- Tarefa 2: visualizar as métricas do agente
 
-- Task 2: Visualize Agent Metrics
+- Tarefa 3: monitorar métricas específicas do agente no Portal do
+  Foundry
 
-- Task 3: Monitor Agent-specific metrics in Foundry Portal
+## Tarefa 1: habilitar a observabilidade do agente com o OpenTelemetry
 
-## Task 1: Enable Observability of Agent with OpenTelemetry
+Nesta tarefa, você integrará a observabilidade do OpenTelemetry e do
+Agent Framework ao seu projeto. Você configurará exportadores de
+telemetria, inicializará o rastreamento com setup_observability() e
+capturará intervalos detalhados para cada estágio do seu fluxo de
+trabalho, incluindo roteamento do agente, recuperação do Azure AI Search
+e criação de tíquetes. Isso permite visibilidade unificada do
+comportamento do agente e correlação entre sistemas usando IDs de
+rastreamento no Application Insights.
 
-In this task, you’ll integrate OpenTelemetry and Agent Framework
-observability into your project. You’ll configure telemetry exporters,
-initialize tracing with setup_observability(), and capture detailed
-spans for each stage of your workflow, including agent routing, Azure AI
-Search retrieval, and ticket creation. This enables unified visibility
-into agent behavior and cross-system correlation using trace IDs in
-Application Insights.
+1.  Em vez de modificar novamente o código anterior, você trabalhará em
+    uma nova pasta que já contém os arquivos atualizados com
+    observabilidade habilitada. Compreenda como telemetria, rastreamento
+    e monitoramento são integrados usando o Microsoft Agent Framework
+    Observability e o Application Insights.
 
-1.  Instead of modifying the previous code again, you’ll work in a new
-    folder that already contains the updated observability-enabled
-    files. Understand how telemetry, tracing, and monitoring are
-    integrated using Microsoft Agent Framework Observability and
-    Application Insights.
+2.  No Visual Studio Code, antes de abrir uma nova pasta, selecione o
+    arquivo .env, copie todo o conteúdo e guarde-o com segurança em um
+    bloco de notas.
 
-2.  In Visual Studio Code, before openening new folder, select
-    the .env file and copy the content and keep it safely in a notepad.
+3.  Após concluir, clique na opção **File** no menu superior e selecione
+    **Open Folder**.
 
-3.  Once done, click on **file** option from top menu and select **Open
-    Folder**.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image1.png)
+4.  No painel Open Folder, navegue até C:\telemetry-codefiles e clique
+    em Select Folder.
 
-4.  In the open folder pane, navigate to **C:\Lab Files\Day 3\Enterprise-Agent-Code-files** and
-    click on select folder.
+5.  Após a abertura, os arquivos exibidos no menu Explorer terão uma
+    aparência semelhante a esta.
 
-5.  Once opened, the files in the explorer menu look similar to this.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image2.png)
+6.  Analise os arquivos de código e revise como o OpenTelemetry foi
+    implementado em todos os agentes, bem como a forma como o
+    rastreamento está sendo realizado.
 
-6.  Please go through the code files, review how the opentelemetry
-    implemented in all agents, and how the tracing is happening.
+> **Visão Geral da Integração**
+>
+> O rastreamento do OpenTelemetry foi integrado em todo o fluxo de
+> trabalho dos agentes usando o pacote agent_framework.observability.
 
-	> **Integration Overview**
-	>
-	integrated OpenTelemetry tracing throughout the agent workflow using
-	> the agent_framework.observability package.
+- Importou get_tracer() e usou spans do OpenTelemetry para capturar
+  telemetria estruturada para cada operação crítica.
 
-	- Imported get_tracer() and used OpenTelemetry spans to capture
-	  structured telemetry for each critical operation.
+- Integrou funções-chave (por exemplo, classificação, roteamento, RAG,
+  criação de tíquetes) em spans com atributos contextuais.
 
-	- Wrapped key functions (e.g., classification, routing, RAG, ticket
-	  creation) in spans with contextual attributes.
+- Adicionou configuração unificada de observabilidade na inicialização
+  usando setup_observability() para configurar exportadores e pipelines
+  de métricas.
 
-	- Added unified startup observability setup using setup_observability()
-	  to configure exporters and metrics pipelines.
+- Registramos atributos personalizados, como texto de consulta, decisões
+  de roteamento e métodos de fallback para obter maior visibilidade.
 
-	- Recorded custom attributes such as query text, routing decisions, and
-	  fallback methods for deeper visibility.
+- Aprimoramos o tratamento de erros para registrar rastreamentos de
+  exceção e vincular cada execução de fluxo de trabalho a um ID de
+  rastreamento para correlação entre sistemas.
 
-	- Enhanced error handling to record exception traces and link each
-	  workflow execution to a trace ID for cross-system correlation.
+> **Melhorias nos Arquivos**
+>
+> main.py – Rastreamento e Métricas de Ponta a Ponta
 
-	> **File Enhancements**
-	>
-	> main.py – End-to-End Tracing and Metrics
+- Configuração do pipeline de rastreamento do OpenTelemetry e da
+  configuração de exportadores.
 
-	- Configured OpenTelemetry tracing pipeline and exporter setup.
+- Delimitação da orquestração multiagente dentro de spans para garantir
+  visibilidade completa do fluxo de trabalho.
 
-	- Wrapped multi-agent orchestration inside spans for complete workflow
-	  visibility.
+- Adição de spans para subetapas, incluindo roteamento, recuperação de
+  dados (RAG), respostas dos agentes e criação de tíquetes.
 
-	- Added spans for sub-steps: routing, data retrieval (RAG), agent
-	  responses, and ticket creation.
+> planner_agent.py – Observabilidade Aprimorada de Roteamento
 
-	> planner_agent.py – Enhanced Routing Observability
+- Adição de uma instância de tracer (get_tracer()) para monitorar a
+  lógica de classificação.
 
-	- Added a tracer instance (get_tracer()) to monitor classification
-	  logic.
+- Captura de respostas do LLM, pontuações de confiança e métricas de
+  palavras-chave de fallback como atributos de span.
 
-	- Captured raw LLM responses, confidence scores, and fallback keyword
-	  metrics as span attributes.
+- Diferenciação entre classificação baseada em AI e classificação
+  heurística por meio de spans rotulados (SpanKind.INTERNAL).
 
-	- Differentiated between AI-based and heuristic classification with
-	  labeled spans (SpanKind.INTERNAL).
+> azure_search_tool.py – Observabilidade de RAG
 
-	> azure_search_tool.py – RAG Observability
+- Adicionou spans para chamadas da Azure Search API para medir latência
+  e taxas de sucesso.
 
-	- Added spans for Azure Search API calls to measure latency and success
-	  rates.
+- Registrou contagens de documentos recuperados e tamanhos de payload
+  como métricas personalizadas.
 
-	- Logged retrieved document counts and payload sizes as custom metrics.
+- Capturou erros de pesquisa e dados de desempenho em traces do
+  OpenTelemetry.
 
-	- Captured search errors and performance data within OpenTelemetry
-	  traces.
+> freshdesk_tool.py – Observabilidade de criação de tíquetes
 
-	> freshdesk_tool.py – Ticket Creation Observability
+- Adicionou spans de chamadas de API para acompanhar a duração da
+  criação de tíquetes e o status da resposta.
 
-	- Added API call spans to track ticket creation duration and response
-	  status.
+- Registrou IDs de tíquetes, tags e detalhes do solicitante para logs de
+  auditoria rastreáveis.
 
-	- Logged ticket IDs, tags, and requester details for traceable audit
-	  logs.
+- Monitorou a latência de APIs externas e respostas de erro para melhor
+  rastreamento de incidentes.
 
-	- Monitored external API latency and error responses for better incident
-	  tracking.
+7.  Após a revisão, clique com o botão direito no arquivo **.env.example
+    (1)** e selecione **Rename (2)** para renomear o arquivo.
 
-7.  Once reviewed, right-click on **.env.sample** file and
-    select **Rename** to rename the file.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image3.png)
+8.  Após concluir, renomeie o arquivo de
+    **.env.example** --\> **.env** para tornar este arquivo de ambiente
+    ativo para este agente.
 
-8.  Rename the file from **.env.example** --\> **.env** to
-    make this environment file active for this agent.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image4.png)
+9.  Agora, selecione o arquivo .env e cole o conteúdo que você copiou
+    anteriormente.
 
-10. In the Azure Portal, navigate to **agenticai** resource group, and
-    from the resource list select **ai-knowledge-** Search service.
+10. No Portal do Azure, navegue até o grupo de recursos **agenticai** e,
+    na lista de recursos, selecione o serviço **ai-knowledge-Search**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image5.png)
- 
-11. Select **Keys** from the left menu, under Settings, and copy
-    the **Query key** using the copy option as shown. Save it in a notepad.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image6.png)
+11. Selecione **Keys (1)** no menu esquerdo, em Settings, e copie o
+    **Query key (2)** usando a opção de cópia conforme mostrado.
 
-12. Once copied, paste it safely in a notepad, select **Indexes** from
-    the left menu under Search Management, and copy the **Index Name**. Save it in a notepad.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image7.png)
+12. Após copiar, cole-o com segurança em um Bloco de Notas. Em seguida,
+    selecione **Indexes** no menu esquerdo, em Search Management, e
+    copie o **Index Name (2).**
 
-13. Populate the **.env** file, with the below content, replace the place holders of the Query_Key and the Index_name with the values copied and saved above.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-	```
-	# Azure AI Search (MCP)
-	AZURE_SEARCH_ENDPOINT=https://ai-knowledge-@lab.LabInstance.Id.search.windows.net/
-	AZURE_SEARCH_API_KEY=[Query_Key]
-	AZURE_SEARCH_INDEX=[Index_Name]
-	```
+13. No painel do Visual Studio Code, selecione o arquivo **.env**, pois
+    será necessário adicionar as chaves do AI Search para a conexão.
 
-14. Add the content of the .env file with the below content.
+> \# Azure AI Search (MCP)
+>
+> AZURE_SEARCH_ENDPOINT=https://ai-knowledge--@lab.LabInstance.Id.search.windows.net/
+>
+> AZURE_SEARCH_API_KEY=\[Query_Key\]
+>
+> AZURE_SEARCH_INDEX=\[Index_Name\]
 
-	```
-	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
-	AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
-	AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
-	AZURE_OPENAI_API_VERSION=2025-03-01-preview
-	```
+**Observação:** Substitua os valores Query_Key e Index_Name pelos
+valores que você copiou anteriormente.
 
-15. Add the following Foundry project key variables to the .env file.
+14. Adicione o conteúdo abaixo ao arquivo .env:
 
-	```
-	# Azure AI Project Configuration
-	AZURE_AI_PROJECT_ENDPOINT=<Microsoft Foundry endpoint>
-	AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
-	```
+> AZURE_OPENAI_ENDPOINT=https://agentic-
+> @lab.LabInstance.Id.cognitiveservices.azure.com/
+>
+> AZURE_OPENAI_API_KEY=\<Replace with Azure OpenAI key\>
+>
+> AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
+>
+> AZURE_OPENAI_API_VERSION=2025-03-01-preview
 
-	Find the Microsoft Foundry project endpoint from the Overview page and replace **\<Microsoft Foundry endpoint\>** with that value.
+15. Adicione as seguintes variáveis de chave do projeto do Foundry ao
+    arquivo .env.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image8.png)
+> \# Azure AI Project Configuration
+>
+> AZURE_AI_PROJECT_ENDPOINT=**\<Microsoft Foundry endpoint\>**
+>
+> AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+>
+> Encontre o endpoint do projeto do Microsoft Foundry na página Overview
+> e substitua **\<Microsoft Foundry endpoint\>** por esse valor.
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image8.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image9.png)
+![](./media/image9.png)
 
-16. Once done, add the following App Insights variables to the same
-    file.
+16. Após concluir, adicione as seguintes variáveis do App Insights ao
+    mesmo arquivo.
 
-	```
-	# Observability and Monitoring Configuration
-	APPLICATIONINSIGHTS_CONNECTION_STRING=<Connection string>
-	ENABLE_OTEL=true
-	ENABLE_SENSITIVE_DATA=true
+> \# Observability and Monitoring Configuration
+>
+> APPLICATIONINSIGHTS_CONNECTION_STRING=**\<Connection string\>**
+>
+> ENABLE_OTEL=true
+>
+> ENABLE_SENSITIVE_DATA=true
+>
+> Abra o recurso do Application Insights no portal do Azure, copie a
+> connection string e substitua **\<Connection string\>** pelo valor
+> copiado.
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image10.png)
 
-	```
+17. No arquivo .env, adicione o conteúdo a seguir e informe a API key e
+    a Account URL do Freshdesk que você copiou anteriormente.
 
-	Open the Application insight resource from the Azure portal, copy the connection string and replace **< Connection string >** with the value copied.
+> \# Freshdesk Configuration
+>
+> FRESHDESK_DOMAIN=\[Domain_URL\]
+>
+> FRESHDESK_API_KEY=\[API_Key\]
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image10.png)
+18. O arquivo .env final deve ter a mesma aparência da imagem fornecida.
 
-17. In the .env file, add the following content and add the API key and
-    Account URL of Freshdesk that you copied earlier.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ```
-    # Freshdesk Configuration
-    FRESHDESK_DOMAIN=[Domain_URL]
-    FRESHDESK_API_KEY=[API_Key]
-    
-    ```
+19. Após concluir, selecione **File (1)** e, em seguida, clique em
+    **Save (2)** para salvar o arquivo.
 
-18. Final .env file should look like the given image.
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image12.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/im4.png)
+20. Selecione a opção **... (1)** no menu superior para expandir o menu.
+    Selecione **Terminal (2)** e clique em **New Terminal (3)**.
 
-19. Once done, select **File**  and then
-    click **Save**  to save the file.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image12.png)
+21. No **VS Code** Terminal, execute o comando de login da Azure CLI:
 
-20. Select the **...** option from the top menu to extend the menu.
-    Select **Terminal** and click on **New Terminal**.
++++az login+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image13.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-21. In **VS Code** Terminal, run the Azure CLI sign-in command:
+22. Na janela **Sign in**, selecione **Work or school account** e clique
+    em **Continue**.
 
-	+++az login+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image14.png)
+23. Na guia **Sign into Microsoft**, faça login usando as credenciais
+    abaixo:
 
-22. On the **Sign in** window, select **Work or school account** and
-    click **Continue**.
+- Username - <+++@lab.CloudPortalCredential(User1).Username>+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image15.png)
+- TAP - +++@lab.CloudPortalCredential(User1).TAP+++
 
-23. On the **Sign into Microsoft** tab, and login using the below
-    credentials.
+24. Quando solicitado com as opções de login, selecione **No, this app
+    only** para continuar sem vincular outros aplicativos da área de
+    trabalho.
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image16.png)
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
-
-24. When prompted with the sign-in options, select **No, this app
-    only** to continue without linking other desktop apps.
-
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image16.png)
-
-25. Type **1** and hit enter in the **Select a subscription and
+25. Digite **1** e pressione Enter na tela **Select a subscription and
     tenant**.
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image17.png)
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image17.png)
 
-26. Rename the **requirements.txt.txt** to **requirements.txt**.
+26. Após o terminal estar aberto, execute o comando:
 
-27. Once the terminal is open, execute the command,
+> +++pip install -r requirements.txt+++ to install all the required
+> packages.
 
-    +++pip install -r requirements.txt+++ to install all the required packages.
-
-28. Run the command given below to test out the working of the search
+27. Run the command given below to test out the working of the search
     tool.
 
-	+++python main.py+++
++++python main.py+++
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image18.png)
+> ![A screenshot of a computer screen AI-generated content may be
+> incorrect.](./media/image18.png)
 
-## Task 2: Visualize Agent Metrics
+## Tarefa 2: Visualizar métricas do agente
 
-In this task, you’ll use Azure Application Insights to visualize agent
-telemetry data. You’ll explore custom metrics for response time, routing
-accuracy, and ticket creation success. Then, you’ll build interactive
-Azure Monitor dashboards to display key performance indicators and
-trends. This helps identify bottlenecks, measure efficiency, and ensure
-the healthy operation of your deployed agents in real time.
+Nesta tarefa, você usará o Azure Application Insights para visualizar os
+dados de telemetria do agente. Você explorará métricas personalizadas
+para tempo de resposta, precisão de roteamento e sucesso na criação de
+tíquetes. Em seguida, você criará painéis interativos do Azure Monitor
+para exibir indicadores-chave de desempenho e tendências. Isso ajuda a
+identificar gargalos, medir a eficiência e garantir a operação saudável
+dos agentes implantados em tempo real.
 
-1.  Navigate to Azure Portal, open your resource group, and from the
-    resource list, select **agent-insights-** app insight resource.
+1.  Navegue até o Portal do Azure, abra seu grupo de recursos e, na
+    lista de recursos, selecione o recurso **agent-insights-** app
+    insight.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image19.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-2.  Once in the overview page, you can see some of the default metrics
-    shown.
+2.  Após acessar a página Overview, você poderá ver algumas das métricas
+    padrão exibidas.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image20.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-3.  From the left menu, select **Search**, click on **See all data
-    in last 24 hours**.
+3.  No menu esquerdo, selecione **Search (1)** e clique em **See all
+    data in last 24 hours (2)**.
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image21.png)
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image21.png)
 
-4.  Once opened, from bottom, review the **Traces** and then **click
-    on View as individual items**.
+4.  Após abrir, na parte inferior, revise **Traces (1)** e, em seguida,
+    clique em **View as individual items (2)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-5.  Once done, you will be able to see all the communication details
-    that happened with the agent, as well as all the transactions that
-    took place within the given time range. You can also adjust the time
-    range to explore more.
+5.  Após concluir, você poderá ver todos os detalhes de comunicação que
+    ocorreram com o agente, bem como todas as transações que aconteceram
+    dentro do intervalo de tempo definido. Você também pode ajustar o
+    intervalo de tempo para explorar mais informações.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-6.  Explore and review these transations, you can open a detailed view
-    just by clicking on them. Review how you can see all the details,
-    like agents, messages, and retrieval details.
+6.  Explore e revise essas transações; você pode abrir uma visualização
+    detalhada simplesmente clicando nelas. Revise como é possível
+    visualizar todos os detalhes, como agentes, mensagens e detalhes de
+    recuperação.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image25.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-7.  Next, select **Failures**, Review **failed requests** to
-    gain a centralized view of all unsuccessful executions and identify
-    the underlying causes through detailed trace analysis.
+7.  Em seguida, selecione **Failures (1)** e **Review failed requests
+    (2)** para obter uma visão centralizada de todas as execuções
+    malsucedidas e identificar as causas subjacentes por meio de uma
+    análise detalhada do *rastreamento*.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image26.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-8.  Next, select **Performance** and check on the **operations and
-    response times**, based on which you can determine the
-    performance SLA of the agent.
+8.  Em seguida, selecione **Performance (1)** e verifique as **operações
+    e os tempos de resposta (2)**, com base nos quais você pode
+    determinar o SLA de desempenho do agente.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-9.  Now, under monitoring from the left menu, select **Metrics**. You
-    can explore the custom metrics that are published through span.
+9.  Agora, em Monitoring, no menu esquerdo, selecione **Metrics**. Você
+    pode explorar as métricas personalizadas que são publicadas por meio
+    de *spans*.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-10. Once selected, under **Metric Namespace**,
-    select azure.applicationinsights .
+10. Após selecionar, em **Metric Namespace (1)**, selecione
+    azure.applicationinsights **(2)**. ![A screenshot of a computer
+    AI-generated content may be incorrect.](./media/image29.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image29.png)
+11. Agora, em Metrics, selecione **gen_ai.client.operation.duration**
+    **e defina a agregação como** **avg (1)**. Verifique o **line chart
+    (2)** para revisar a métrica de **Response Time**, que indica o
+    tempo que o agente levou para responder ao usuário.
 
-11. Now, under metrics, select **gen_ai.client.operation.duration and
-    set the aggregation to avg**. Check the **line chart** to
-    review the **Response Time** metric, which agent took to reply to
-    the user.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image30.png)
+12. De forma semelhante, selecione **gen_ai.client.token.usage** **e
+    defina a agregação como** **avg (1)**. Verifique o **line chart
+    (2)** para revisar o uso de tokens pelo agente.
 
-12. In a similar way, select **gen_ai.client.token.usage and set the
-    aggregation to avg**. Check the **line chart** to review the
-    token usage from the agent.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image31.png)
+13. Em seguida, no menu esquerdo, selecione **Logs (1)** e cancele o
+    painel **Queries hub (2)**..
 
-13. Next, select **Logs** from left menu, cancel the **Queries hub
-   ** pane.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image32.png)
+14. Após fechar, clique na opção **Tables**, passe o cursor sobre o
+    parâmetro **customMetrics**; você verá a opção **Run**. Clique nela.
 
-14. Once closed, click on **tables** option, hover over
-    the **customMetrics** parameter, you'll see a **Run** option, click
-    on that.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image33.png)
+![A close-up of a message AI-generated content may be
+incorrect.](./media/image34.png)
 
-    ![A close-up of a message AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image34.png)
+15. Após a consulta ser executada com sucesso, você verá todas as
+    métricas personalizadas listadas abaixo como resultados da consulta.
 
-15. Once the query runs successfully, you will see all the custom
-    metrics listed below as query results.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image35.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image35.png)
+16. Em seguida, selecione **Workbooks (1)** no menu esquerdo e clique no
+    workbook **Empty (2)** em Quick start.
 
-16. Next, select **Workbooks** from the left menu and click on
-    the **Empty** workbook under Quick start.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image36.png)
+17. Após abrir, clique em **+ Add (1)** e selecione **Add metric (2)**.
 
-17. Once opened, click on **+ Add** and select **Add metric**.
+![A screenshot of a phone AI-generated content may be
+incorrect.](./media/image37.png)
 
-    ![A screenshot of a phone AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image37.png)
+18. Após o painel de métricas ser aberto, clique na opção **Add
+    metric**.
 
-18. Once the metric pane is opened, click on the **Add metric** option.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image38.png)
+19. Agora, selecione **Metric** como gen_ai.client.token.usage **(1)**,
+    informe **Display name** como **Token Usage (2)** e clique em **Save
+    (3)**.
 
-19. Now, select **Metric** as gen_ai.client.token.usage ,
-    provide **Display name** as Token Usage  and click on **Save**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image39.png)
+20. Clique novamente na opção **Add metric**.
 
-20. Again click on **Add metric** option.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image38.png)
+21. Agora, selecione **Metric** como gen_ai.client.operation.duration
+    **(1)**, informe **Display name** como Response Time **(2)** e
+    clique em **Save (3)**.
 
-21. Now, select **Metric** as gen_ai.client.operation.duration ,
-    provide **Display name** as Response Time  and click
-    on **Save**.
+![A screenshot of a screenshot of a metric settings AI-generated content
+may be incorrect.](./media/image40.png)
 
-    ![A screenshot of a screenshot of a metric settings AI-generated content
-may be incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image40.png)
+22. Após selecionar ambas as métricas, clique em **Run Metrics**.
 
-22. Once selected, both the metrics, click on **Run Metrics**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image41.png)
+23. Agora, altere a **Visualization** para **Area Chart** para obter uma
+    visualização semelhante. Você pode explorar várias outras opções de
+    visualização, assim como o intervalo de tempo.
 
-23. Now change the **Visualization** to **Area Chart** to get the
-    similar visualization. You can explore many other options of
-    visualization, and also the time range.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image42.png)
+24. Após a edição ser concluída, clique em **Done editing**. Isso
+    salvará este cartão no seu workbook.
 
-24. Once the edit is completed, click on **Done editing**. This will
-    save this card to your workbook.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image43.png)
+25. Agora, clique novamente em **+ Add (1)** e selecione **Add query
+    (2)**.
 
-25. Now, click on **+ Add** again and select **Add query**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image44.png)
+26. No painel de consulta, adicione a seguinte **query (1)**, e clique
+    em **Run Query (2)**.
 
-26. In the query pane, add the following **query**, and click
-    on **Run Query**.
++++customMetrics+++
 
-	+++customMetrics+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image45.png)
+27. Verifique os resultados após a consulta ser executada com sucesso.
+    Depois de revisar, clique em **Done editing**.
 
-27. Check the results once the query runs successfully. Once reviewed,
-    click on **Done Editing**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image46.png)
+28. Após concluir, clique em **Done editing (1)** no menu superior e, em
+    seguida, clique no ícone **Save (2)**.
 
-28. Once done, click on **Done editing** from the top menu, and then
-    click on **Save** icon.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image47.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image48.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image48.png)
+29. No painel Save As, informe o Title como agent-workbook **(1)** e, em
+    seguida, clique em **Save As (2)**.
 
-29. On the Save As pane, enter Title as agent-workbook , then
-    click **Save As**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image49.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image49.png)
+30. Como este é um ambiente de laboratório, os dados disponíveis podem
+    ser limitados para um monitoramento abrangente. No entanto, você
+    pode aumentar a visibilidade adicionando métricas personalizadas dos
+    seus agentes e criando painéis de monitoramento específicos, focados
+    em objetivos determinados, como os seguintes:
 
-30. Since this is a lab environment, the available data may be limited
-    for comprehensive monitoring. However, you can enhance visibility by
-    adding custom metrics from your agents and creating purpose-built
-    monitoring dashboards focused on specific objectives, such as the
-    following:
+- **Painel de desempenho do agente**
 
-- **Agent Performance Dashboard**
+> **Métricas exibidas:**
 
-> **Metrics Displayed:**
+- Tempos de resposta dos agentes (média, P95)
 
-- Agent response times (avg, P95)
+- Taxas de sucesso por tipo de agente
 
-- Success rates by agent type
+- Tendências do volume de solicitações
 
-- Request volume trends
+- Alertas de taxa de erro
 
-- Error rate alerts
+> **Perguntas comerciais respondidas:**
 
-> **Business Questions Answered:**
+- Quais agentes têm o melhor desempenho?
 
-- Which agents perform best?
+- Estamos cumprindo as metas do SLA?
 
-- Are we meeting SLA targets?
+- O que está causando lentidão no sistema?
 
-- What's causing system slowdowns?
+&nbsp;
 
-- **User Experience Dashboard**
+- **Painel de Experiência do Usuário**
 
-> **Metrics Displayed:**
+> **Métricas exibidas:**
 
-- End-to-end request latency
+- Latência de solicitação de ponta a ponta
 
-- Ticket creation rates
+- Taxas de criação de tíquetes
 
-- Knowledge retrieval success
+- Sucesso na recuperação de conhecimento
 
-- User satisfaction proxy metrics
+- Métricas proxy de satisfação do usuário
 
-> **Business Questions Answered:**
+> **Perguntas comerciais respondidas:**
 
-- Are users getting fast responses?
+- Os usuários estão recebendo respostas rápidas?
 
-- How often do requests become support tickets?
+- Com que frequência as solicitações se transformam em tíquetes de
+  suporte?
 
-- Is the knowledge base helping users?
+- A base de conhecimento está ajudando os usuários?
 
-## Task 3: Monitor Agent-specific metrics in Foundry Portal
+## Tarefa 3: Monitorar métricas específicas do agente no Portal do Foundry
 
-In this task, you’ll use Azure Application Insights to visualize agent
-telemetry data. You’ll explore custom agent-specific metrics from the
-Microsoft Foundry Portal.
+Nesta tarefa, você usará o Azure Application Insights para visualizar os
+dados de telemetria do agente. Você explorará métricas personalizadas
+específicas do agente no Portal do Microsoft Foundry.
 
-1.  As you have already connected Application Insights to the Microsoft
-    Foundry portal, you can navigate back to your Foundry portal and
-    visualize the working of your agent.
+1.  Como você já conectou o Application Insights ao portal do Microsoft
+    Foundry, pode navegar de volta ao portal do Foundry e visualizar o
+    funcionamento do seu agente.
 
-2.  Navigate back to your resource group, from the resource list,
-    select **agent-** foundry resource.
+2.  Navegue de volta ao seu grupo de recursos e, na lista de recursos,
+    selecione o recurso **agent-**foundry.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image50.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-3.  In the next pane, click on **Go to Foundry portal**. You will now be
-    navigated to the Microsoft Foundry portal, where you will be
-    creating your first agent.
+3.  No painel seguinte, clique em **Go to Foundry portal**. Você será
+    direcionado para o portal do Microsoft Foundry, onde criará seu
+    primeiro agente.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image51.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image51.png)
 
-4.  Before testing the agent, connect Application Insights to enable
-    detailed logs and trace visibility.
+4.  Antes de testar o agente, conecte o Application Insights para
+    habilitar logs detalhados e visibilidade de rastreamento.
 
-5.  In Microsoft Foundry portal, select **Monitoring** from left
-    menu, select **agent-insights-@Lab.Labinstance.id** and click on **Connect**.
+5.  No portal do **Microsoft Foundry**, selecione **Monitoring (1)** no
+    menu esquerdo, selecione **agent-insights- (2)** e clique em
+    **Connect (3)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image52.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image52.png)
 
-6.  Now, navigate to the **Monitoring** pane, where you have connected
-    application insights before, and select the **Resource usage** tab
-    and review all the metrics and values.
+6.  Agora, navegue até o painel **Monitoring**, onde você conectou o
+    Application Insights anteriormente, selecione a aba **Resource
+    usage** e revise todas as métricas e valores.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image53.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image53.png)
 
-7.  Select **Tracing** from the left menu, click on any of
-    the **Trace**, and review the detailed traces of agent
-    interactions.
+7.  Selecione **Tracing (1)** no menu esquerdo, clique em qualquer um
+    dos **Trace (2)**, e analise os rastreamentos detalhados das
+    interações do agente.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image54.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image54.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image55.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image55.png)
 
-**Summary**
+**Resumo**
 
-In this lab, you configured observability and monitoring for your
-enterprise agents. Using OpenTelemetry tracing, you captured detailed
-execution data for every workflow step, and by integrating with Azure
-Application Insights, you created dashboards to visualize performance
-metrics and agent health.
+Neste laboratório, você configurou a observabilidade e o monitoramento
+para os agentes da sua empresa. Usando o recurso de rastreamento do
+OpenTelemetry, você capturou dados detalhados de execução para cada
+etapa do fluxo de trabalho e, ao integrar com o Azure Application
+Insights, criou painéis para visualizar métricas de desempenho e
+integridade do agente.
 
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
-
+Você concluiu este laboratório com sucesso. Clique em Next \>\> para
+prosseguir.

@@ -1,359 +1,374 @@
+# Criar e Estender Agentes Inteligentes
 
-# Lab 1 Build and Extend Intelligent Agents
+**Visão Geral**
 
-**Overview**
+Este laboratório prático apresenta a criação de agentes inteligentes de
+**AI** utilizando serviços do Azure AI e o Microsoft 365 Copilot. Os
+participantes aprenderão a aproveitar fluxos de trabalho de RH com
+Copilot, configurar projetos no Microsoft Foundry, criar agentes simples
+de AI, criar agentes RAG (Retrieval-Augmented Generation) e desenvolver
+sistemas multiagentes com capacidades de orquestração.
 
-This hands-on lab introduces building intelligent AI agents using Azure
-AI services and Microsoft 365 Copilot. Participants will learn to
-leverage Copilot for HR workflows, set up Microsoft Foundry projects,
-build simple AI agents, create RAG (Retrieval-Augmented Generation)
-agents, and develop multi-agent systems with orchestration capabilities.
+**Objetivos**
 
-**Objectives**
+Ao final deste laboratório, você será capaz de:
 
-By the end of this lab, you will be able to:
+- **Criar Agentes Assistentes de RH:** Automatizar recrutamento de
+  colaboradores, triagem, desenvolvimento de materiais de treinamento,
+  coleta de feedback e avaliações de desempenho utilizando o Microsoft
+  365 Copilot.
 
-- **Build HR Assistant Agents with Copilot Studio** - Automate employee
-  recruitment, screening, training material development, feedback
-  collection, and performance reviews using Microsoft 365 Copilot.
+- **Configurar um projeto de AI e concluir o chat:** Configurar um
+  projeto de AI no Microsoft Foundry, implementar Large Language Models
+  (LLMs) e modelos de integração e estabelecer conectividade VS Code
+  para conclusões de chat.
 
-- **Set Up AI Project and Perform Chat Completion** - Configure an AI
-  Project in Microsoft Foundry, deploy Large Language Models (LLMs) and
-  embedding models, and establish VS Code connectivity for chat
-  completions.
+- **Criar um Agente de AI para Análise de Planos de Seguro Saúde:**
+  Criar agentes de AI que processam dados e geram visualizações (por
+  exemplo, gráficos de barras comparando planos de benefícios de saúde)
+  usando serviços do Azure AI.
 
-- **Build a Health Insurance Plans Analyser AI Agent** - Create AI
-  agents that process data and generate visualizations (e.g., bar charts
-  comparing health benefit plans) using Azure AI services.
+- **Desenvolver um Sistema Multiagente para Geração de Relatórios de
+  Planos de Saúde:** Projetar e implementar sistemas multiagentes
+  coordenados, nos quais agentes especializados (agentes de pesquisa,
+  relatório, validação e orquestração) trabalham juntos para realizar
+  tarefas complexas.
 
-- **Develop a Health plan report generation multi-agent system** -
-  Design and implement coordinated multi-agent systems where specialized
-  agents (Search, Report, Validation, and Orchestrator agents) work
-  together to accomplish complex tasks.
+**Pré-requisitos**
 
-**Prerequisites**
+Os participantes devem possuir:
 
-Participants should have:
+- **Visual Studio Code (VS Code)**: Proficiência no uso do VS Code para
+  codificação, depuração e gerenciamento de extensões para diversas
+  linguagens de programação e frameworks.
 
-- **Visual Studio Code (VS Code)**: Proficiency in using VS Code for
-  coding, debugging, and managing extensions for various programming
-  languages and frameworks.
+- **Habilidades de Desenvolvimento:** Conhecimento básico de programação
+  em Python ou JavaScript, experiência com APIs e SDKs, e familiaridade
+  com o Visual Studio Code.
 
-- **Development Skills**: Basic programming knowledge in Python or
-  JavaScript, experience with APIs, SDKs, and working in Visual Studio
-  Code.
+- **Linha de Comando / Terminal:** Familiaridade com a execução de
+  comandos no PowerShell e com o gerenciamento de ambientes virtuais.
 
-- **Command Line/Terminal**: Familiarity with running PowerShell
-  commands and managing virtual environments.
+**Explicação dos Componentes**
 
-**Explanation of Components**
+- **Azure AI Search**: serviço de busca baseado em vetores que habilita
+  RAG por meio da indexação e recuperação de documentos relevantes.
 
-- **Azure AI Search**: Vector-based search service enabling RAG by
-  indexing and retrieving relevant documents.
+- **Azure OpenAI Service**: fornece acesso ao GPT-4o e a modelos de
+  embeddings por meio da infraestrutura corporativa do Azure.
 
-- **Azure OpenAI Service**: Provides access to GPT-4o and embedding
-  models through Azure's enterprise infrastructure.
+- **Large Language Models (LLMs)**: modelos avançados de AI, como o
+  GPT-4o, para compreensão e geração de texto.
 
-- **Large Language Models (LLMs)**: Advanced AI models like GPT-4o for
-  text understanding and generation.
+- **Embedding Models**: convertem texto em representações vetoriais para
+  busca e recuperação semântica (por exemplo, text-embedding-3-large).
 
-- **Embedding Models**: Convert text into vector representations for
-  semantic search and retrieval (e.g., text-embedding-3-large).
+- **Microsoft 365 Copilot**: ferramenta de produtividade baseada em AI
+  para análise de documentos e automação de fluxos de trabalho.
 
-- **Microsoft 365 Copilot**: AI-powered productivity tool for document
-  analysis and workflow automation.
+- **Semantic Kernel**: SDK para integrar LLMs com linguagens de
+  programação e construir capacidades de orquestração.
 
-- **Semantic Kernel**: SDK for integrating LLMs with programming
-  languages and building orchestration capabilities.
+# Laboratório 1: Criar um Agente Assistente de RH com Copilot Studio
 
-# Lab 1: Build HR Assistant Agent with Copilot Studio
+Duração estimada: 30 minutos
 
-Estimated Duration: 30 Minutes
+Visão Geral
 
-Overview
+Neste laboratório, você irá se concentrar em simplificar e aprimorar o
+processo de transição e integração de colaboradores dentro de uma
+organização usando o Microsoft 365 Copilot e o Copilot Studio. Você
+aprenderá a identificar candidatos adequados, criar planos
+personalizados de transição e integração, gerar materiais eficazes de
+comunicação e treinamento, automatizar fluxos de trabalho de RH, coletar
+feedback e configurar mecanismos de monitoramento e avaliação de
+desempenho. Ao aproveitar ferramentas baseadas em AI, este laboratório
+demonstra como as organizações podem garantir um processo de transição
+tranquilo e eficiente, aprimorar a mobilidade interna e apoiar os
+colaboradores na adaptação bem-sucedida a suas novas funções.
 
-In this lab, you will focus on streamlining and improving the employee
-transition and onboarding process within an organization by using
-Microsoft 365 Copilot and Copilot Studio. You will learn how to identify
-suitable candidates, create tailored transition and onboarding plans,
-generate effective communication and training materials, automate HR
-workflows, collect feedback, and set up performance monitoring and
-review mechanisms. By leveraging these AI-powered tools, this lab
-demonstrates how organizations can ensure a smooth and efficient
-transition process, enhance internal mobility, and support employees in
-successfully adapting to their new roles.
+Objetivos do Laboratório
 
-Lab Objectives
+Você executará as seguintes tarefas neste laboratório:
 
-You'll perform the following tasks in this lab.
+- Tarefa 1: Realizar a triagem rápida de candidatos
 
-- Task 1: Quickly screen candidates
+- Tarefa 2: Desenvolver materiais de treinamento
 
-- Task 2: Develop training materials
+- Tarefa 3: Coletar feedback
 
-- Task 3: Collect feedback
+- Tarefa 4: Avaliações de desempenho
 
-- Task 4: Performance Reviews
+Diagrama de Arquitetura
 
-Architecture Diagram
+![image](./media/image1.png)
 
-![image](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image1.png)
+## Tarefa 1: Realizar a triagem rápida de candidatos
 
-## Task 1: Quickly screen candidates
+Nesta tarefa, você avaliará rapidamente um grande número de candidaturas
+para o cargo de Analista de Dados usando o Microsoft 365 Copilot para
+analisar currículos e filtrar candidatos com base em critérios
+específicos, como experiência relevante, habilidades técnicas e formação
+acadêmica, permitindo que o Copilot destaque os melhores candidatos para
+uma análise mais aprofundada.
 
-In this task, you will rapidly evaluate a large number of applications
-for the Data Analyst position by using Microsoft 365 Copilot to analyze
-resumes and filter candidates based on specific criteria such as
-relevant experience, technical skills, and educational background,
-allowing Copilot to highlight the top candidates for further review.
+1.  Adicione uma nova aba no navegador Edge e abra o aplicativo
+    Microsoft 365 Copilot usando o seguinte link, e clique em **Sign in
+    (2)**.
 
-1.  Add a new tab in the Edge browser and open the Microsoft 365 Copilot
-    app using the following link, and click on **Sign in** .
-
-	+++https://m365.cloud.microsoft/+++
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image2.png)
-
-2.  On the **Sign into Microsoft Azure tab**, you will see a login
-    screen. Login using the below credentials.
-
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
-
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
-
-3.  If you see the pop-up **Welcome to your Microsoft 365 Copilot app**,
-    click **Get started**.
-
-    ![A screenshot of a computer application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image3.png)
-
-4.  In the bottom left hand corner, select **Apps** , then click
-    on **OneDrive** from the Apps section.
-
-    >[!Note]: If you see the pop-up **Welcome to Apps**, click on **X** to
-close pop-up.
-
-    ![A screenshot of a computer application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image5.png)
-
-
-8.  Click on **+ Create or upload** and select **Folder
-    upload**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image6.png)
-
-9.  Navigate to C:\LabFiles\Day-1 , click on
-    the data  file, and click on **Upload**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image9.png)
-
-10. Select **Upload** on the Upload files to this site? pop-up.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image10.png)
-
-11. Navigate back to **M365 Copilot**, Select **New Chat** on the left hand panel.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image11.png)
-
-12. Click the **+ (Add)** icon  at the bottom of the chat pane
-    and select **Upload images and files**.
-
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image12.png)
-
-13. In the file explorer pop-up, navigate
-    to C:\LabFiles\Day-1\data\CV  folder, select **first
-    3**  files and click on **Open** .
-
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image13.png)
-
-14. In the **Copilot chat**, once the **files** are uploaded
-    successfully, click **enter**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image14.png)
-
-15. In the active Copilot chat, click the **+ (Add)** icon below the
-    message box, then select **Upload images and files**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image15.png)
-
-16. In the file explorer pop-up, navigate
-    to C:\LabFiles\Day-1\Data\CV  folder, select **last
-    2**  files and click on **Open** .
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image16.png)
-
-17. In the **Copilot chat**, once the **files** are uploaded
-    successfully click on **enter** .
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image17.png)
-
-18. In the Chat box, provide the following prompt  and hit
-    the **Sent** button:
-
-	```
-    Microsoft 365 Copilot, please help me filter and shortlist resumes of
-	Data Analyst candidates based on required qualifications such as
-	experience in SQL, Python, and data visualization tools.
-    ```
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image18.png)
-
-19. Following up with the below prompt and hitting the **Sent** button
-
-Create a summary report of top Data Analyst candidates, including
-their skills, work experience, and educational background.
++++https://m365.cloud.microsoft/+++
 
 ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image19.png)
+incorrect.](./media/image2.png)
 
-**Outcome**: The HR team efficiently identifies the most qualified
-candidates, saving time and ensuring a focused recruitment effort.
+2.  Na aba **Sign into Microsoft Azure**, você verá uma tela de login.
+    Faça login usando as credenciais abaixo:
 
-## Task 2: Develop training materials.
+- Username - +++@lab.CloudPortalCredential(User1).Username+++
 
-In this task, you will prepare comprehensive training materials for the
-new hire by using Microsoft Copilot to create personalized onboarding
-content, including role-specific guides, company policies, and an
-overview of the tools and technologies used, ensuring that the training
-materials are thorough, well-structured, and tailored to the employee’s
-role.
+- TAP - +++@lab.CloudPortalCredential(User1).TAP+++
 
-1.  In the Chat box, provide the following prompt  and hit
-    the **Sent** button:
+3.  Se você visualizar o pop-up **Welcome to your Microsoft 365 Copilot
+    app**, clique em **Get started**.
 
-	```
-    Generate a comprehensive onboarding training plan for the new Data
-	Analyst, including topics like company policies, data tools training,
-	and team introductions.
-    ```
+![A screenshot of a computer application AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image20.png)
+4.  No painel esquerdo, selecione **Apps (1)** e, em seguida, clique em
+    **OneDrive (2)** na seção **Apps**.
 
-	![A screenshot of a web page
-AI-generated content may be incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-2.  Following up with the below prompt  and hitting the **Sent** button.
+**Observação:** Se aparecer o pop-up **Welcome to Apps**, clique em
+**X** para fechá-lo.
 
-	```
-    Create an interactive training presentation covering data analysis
-	best practices and key performance metrics and generate a downloadable
-	PPT.
-    ```
+![A screenshot of a computer application AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image22.png)
+5.  Acesse **My files**, depois clique no botão **+ Create or upload
+    (1)** e selecione **Folder upload (2)**.
 
-    >[!Note]: After executing this prompt, you will get a PowerPoint
-presentation to be downloaded, and then you can edit or design it. If
-the file was not downloaded, please try to find the hyperlink with the
-presentation title as shown in the screenshot.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    >[!Note]: After executing this prompt, the PowerPoint presentation to be
-downloaded option is not showing up. Please rerun the above prompt.
+6.  Navegue até C:\LabFiles\Day-1\data **(1)**, clique na pasta CV
+    **(2)** e selecione **Upload (3)**.
 
-Outcome: The new hire receives well-organized training materials,
-enabling them to get up to speed and effectively perform their duties
-quickly.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-## Task 3: Collect feedback
+7.  No pop-up **Upload** 5 files to this site?, selecione Upload.
 
-In this task, you will gather feedback from new employees and
-interviewers by using Microsoft Copilot to generate and distribute
-feedback surveys, collect and analyze the responses, and gain insights
-into the strengths of the recruitment and onboarding process as well as
-areas that need improvement.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-1.  In the Chat box, provide the following prompt and hit
-    the **Sent** button:
+8.  Novamente, clique em **+ Create or upload (1)** e selecione **Folder
+    upload (2)**.
 
-	```
-    Create a feedback form for interviewers to evaluate Data Analyst
-	candidates based on technical skills, problem-solving abilities, and
-	cultural fit Generate a downloadable Word or PDF version of this
-	feedback form.
-    ```
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image22.png)
+9.  Navegue até C:\LabFiles\Day-1 **(1)**, clique na pasta data **(2)**
+    e clique em **Upload (3)**.
 
-2.  Following up with the below prompt and hitting the **Sent** button.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-	```
-    Send out a survey to new hires to gather feedback on their onboarding
-	experience and identify areas for improvement Generate a downloadable
-	Word or PDF version of the survey.
-    ```
+10. No pop-up **Upload** 19 files to this site? Selecione Upload.
 
-    ![A screenshot of a survey AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-Outcome: The HR department gains valuable feedback, allowing them to
-refine their recruitment and onboarding practices, ensuring a better
-experience for future hires.
+11. Retorne ao **M365 Copilot**, no painel esquerdo selecione **Apps
+    (1)** e, em seguida, clique em **Copilot (2)** na seção Apps.
 
-## Task 4: Performance Reviews
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-In this task, you will conduct regular performance reviews to assess the
-new employee’s progress and development by using Microsoft Copilot to
-create performance review templates, schedule review meetings, track
-achievements, gather feedback from colleagues, and compile structured
-performance reports.
+12. Navegue até **Copilot** pelo painel esquerdo e clique em **Chat
+    (1)**. Em seguida, clique no ícone **+ (Add) (2)** na parte inferior
+    do painel de chat e selecione **Upload images and files (3)**.
 
-1.  In the Chat box, provide the following prompt and hit
-    the **Sent** button:
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image12.png)
 
-	```
-    Set up a performance review schedule for the new Data Analyst, with
-	quarterly reviews and goal-setting sessions and Generate a calender
-	CSV file.
-    ```
+13. No pop-up do explorador de arquivos, navegue até a pasta
+    C:\LabFiles\Day-1\data\CV **(1)**, selecione os **3 primeiros**
+    arquivos **(2)** e clique em **Open (3)**.
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image24.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image13.png)
 
-2.  Following up with the below prompt and hitting the **Sent** button.
+14. No **chat do Copilot**, após os **3 arquivos** serem carregados com
+    sucesso, pressione **Enter**.
 
-	```
-    Generate a template for performance review reports, including sections
-	for achievements, areas of improvement, and future goals Generate a
-	performance review template.
-    ```
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-    ![A screenshot of a report AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image25.png)
+15. No chat ativo do Copilot, clique no ícone **+ (Add) (1)** abaixo da
+    caixa de mensagem e selecione **Upload images and files (2)**.
 
-Outcome: The new employee receives constructive feedback and support,
-aiding their professional growth and contributing to their long-term
-success within the company.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-**Summary**
+16. No pop-up do explorador de arquivos, navegue até a pasta
+    C:\LabFiles\Day-1\Data\CV **(1)**, selecione os **2 últimos**
+    arquivos **(2)** e clique em **Open (3)**.
 
-In this lab, you successfully built an HR Assistant Agent using
-Microsoft 365 Copilot to streamline employee recruitment and
-onboarding processes. You learned how to quickly screen Data Analyst
-candidates by analyzing resumes and filtering based on technical
-skills like SQL, Python, and data visualization, then created
-comprehensive onboarding training plans and interactive presentations
-for new hires. You generated feedback forms for interviewers and
-surveys for new employees to assess and improve the recruitment
-process, and set up quarterly performance review schedules with
-structured templates to track achievements and goals. By leveraging
-AI-powered tools, you demonstrated how organizations can automate HR
-workflows, enhance efficiency, and ensure a smooth transition process
-for new employees.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-You have successfully completed this lab. Kindly click Next \\to
-proceed further.
+17. No **chat do Copilot**, após os **2 arquivos (1)** serem carregados
+    com sucesso, pressione **Enter (2)**.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
+
+18. Na caixa de chat, insira o seguinte prompt **(1)** e clique no botão
+    **Sent (2)**:
+
+> Microsoft 365 Copilot, ajude-me a filtrar e selecionar currículos de
+> candidatos a analista de dados com base nas qualificações exigidas,
+> como experiência em SQL, Python e ferramentas de visualização de
+> dados.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
+
+19. Em seguida, utilize o prompt abaixo e clique em **Sent**:
+
+> Crie um relatório resumido dos melhores candidatos a Analista de
+> Dados, incluindo suas habilidades, experiência profissional e formação
+> acadêmica.
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
+
+**Resultado**: A equipe de RH identifica de forma eficiente os
+candidatos mais qualificados, economizando tempo e garantindo um
+processo de recrutamento mais focado.
+
+## Tarefa 2: Desenvolver materiais de treinamento.
+
+Nesta tarefa, você irá preparar materiais de treinamento abrangentes
+para o novo colaborador usando o Microsoft Copilot para criar conteúdos
+personalizados de onboarding, incluindo guias específicos da função,
+políticas da empresa e uma visão geral das ferramentas e tecnologias
+utilizadas, garantindo que os materiais sejam completos, bem
+estruturados e adaptados à função do colaborador.
+
+1.  Na caixa de chat, insira o seguinte prompt **(1)** e clique em
+    **Sent (2)**:
+
+> Crie um plano de treinamento abrangente para o novo analista de dados,
+> incluindo tópicos como políticas da empresa, treinamento em
+> ferramentas de dados e apresentações da equipe.
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image20.png) ![A screenshot of a web page
+> AI-generated content may be incorrect.](./media/image21.png)
+
+2.  Em seguida, utilize o prompt abaixo **(1)** e clique em **Sent
+    (2)**:
+
+> Crie uma apresentação de treinamento interativa que aborde as melhores
+> práticas de análise de dados e as principais métricas de desempenho e
+> gere um PPT para download.
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image22.png)
+
+**Observação:** após executar esse prompt, será gerada uma apresentação
+em PowerPoint para download, que poderá ser editada ou personalizada.
+Caso o arquivo não seja baixado automaticamente, procure pelo hyperlink
+com o título da apresentação conforme mostrado no screenshot.
+
+**Observação**: se a opção de download do PowerPoint não aparecer,
+execute novamente o prompt acima.
+
+Resultado: o novo colaborador recebe materiais de treinamento bem
+organizados, permitindo que ele se integre rapidamente e execute suas
+atividades com eficiência.
+
+## Tarefa 3: Coletar feedback
+
+Nesta tarefa, você irá coletar feedback de novos colaboradores e
+entrevistadores usando o Microsoft Copilot para gerar e distribuir
+formulários de feedback, coletar e analisar respostas e obter insights
+sobre os pontos fortes do processo de recrutamento e integração, bem
+como áreas que precisam de melhoria.
+
+1.  Na caixa de chat, insira o seguinte prompt e clique em **Sent**:
+
+> Crie um formulário de feedback para os entrevistadores avaliarem os
+> candidatos a analista de dados com base em habilidades técnicas,
+> capacidade de resolução de problemas e adequação cultural. Gere uma
+> versão em Word ou PDF deste formulário de feedback para download.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
+
+2.  Em seguida, utilize o prompt abaixo e clique em **Sent**:
+
+> Envie uma pesquisa aos novos contratados para coletar feedback sobre
+> sua experiência de integração e identificar áreas que precisam ser
+> melhoradas. Gere uma versão da pesquisa em Word ou PDF para download.
+>
+> ![A screenshot of a survey AI-generated content may be
+> incorrect.](./media/image23.png)
+>
+> Resultado: o departamento de RH obtém feedback valioso, permitindo-lhe
+> aperfeiçoar as suas práticas de recrutamento e integração, garantindo
+> uma melhor experiência para futuras contratações..
+
+## Tarefa 4: Avaliações de desempenho
+
+Nesta tarefa, você irá conduzir avaliações de desempenho regulares para
+avaliar o progresso e o desenvolvimento do novo colaborador usando o
+Microsoft Copilot para criar modelos de avaliação, agendar reuniões de
+revisão, acompanhar conquistas, coletar feedback de colegas e compilar
+relatórios estruturados de desempenho.
+
+1.  Na caixa de chat, insira o seguinte prompt e clique em **Sent**:
+
+> Estabeleça um cronograma de avaliação de desempenho para o novo
+> Analista de Dados, com avaliações trimestrais e sessões de definição
+> de metas, e gere um calendário em formato CSV.
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
+
+2.  Em seguida, utilize o prompt abaixo e clique em **Sent**:
+
+> Crie um modelo para relatórios de avaliação de desempenho, incluindo
+> seções para realizações, áreas de melhoria e metas futuras. Crie um
+> modelo de avaliação de desempenho.
+>
+> ![A screenshot of a report AI-generated content may be
+> incorrect.](./media/image25.png)
+>
+> Resultado: o novo colaborador recebe feedback construtivo e suporte
+> contínuo, contribuindo para seu crescimento profissional e sucesso de
+> longo prazo na empresa.
+>
+> **Resumo**
+>
+> Neste laboratório, você criou com sucesso um Agente Assistente de RH
+> usando o Microsoft 365 Copilot para otimizar os processos de
+> recrutamento e integração de funcionários. Você aprendeu a selecionar
+> rapidamente candidatos a Analista de Dados, analisando currículos e
+> filtrando com base em habilidades técnicas como SQL, Python e
+> visualização de dados, e então criou planos de treinamento de
+> integração abrangentes e apresentações interativas para novos
+> contratados. Você gerou formulários de feedback para entrevistadores e
+> pesquisas para novos funcionários para avaliar e melhorar o processo
+> de recrutamento e configurou cronogramas trimestrais de avaliação de
+> desempenho com modelos estruturados para acompanhar conquistas e
+> metas. Ao aproveitar as ferramentas baseadas em AI, você demonstrou
+> como as organizações podem automatizar fluxos de trabalho de RH,
+> aumentar a eficiência e garantir um processo de transição tranquilo
+> para novos funcionários.
+>
+> Você concluiu este laboratório com sucesso. Clique em Next \>\> para
+> prosseguir.
