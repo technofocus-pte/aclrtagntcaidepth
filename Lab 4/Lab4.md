@@ -1,446 +1,369 @@
+# 實驗室4：開發多代理健康計劃報告生成系統
 
-# Lab 4: Develop a Health plan report generation multi-agent system
+**概述**
 
-**Overview**
+在這個實驗室中，你將開發一個智能多代理系統，專門設計用於自動生成全面的健康計劃報告。該系統利用四位專業AI代理協同工作的協作力量，檢索、分析、生成並驗證詳細的健康保險文件。多智能體架構展示了自主智能體如何協同工作，完成單一智能體難以有效處理的複雜任務。
 
-In this lab, you will develop an intelligent multi-agent system
-specifically designed to automate the generation of comprehensive health
-plan reports. This system leverages the collaborative power of four
-specialized AI agents working in coordination to retrieve, analyze,
-generate, and validate detailed health insurance documentation. The
-multi-agent architecture demonstrates how autonomous agents can work
-together to accomplish complex tasks that would be challenging for a
-single agent to handle effectively.
+你將建造這4個AI代理:
 
-You will build these 4 AI Agents:
+- **搜索代理**——該代理將搜索Azure
+  AI搜索索引，以獲取有關特定健康計劃政策的信息。
 
-- **Search Agent** - This agent will search an Azure AI Search index for
-  information about specific health plan policies.
+- **報告代理人**——該代理人將根據搜索代理人返回的信息生成一份關於健康計劃政策的詳細報告。
 
-- **Report Agent** - This agent will generate a detailed report about
-  the health plan policy based on the information returned from the
-  Search Agent.
+- **驗證代理**——該代理將驗證生成的報告是否符合指定要求。在我們的案例中，確保報告包含有關保險除外條款的信息。
 
-- **Validation Agent** - This agent will validate that the generated
-  report meets specified requirements. In our case, making sure that the
-  report contains information about coverage exclusions.
-
-- **Orchestrator Agent** - This agent will act as an orchestrator that
-  manages the communication between the Search Agent, Report Agent, and
-  Validation Agent.
+- **編排代理**——該代理將作為編排者，管理搜索代理、報告代理和驗證代理之間的通信。
 
 ![A diagram of a company AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image1.png)
+incorrect.](./media/image1.png)
 
-Orchestration is a key part of multi-agentic systems since the agents
-that we create need to be able to communicate with each other in order
-to accomplish the objective.
+編排是多智能體系統的關鍵組成部分，因為我們創建的智能體需要能夠相互通信以實現目標。
 
-We'll use the Azure AI Agent Service to create the Search, Report, and
-Validation agents. However, to create the Orchestrator Agent, we'll use
-Semantic Kernel. The Semantic Kernel library provides out-of-the-box
-functionality for orchestrating multi-agent systems.
+我們將使用 Azure AI
+代理服務來創建搜索、報告和驗證代理。然而，為了創建編排代理，我們將使用
+Semantic
+Kernel。語義內核庫提供了開箱即用的功能，用於多智能體系統的編排。
 
-**Lab Objectives**
+**實驗室目標**
 
-You'll perform the following tasks in this lab.
+你將在實驗室執行以下任務。
 
-- Task 1: Create the Azure AI Search Index
+- 任務1：創建Azure AI搜索索引
 
-- Task 2: Create the Search, Report, and Validation Agents.
+- 任務二：創建搜索、報告和驗證代理。
 
-## Task 1: Create the Azure AI Search Index
+## 任務1：創建Azure AI搜索索引
 
-In this task, you will create an **Azure AI Search index** to store
-vectorized representations of health insurance plan documents, enabling
-efficient retrieval for AI-driven search and analysis.
+在此任務中，您將創建Azure
+**AI搜索索引**，以存儲健康保險計劃文件的矢量化表示，從而實現AI驅動的搜索和分析高效檢索。
 
-1.  Navigate to **Azure portal**, search for +++AI Search+++ and
-    select **AI Search** resource from the services.
+1.  進入**Azure portal**，搜索 **AI Search (1)** ，並從服務中選擇 **AI
+    Search (2)** 資源。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image2.png)
+![](./media/image2.png)
 
-2.  This will navigate you to the AI Foundry, within **AI Search** ,
-    click on **Create**.
+2.  這會引導你進入 AI Foundry，在 **AI Search** (1) 中點擊
+    **Create**(2)。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image3.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-3.  On the **Create a Search service** pane enter the following details
-    and click on **Review + Create** 
+3.  在 **Create a Search service** 面板中輸入以下信息，點擊“**Review +
+    Create** (4)
 
-    - Subscription : **Leave default subscription**
+    - 訂閱 : **Leave default subscription**
 
-    - Resource Group : Select **@lab.CloudResourceGroup(AgenticAI).Name**
+    - 資源組 : 選擇 **AgenticAI (1)**
 
-    - Service Name : +++my-search-service-@lab.LabInstance.Id+++
+    - 服務名稱 : **my-search-service- (2)**
 
-    - Location : **@lab.CloudResourceGroup(AgenticAI).Location**
+    - 位置 : **(3)**
 
-    - Tier : **Standard**
+![](./media/image4.png)
 
-    >[!Alert] Please verify the **Location** allows the **Standard** Tier. 
+4.  在 **Review + Create** 中，點擊 **Create**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-4.  On the **Review + Create**, click on **Create**
+5.  等部署完成後再點擊“**Go to resource**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image5.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-5.  Wait for until the deployment is completetd and then click on **Go
-    to resource**
+6.  在左側菜單的 **Settings** 裡進入 **Keys (1)** 。在 **API Access
+    control** 下選擇 **Both（2）**。 
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image6.png)
+![](./media/image7.png)
 
-6.  Navigate to **Keys** under **Settings** in the left menu.
-    Under **API Access control** select **Both**.
+7.  選擇“**Yes**”，選擇 **Are you sure want to update the API Access
+    Control for this serach service**。  
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image7.png)
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image8.png)
 
-7.  Select **Yes** for **Are you sure want to update the API Access
-    Control for this serach service**.
+8.  導航 在 **Settings** 中導航到
+    **Identity(1)** 。在系統分配中，將狀態設置為 **On(2)** ，然後點擊
+    **Save(3)**。
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image8.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-8.  Navigate to **Identity** under **Settings**. Under
-    System-assigned set the Status to **On** and click
-    on **Save**.
+9.  選擇“**Yes**”作為 **Enable System assigned managed identity**“。 
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image9.png)
+![A close-up of a computer error AI-generated content may be
+incorrect.](./media/image10.png)
 
-9.  Select **Yes** for **Enable System assigned managed identity**.
+10. 在Azure門戶中，搜索 **Storage accounts (1)** ，並從服務中選擇
+    **Storage accounts (2)** 。
 
-    ![A close-up of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image10.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-10. On the Azure portal, search for +++**Storage accounts**+++ and
-    select **Storage accounts** from the services.
+11. 選擇以 **aifoundry** 開頭的存儲賬戶。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image11.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image12.png)
 
-11. Select the storage account that begins with **aifoundry**.
+12. 選擇 **Access control (IAM) (1)**，然後點擊 **Add(2)**，再選擇 **Add
+    role assignment**。
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-12. Select **Access control (IAM)**, then click on **Add**, and
-    then select **Add role assignment**.
+13. 在 **Job function roles** 中，搜索 **Storage Blob Data Reader
+    (1)**，選擇 **Storage Blob Data Reader (2)**，然後選擇 **Next
+    (3)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-13. Under **Job function roles**, search for +++**Storage Blob Data Reader**+++, select **Storage Blob Data Reader**, and then
-    select **Next**.
+14. 在**“Add role assignment**”頁面,
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image14.png)
+    - 在“Members”中，選擇“ **Managed identity(1)**
 
-14. On the **Add role assignment** page,
+    - 選擇 **Members (2)**
 
-    - Under Members, select **Managed identity**
+    - 託管身份: **search service(1)** **(3)**
 
-    - Select **Members**
+    - 然後選擇 **my-search-service-**（4）搜索服務。
 
-    - Managed identity: **search service** 
+    - 點擊**Select (5)**
 
-    - Then select **my-search-service-@lab.LabInstance.Id** search service.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-    - Click on **Select**
+15. 點擊兩遍**“Review + assign**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-15. Click on **Review + assign** twice.
+16. 訪問 **Azure OpenAI，my-openai-service** 。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-16. Go to the **Azure OpenAI**, that starts with **my-openai-service**.
+17. 選擇 **Access control (IAM) (1)**，然後點擊 **Add(2)**，再選擇 **Add
+    role assignment**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image17.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
 
-17. Select **Access control (IAM)**, then click on **Add**, and
-    then select **Add role assignment**.
+18. 在“**Job function roles**”中，搜索“**Cognitive Services OpenAI User
+    (1)**，選擇 **Cognitive Services OpenAI User (2)**，然後選擇 **Next
+    (3)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image18.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-18. Under **Job function roles**, search for +++**Cognitive Services OpenAI User**+++, select **Cognitive Services OpenAI User**, and then
-    select **Next**.
+19. 在**“Add role assignment**”頁面,
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image19.png)
+    - 在“Members”欄目中，選擇**Managed identity(1)**
 
-19. On the **Add role assignment** page,
+    - 選擇 **Members (2)**
 
-    - Under Members, select **Managed identity**
+    - 託管身份: **search service(1)** **(3)**
 
-    - Select **Members**
+    - 然後選擇**my-search-service-**（4）搜索服務。
 
-    - Managed identity: **search service** 
+    - 點擊**Select (5)**
 
-    - Then select **my-search-service-** search service.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-    - Click on **Select**
+20. 選擇 **Review + assign** 兩次。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image20.png)
+![](./media/image21.png)
 
-20. Select **Review + assign** twice.
+21. 進入 **Azure Portal**，搜索 **Storage account (1)** 並選擇 **Storage
+    account (2)**。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-21. Navigate to **Azure Portal**, search for +++**Storage account**+++ and
-    select the **Storage account**.
+22. 選擇以**aifoundryhub**開頭的存儲賬戶。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-22. Select the Storage account that starts with **aifoundryhub**.
+23. 點擊數據存儲下的 **Containers (1)** ，然後選擇 **+Container(2)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-23. Click on **Containers** under data storage, then
-    select **+ Add container**.
+24. 在新容器頁面輸入 **healthplan（1）**作為名稱，點擊 **Create（2）。**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-24. On New Container page enter +++**healthplan**+++ as name and click
-    on **Create**.
+25. 點擊它打開 **healthplan **容器。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image25.png)
+![](./media/image26.png)
 
-25. Open **healthplan** container by clicking on it.
+26. 點擊 **upload (1)** 來上傳文件，然後點擊 **browse for files (2)**。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image26.png)
+> ![](./media/image27.png)
 
-26. Click on **upload** to upload the file and then Click
-    on **browse for files**.
+27. 進入C：\LabFiles\Day-1\azure-ai-agents-labs\data**（1）**，選擇兩個PDF上傳**（2）**，點擊
+    **Open (3)**。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-27. Navigate to C:\LabFiles\Day-1\azure-ai-agents-labs\data  and
-    select both the PDFs to upload , and click on **Open**.
+28. 點擊 **Upload**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-28. Click on **Upload**.
+**注意：**如果系統讓你選擇現有容器，請從下拉菜單選擇健康計劃。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image29.png)
+29. 進入 **Azure AI 搜索**服務，選擇
+    **my-search-service**-。![](./media/image30.png)
 
-    >[!Note]: If it ask you to select existing container, from the drop down
-select healthplan.
+30. 點擊導入 **import data (new)**。
 
-29. Navigate to **Azure AI search** service and
-    select the service that starts with **my-search-service-**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image30.png)
+31. 選擇 **azure blob storage**。
 
-30. Click on **import data (new)**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image31.png)
+32. 選擇**RAG**模型。
 
-31. Select **azure blob storage**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image32.png)
+33. 在配置你的Azure Blob存儲中，輸入以下信息並點擊**“Next（5）**”：
 
-32. Choose **RAG** Model.
+[TABLE]
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image33.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image34.png)
 
-33. On Configure your Azure Blob Storage , enter the following details
-    and click on **Next**:
+34. 在“向量化你的文本”中，輸入以下信息並點擊 **Next (7)**:
 
-    | Detail | Value |
-    | ------ | ------ |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Storage Account** | **ai-foundry-hub@lab.LabInstance.Id** |
-    | **Blob Container** | **healthplan** |
-    | **Managed Identity Type** | **system-assigned** |
+[TABLE]
 
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image35.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image34.png)
+35. 點擊兩次**“Next **”。
 
-34. On Vectorize your text, enter the following details and click
-    on **Next**:
+36. 輸入 **health-plan (1)** 作為**Objects name prefix** ，點擊 **Create
+    (2)**。
 
-    | Detail | Value |
-    | ------ | ------ |
-    | **Kind** | **Azure OpenAI** |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Azure OpenAI Service** | **my-openai-service@lab.LabInstance.Id** |
-    | **Model Deployment** | **text-embedding-3-large** |
-    | **Authentication Type** | **System assigned identity** |
-    | **Acknowledge the additional costs** | **Enabled** |
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image36.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image35.png)
+**注意**：在搜索服務中將數據上傳到索引可能需要5-10分鐘。
 
-35. Click on **Next** twice.
+37. 點擊彈窗中的**“Start searching**”。
 
-36. Enter +++**health-plan**+++ for **Objects name prefix** and click
-    on **Create**.
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image37.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image36.png)
+38. 請前往 **ai-foundry-project-** 的 **Overview** (1) 頁面。並點擊
+    **Open In management center**(2)。
 
-    >[!Note]: The uploading of data to indexes in search service might take 5-10 minutes.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-37. Click on **Start searching** on the pop-up.
+39. 選擇 **Connected resources** (1)，然後點擊 **New connection** (2)。
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image37.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-38. Navigate to your **Overview**  page of **ai-foundry-project-**.
-    and click on **Open In management center**.
+40. 在搜索欄輸入 **Azure AI Search**（1），並選擇 **Azure AI
+    Search**（2）。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image38.png)
+![](./media/image40.png)
 
-39. Select **Connected resources** under Project and click on **New
-    connection** .
+41. 點擊 **Add connection** 以繼續。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image39.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-40. Enter **Azure AI Search** in search bar and select **Azure AI
-    Search**.
+## 任務2：創建搜索、報告和驗證代理
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image40.png)
+在此任務中，您將創建搜索、報告和驗證代理，以檢索、生成和驗證健康計劃報告。這些代理將協同工作，確保準確性和符合要求。每位代理在檢索、彙編和確保報告準確性方面都扮演著獨特角色。
 
-41. Click on **Add connection** to proceed.
+1.  打開**實驗4 - 開發多代理System.ipynb**文件，這本**實驗4 -
+    開發多代理System.ipynb**筆記本指導你如何開發包含搜索、報告、驗證和編排代理的多代理系統，以生成和驗證健康計劃報告。每位代理在檢索、彙編和確保報告準確性方面都扮演著獨特角色。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image41.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-## Task 2: Create the Search, Report, and Validation Agents
+2.  選擇 右上角可選的 **Select kernel（1）** 設置，並從列表中選擇 **venv
+    （Python 3.x.x）（2） 。**
 
-In this task, you will create the Search, Report, and Validation Agents
-to retrieve, generate, and validate health plan reports. These agents
-will work together to ensure accuracy and compliance with requirements.
-Each agent plays a distinct role in retrieving, compiling, and ensuring
-the accuracy of the reports.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-1.  Open the **Lab 4 - Develop A Mult-Agent System.ipynb** file,
-    this **Lab 4 - Develop A Mult-Agent System.ipynb** notebook guides
-    you through developing a multi-agent system with Search, Report,
-    Validation, and Orchestrator Agents to generate and validate health
-    plan reports. Each agent plays a distinct role in retrieving,
-    compiling, and ensuring the accuracy of the reports.
+3.  運行該單元，開發一個集成 Azure AI 搜索、GPT-4o
+    和語義內核的**多智能體系統**，實現智能任務執行。這種配置使多個AI代理能夠協作獲取信息、生成回復並處理複雜查詢。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image42.png)
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image44.png)
 
-2.  Select the **Select kernel** setting available in the top right
-    corner and select **venv (Python 3.x.x)** from the list.
+4.  運行該單元格創建**搜索代理**，利用GPT-4o從Azure
+    AI搜索中獲取健康計劃詳情。該代理能夠高效檢索健康計劃文檔中的結構化信息。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image43.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-3.  Run this cell to develop a **multi-agent system** that integrates
-    Azure AI Search, GPT-4o, and Semantic Kernel for intelligent task
-    execution. This setup enables multiple AI agents to collaborate on
-    retrieving information, generating responses, and handling complex
-    queries.
+5.  運行該單元格創建**報告代理**，該代理使用GPT-4o生成詳細的健康計劃報告。該代理通過提供結構化的洞察、保障詳情及各種計劃的除外條款，豐富了相關文件。
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image44.png)
+![](./media/image46.png)
 
-4.  Run this cell to create the **Search Agent**, which retrieves health
-    plan details from Azure AI Search using GPT-4o. This agent enables
-    efficient retrieval of structured information from health plan
-    documents.
+6.  運行該單元以創建**驗證代理**，確保報告代理生成的報告符合質量標準，特別是檢查覆蓋除外。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image45.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-5.  Run this cell to create the **Report Agent**, which generates
-    detailed reports on health plans using GPT-4o. This agent enhances
-    documentation by providing structured insights, coverage details,
-    and exclusions for various plans.
+7.  **創建一個多代理系統**：當你運行下面的單元格時，你會在VS
+    Code頂部彈出一個聊天框，要求你輸入健康計劃名稱。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image46.png)
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image48.png)
 
-6.  Run this cell to create the **Validation Agent**, which ensures that
-    reports generated by the Report Agent meet quality standards,
-    specifically checking for coverage exclusions.
+8.  如果你還記得，我們把兩個健康計劃上傳到了搜索索引中。當提示時，請在頂部的框中輸入以下任一健康計劃，並按**回車**開始運行多智能體系統:
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image47.png)
+    - **Northwind Health Standard**
 
-7.  **Create a multi-agent system** : When you run the below cell, you
-    will see a chat box pop up at the top of VS Code asking you to input
-    the name of a health plan.
+    - **Northwind Health Plus**1
 
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image48.png)
+![](./media/image49.png)
 
-8.  If you recall, we uploaded two health plans to the search index.
-    When prompted, type any one of the following health plans in the box
-    that appears at the top and press **Enter** to begin running the
-    multi-agent system:
+9.  當框框出現在頂部時，輸入“exit”並按回車鍵停止運行代碼塊。
 
-    - +++Northwind Health Standard+++
+**注意**：成功運行該單元後，您將獲得以下結果。
 
-    - +++Northwind Health Plus+++
+> Orchestrator Agent is starting...
+>
+> Calling SearchAgent...
+>
+> SearchAgent completed successfully.
+>
+> Calling ReportAgent...
+>
+> ReportAgent completed successfully.
+>
+> Calling ValidationAgent...
+>
+> ValidationAgent completed successfully.
+>
+> The report for Northwind Plus has been generated. Please check the
+> Northwind Plus Report.md file for the report.
+>
+> Orchestrator Agent is starting...
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image49.png)
+**摘要**
 
-9.  When the box appears at the top, type exit into the box and press
-    Enter to stop the running code block.
+在這個實驗室裡，你成功開發了一個智能多代理系統，通過協調四個專業的 AI
+代理，自動生成全面的健康計劃報告。你創建了一個 Azure AI
+搜索索引來存儲矢量化的健康保險文件，然後構建了一個搜索代理來獲取保單信息，一個報告代理用於生成詳細文檔，一個驗證代理用於確保符合要求，還有一個使用語義內核管理所有代理之間的通信的編排代理。通過運行多代理系統並結合真實健康計劃數據，你展示了自主代理如何有效協作完成單一代理難以完成的複雜任務，展示了企業級代理編排模式，適用於實際業務應用。
 
-    >[!Note]: After the successful run of the cell you will recieve the
-following outcome.
-
-	> Orchestrator Agent is starting...
-	>
-	> Calling SearchAgent...
-	>
-	> SearchAgent completed successfully.
-	>
-	> Calling ReportAgent...
-	>
-	> ReportAgent completed successfully.
-	>
-	> Calling ValidationAgent...
-	>
-	> ValidationAgent completed successfully.
-	>
-	> The report for Northwind Plus has been generated. Please check the
-	> Northwind Plus Report.md file for the report.
-	>
-	> Orchestrator Agent is starting...
-
-**Summary**
-
-In this lab, you successfully developed an intelligent multi-agent
-system designed to automate the generation of comprehensive health plan
-reports through the coordination of four specialized AI agents. You
-created an Azure AI Search index to store vectorized health insurance
-documents, then built a Search Agent to retrieve policy information, a
-Report Agent to generate detailed documentation, a Validation Agent to
-ensure compliance with requirements, and an Orchestrator Agent using
-Semantic Kernel to manage communication between all agents. By running
-the multi-agent system with real health plan data, you demonstrated how
-autonomous agents can collaborate effectively to accomplish complex
-tasks that would be challenging for a single agent, showcasing
-enterprise-grade agent orchestration patterns for practical business
-applications.
-
-Congratulations! You have successfully completed the lab.
-
+恭喜你！你已經成功完成了實驗。

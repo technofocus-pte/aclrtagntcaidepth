@@ -1,359 +1,285 @@
+# 構建與擴展智能代理
 
-# Lab 1 Build and Extend Intelligent Agents
+**概述**
 
-**Overview**
+這個動手實驗室介紹利用 Azure AI 服務和 Microsoft 365 Copilot 構建智能 AI
+代理。參與者將學習如何利用Copilot進行人力資源工作流程，搭建Microsoft
+Foundry項目，構建簡單的AI代理，創建RAG（檢索增強生成）代理，並開發具備編排能力的多代理系統。
 
-This hands-on lab introduces building intelligent AI agents using Azure
-AI services and Microsoft 365 Copilot. Participants will learn to
-leverage Copilot for HR workflows, set up Microsoft Foundry projects,
-build simple AI agents, create RAG (Retrieval-Augmented Generation)
-agents, and develop multi-agent systems with orchestration capabilities.
+**目標**
 
-**Objectives**
+到這個實驗結束時，你就能:
 
-By the end of this lab, you will be able to:
+- **使用 Copilot Studio 構建人力資源助理代理**——使用 Microsoft 365
+  Copilot 自動化員工招聘、篩選、培訓材料開發、反饋收集和績效評估。
 
-- **Build HR Assistant Agents with Copilot Studio** - Automate employee
-  recruitment, screening, training material development, feedback
-  collection, and performance reviews using Microsoft 365 Copilot.
+- **搭建AI項目並完成聊天完成**——在Microsoft
+  Foundry中配置AI項目，部署大型語言模型（LLM）和嵌入模型，並建立VS代碼連接以完成聊天。
 
-- **Set Up AI Project and Perform Chat Completion** - Configure an AI
-  Project in Microsoft Foundry, deploy Large Language Models (LLMs) and
-  embedding models, and establish VS Code connectivity for chat
-  completions.
+- **構建健康保險計劃分析器 AI 代理** - 創建 AI 代理，利用 Azure AI
+  服務處理數據並生成可視化（例如比較健康福利計劃的條形圖）。
 
-- **Build a Health Insurance Plans Analyser AI Agent** - Create AI
-  agents that process data and generate visualizations (e.g., bar charts
-  comparing health benefit plans) using Azure AI services.
+- **開發健康計劃報告生成多代理系統**——設計和實施協調的多代理系統，由專業代理（搜索代理、報告代理、驗證代理和編排代理）協同完成複雜任務。
 
-- **Develop a Health plan report generation multi-agent system** -
-  Design and implement coordinated multi-agent systems where specialized
-  agents (Search, Report, Validation, and Orchestrator agents) work
-  together to accomplish complex tasks.
+**前提條件**
 
-**Prerequisites**
+參與者應當有:
 
-Participants should have:
+- **Visual Studio Code（VS Code）：**熟練使用VS
+  Code進行編碼、調試和管理各種編程語言和框架的擴展。
 
-- **Visual Studio Code (VS Code)**: Proficiency in using VS Code for
-  coding, debugging, and managing extensions for various programming
-  languages and frameworks.
+- **開發技能：具備**Python或JavaScript的基礎編程知識，API、SDK的使用經驗，以及Visual
+  Studio Code的作。
 
-- **Development Skills**: Basic programming knowledge in Python or
-  JavaScript, experience with APIs, SDKs, and working in Visual Studio
-  Code.
+- **命令行/終端**：熟悉運行PowerShell命令和管理虛擬環境。
 
-- **Command Line/Terminal**: Familiarity with running PowerShell
-  commands and managing virtual environments.
+**組件說明**
 
-**Explanation of Components**
+- **Azure AI Search**：基於矢量的搜索服務，通過索引和檢索相關文檔實現
+  RAG。
 
-- **Azure AI Search**: Vector-based search service enabling RAG by
-  indexing and retrieving relevant documents.
+- **Azure OpenAI 服務**：通過 Azure 的企業基礎設施提供對 GPT-4o
+  和嵌入模型的訪問。
 
-- **Azure OpenAI Service**: Provides access to GPT-4o and embedding
-  models through Azure's enterprise infrastructure.
+- **大型語言模型（LLM）：**用於文本理解和生成的高級 AI 模型，如GPT-4o。
 
-- **Large Language Models (LLMs)**: Advanced AI models like GPT-4o for
-  text understanding and generation.
+- **嵌入模型**：將文本轉換為語義搜索和檢索的向量表示（例如，文本嵌入-3-large）。
 
-- **Embedding Models**: Convert text into vector representations for
-  semantic search and retrieval (e.g., text-embedding-3-large).
+- **Microsoft 365
+  Copilot**：基於AI的文檔分析和工作流程自動化生產力工具。
 
-- **Microsoft 365 Copilot**: AI-powered productivity tool for document
-  analysis and workflow automation.
+- **Semantic Kernel**: 用於將LLM與編程語言集成並構建編排能力的SDK。
 
-- **Semantic Kernel**: SDK for integrating LLMs with programming
-  languages and building orchestration capabilities.
+# 實驗1：使用Copilot Studio構建人力資源助理代理
 
-# Lab 1: Build HR Assistant Agent with Copilot Studio
+預計時長：30分鐘
 
-Estimated Duration: 30 Minutes
+概述
 
-Overview
+在本實驗室中，你將專注於通過使用 Microsoft 365 Copilot 和 Copilot Studio
+簡化和改進組織內員工的過渡和入職流程。你將學習如何識別合適候選人，制定定制化的過渡和入職計劃，生成有效的溝通和培訓材料，自動化人力資源工作流程，收集反饋，並建立績效監控和評估機制。通過利用這些AI驅動的工具，本實驗室展示了組織如何確保順利高效的過渡流程，提升內部流動性，並支持員工成功適應新崗位。
 
-In this lab, you will focus on streamlining and improving the employee
-transition and onboarding process within an organization by using
-Microsoft 365 Copilot and Copilot Studio. You will learn how to identify
-suitable candidates, create tailored transition and onboarding plans,
-generate effective communication and training materials, automate HR
-workflows, collect feedback, and set up performance monitoring and
-review mechanisms. By leveraging these AI-powered tools, this lab
-demonstrates how organizations can ensure a smooth and efficient
-transition process, enhance internal mobility, and support employees in
-successfully adapting to their new roles.
+實驗室目標
 
-Lab Objectives
+你將在實驗室執行以下任務。
 
-You'll perform the following tasks in this lab.
+- 任務1：快速篩選候選人
 
-- Task 1: Quickly screen candidates
+- 任務2：開發培訓材料
 
-- Task 2: Develop training materials
+- 任務3：收集反饋
 
-- Task 3: Collect feedback
+- 任務4：績效評估
 
-- Task 4: Performance Reviews
+架構圖
 
-Architecture Diagram
+![image](./media/image1.png)
 
-![image](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image1.png)
+## 任務一：快速篩選候選人
 
-## Task 1: Quickly screen candidates
+在這項任務中，你將使用Microsoft 365
+Copilot快速評估大量數據分析師職位的申請，並根據相關經驗、技術技能和教育背景等具體標準篩選候選人，從而突出顯示最佳候選人供進一步審查。
 
-In this task, you will rapidly evaluate a large number of applications
-for the Data Analyst position by using Microsoft 365 Copilot to analyze
-resumes and filter candidates based on specific criteria such as
-relevant experience, technical skills, and educational background,
-allowing Copilot to highlight the top candidates for further review.
+1.  在 Edge 瀏覽器中添加一個新標簽頁，使用以下鏈接打開 Microsoft 365
+    Copilot 應用，點擊 **Sign in (2)。**
 
-1.  Add a new tab in the Edge browser and open the Microsoft 365 Copilot
-    app using the following link, and click on **Sign in** .
-
-	+++https://m365.cloud.microsoft/+++
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image2.png)
-
-2.  On the **Sign into Microsoft Azure tab**, you will see a login
-    screen. Login using the below credentials.
-
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
-
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
-
-3.  If you see the pop-up **Welcome to your Microsoft 365 Copilot app**,
-    click **Get started**.
-
-    ![A screenshot of a computer application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image3.png)
-
-4.  In the bottom left hand corner, select **Apps** , then click
-    on **OneDrive** from the Apps section.
-
-    >[!Note]: If you see the pop-up **Welcome to Apps**, click on **X** to
-close pop-up.
-
-    ![A screenshot of a computer application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image5.png)
-
-
-8.  Click on **+ Create or upload** and select **Folder
-    upload**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image6.png)
-
-9.  Navigate to C:\LabFiles\Day-1 , click on
-    the data  file, and click on **Upload**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image9.png)
-
-10. Select **Upload** on the Upload files to this site? pop-up.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image10.png)
-
-11. Navigate back to **M365 Copilot**, Select **New Chat** on the left hand panel.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image11.png)
-
-12. Click the **+ (Add)** icon  at the bottom of the chat pane
-    and select **Upload images and files**.
-
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image12.png)
-
-13. In the file explorer pop-up, navigate
-    to C:\LabFiles\Day-1\data\CV  folder, select **first
-    3**  files and click on **Open** .
-
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image13.png)
-
-14. In the **Copilot chat**, once the **files** are uploaded
-    successfully, click **enter**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image14.png)
-
-15. In the active Copilot chat, click the **+ (Add)** icon below the
-    message box, then select **Upload images and files**.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image15.png)
-
-16. In the file explorer pop-up, navigate
-    to C:\LabFiles\Day-1\Data\CV  folder, select **last
-    2**  files and click on **Open** .
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image16.png)
-
-17. In the **Copilot chat**, once the **files** are uploaded
-    successfully click on **enter** .
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image17.png)
-
-18. In the Chat box, provide the following prompt  and hit
-    the **Sent** button:
-
-	```
-    Microsoft 365 Copilot, please help me filter and shortlist resumes of
-	Data Analyst candidates based on required qualifications such as
-	experience in SQL, Python, and data visualization tools.
-    ```
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image18.png)
-
-19. Following up with the below prompt and hitting the **Sent** button
-
-Create a summary report of top Data Analyst candidates, including
-their skills, work experience, and educational background.
++++https://m365.cloud.microsoft/+++
 
 ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image19.png)
+incorrect.](./media/image2.png)
 
-**Outcome**: The HR team efficiently identifies the most qualified
-candidates, saving time and ensuring a focused recruitment effort.
+2.  在“**Sign into Microsoft Azure
+    tab**”中，你會看到一個登錄界面。請使用以下憑證登錄。
 
-## Task 2: Develop training materials.
+- Username - +++@lab.CloudPortalCredential(User1).Username+++
 
-In this task, you will prepare comprehensive training materials for the
-new hire by using Microsoft Copilot to create personalized onboarding
-content, including role-specific guides, company policies, and an
-overview of the tools and technologies used, ensuring that the training
-materials are thorough, well-structured, and tailored to the employee’s
-role.
+- TAP - +++@lab.CloudPortalCredential(User1).TAP+++
 
-1.  In the Chat box, provide the following prompt  and hit
-    the **Sent** button:
+3.  如果你看到彈窗“**Welcome to your Microsoft 365 Copilot
+    app**，請點擊” **Get started** “。
 
-	```
-    Generate a comprehensive onboarding training plan for the new Data
-	Analyst, including topics like company policies, data tools training,
-	and team introductions.
-    ```
+![A screenshot of a computer application AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image20.png)
+4.  在左側窗格選擇 **Apps** **(1)**，然後從應用部分點擊
+    **OneDrive（2）。**
 
-	![A screenshot of a web page
-AI-generated content may be incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-2.  Following up with the below prompt  and hitting the **Sent** button.
+**注意**：如果你看到彈窗“**Welcome to Apps”**，請點擊 **X** 關閉彈窗。
 
-	```
-    Create an interactive training presentation covering data analysis
-	best practices and key performance metrics and generate a downloadable
-	PPT.
-    ```
+![A screenshot of a computer application AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image22.png)
+5.  進入“**My files**”，然後點擊 **+ Create or upload (1)** 按鈕，選擇
+    **Folder upload (2)**。
 
-    >[!Note]: After executing this prompt, you will get a PowerPoint
-presentation to be downloaded, and then you can edit or design it. If
-the file was not downloaded, please try to find the hyperlink with the
-presentation title as shown in the screenshot.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    >[!Note]: After executing this prompt, the PowerPoint presentation to be
-downloaded option is not showing up. Please rerun the above prompt.
+6.  進入C：\LabFiles\Day-1\data **（1）**，點擊CV **（2）**文件夾，選擇
+    **Upload (3)**。
 
-Outcome: The new hire receives well-organized training materials,
-enabling them to get up to speed and effectively perform their duties
-quickly.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-## Task 3: Collect feedback
+7.  在“Upload 5 files to this site?”中選擇 **Upload**  彈出窗口。
 
-In this task, you will gather feedback from new employees and
-interviewers by using Microsoft Copilot to generate and distribute
-feedback surveys, collect and analyze the responses, and gain insights
-into the strengths of the recruitment and onboarding process as well as
-areas that need improvement.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-1.  In the Chat box, provide the following prompt and hit
-    the **Sent** button:
+8.  再次點擊**+ Create or upload (1)** ，然後選擇 **Folder upload
+    (2)**。
 
-	```
-    Create a feedback form for interviewers to evaluate Data Analyst
-	candidates based on technical skills, problem-solving abilities, and
-	cultural fit Generate a downloadable Word or PDF version of this
-	feedback form.
-    ```
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image22.png)
+9.  進入C：\LabFiles\Day-1**（1）**，點擊數據**（2）**文件，點擊
+    **Upload 3**。 
 
-2.  Following up with the below prompt and hitting the **Sent** button.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-	```
-    Send out a survey to new hires to gather feedback on their onboarding
-	experience and identify areas for improvement Generate a downloadable
-	Word or PDF version of the survey.
-    ```
+10. 選擇上傳“**Upload** ”，在“Upload 19 files to this site?” 彈出窗口。
 
-    ![A screenshot of a survey AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-Outcome: The HR department gains valuable feedback, allowing them to
-refine their recruitment and onboarding practices, ensuring a better
-experience for future hires.
+11. 從左側面板返回 **M365 Copilot**，選擇
+    **Apps** **(1)**，然後從應用部分點擊 **Copilot** **(2)**。
 
-## Task 4: Performance Reviews
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-In this task, you will conduct regular performance reviews to assess the
-new employee’s progress and development by using Microsoft Copilot to
-create performance review templates, schedule review meetings, track
-achievements, gather feedback from colleagues, and compile structured
-performance reports.
+12. 從左側面板進入 **Copilot**，點擊 **Chat
+    (1)**。然後點擊聊天面板底部的**+ (Add)** 圖標**（2）**，選擇
+    **Upload images and files (3)**。
 
-1.  In the Chat box, provide the following prompt and hit
-    the **Sent** button:
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image12.png)
 
-	```
-    Set up a performance review schedule for the new Data Analyst, with
-	quarterly reviews and goal-setting sessions and Generate a calender
-	CSV file.
-    ```
+13. 在文件資源管理器彈窗中，進入 C：\LabFiles\Day-1\data\CV
+    **（1）**文件夾，選擇 **first 3** **(2)**  個文件，點擊
+    **Open** **(3)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image24.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image13.png)
 
-2.  Following up with the below prompt and hitting the **Sent** button.
+14. 在 **Copilot chat** 中，**三個文件**上傳成功後，點擊 **enter**。 
 
-	```
-    Generate a template for performance review reports, including sections
-	for achievements, areas of improvement, and future goals Generate a
-	performance review template.
-    ```
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-    ![A screenshot of a report AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%201/media/image25.png)
+15. 在活躍的 Copilot chat 中，點擊消息框下方的 **+ (Add) (1)** 
+    圖標，然後選擇 **Upload images and files (2)**。
 
-Outcome: The new employee receives constructive feedback and support,
-aiding their professional growth and contributing to their long-term
-success within the company.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-**Summary**
+16. 在文件資源管理器彈窗中，進入C：\LabFiles\Day-1\Data\CV
+    **（1）**文件夾，選擇 **最後2（2）**個文件，點擊 **Open** **(3)**。
 
-In this lab, you successfully built an HR Assistant Agent using
-Microsoft 365 Copilot to streamline employee recruitment and
-onboarding processes. You learned how to quickly screen Data Analyst
-candidates by analyzing resumes and filtering based on technical
-skills like SQL, Python, and data visualization, then created
-comprehensive onboarding training plans and interactive presentations
-for new hires. You generated feedback forms for interviewers and
-surveys for new employees to assess and improve the recruitment
-process, and set up quarterly performance review schedules with
-structured templates to track achievements and goals. By leveraging
-AI-powered tools, you demonstrated how organizations can automate HR
-workflows, enhance efficiency, and ensure a smooth transition process
-for new employees.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-You have successfully completed this lab. Kindly click Next \\to
-proceed further.
+17. 在 **Copilot chat** 中，**兩個文件（1）**成功上傳後，點擊 **enter
+    (2)**。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
+
+18. 在聊天框中，輸入以下提示**（1），**並點擊 **Sent (2) **按鈕:
+
+> Microsoft 365
+> Copilot，請幫我篩選和篩選數據分析師候選人，基於SQL、Python和數據可視化工具等必要資質篩選和篩選簡歷。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
+
+19. 跟進下面的提示，點擊 **Sent **按鈕
+
+> 製作一份頂級數據分析師候選人的總結報告，包括他們的技能、工作經驗和教育背景。
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
+
+**成果**：人力資源團隊高效篩選最合格的候選人，節省時間並確保招聘工作有針對性。
+
+## 任務2：開發培訓材料。
+
+在這項任務中，你將利用Microsoft
+Copilot為新員工準備全面的培訓材料，創建個性化的入職內容，包括針對崗位的指南、公司政策以及所用工具和技術概述，確保培訓材料詳盡、結構合理，並針對員工的角色量身定制。
+
+1.  在聊天框中，輸入以下提示**（1），**並點擊 **Sent (2) **按鈕:
+
+> 為新數據分析師制定全面的入職培訓計劃，包括公司政策、數據工具培訓和團隊介紹等主題。
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image20.png) ![A screenshot of a web page
+> AI-generated content may be incorrect.](./media/image21.png)
+
+2.  接下來是下面的提示（**1），**然後點擊 **Sent (2)** 按鈕。
+
+> 製作一個互動式培訓演示，涵蓋數據分析最佳實踐和關鍵績效指標，並生成可下載的PPT。
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image22.png)
+
+**注意**：執行此提示後，您將下載一份PowerPoint演示文稿，然後您可以編輯或設計。如果文件未被下載，請嘗試找到帶有演示標題的超鏈接，如截圖所示。
+
+**注意**：執行此提示後，“待下載的PowerPoint演示文稿”選項未顯示。請重演上述提示。
+
+結果：新員工會獲得組織良好的培訓材料，幫助他們快速上手並高效完成職責。
+
+## 任務3：收集反饋
+
+在此任務中，你將利用Microsoft
+Copilot生成和分發反饋調查，收集和分析反饋，深入瞭解招聘和入職流程的優勢以及需要改進的領域。
+
+1.  在聊天框中，輸入以下提示並點擊**Sent **按鈕 :
+
+> 為面試官創建一個反饋表，基於技術能力、問題解決能力和文化契合度評估數據分析師候選人。生成可下載的Word或PDF版本。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
+
+2.  跟著下面的提示，點擊 **Sent **按鈕。
+
+> 向新員工發送調查問卷，收集入職體驗反饋並找出改進空間。生成可下載的Word或PDF版本的問卷。
+>
+> ![A screenshot of a survey AI-generated content may be
+> incorrect.](./media/image23.png)
+>
+> 結果：人力資源部門獲得了寶貴反饋，幫助他們完善招聘和入職流程，確保未來員工獲得更好的體驗。
+
+## 任務4：績效評估
+
+在這項任務中，你將定期進行績效評估，通過使用 Microsoft Copilot
+創建績效評估模板、安排評估會議、跟蹤成就、收集同事反饋以及編制結構化績效報告，評估新員工的進展和發展。
+
+1.  在聊天框中，輸入以下提示並點擊 **Sent **按鈕 :
+
+> 為新數據分析師制定績效評估計劃，包含季度評估和目標設定會議，並生成日曆CSV文件。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
+
+2.  跟著下面的提示，點擊 **Sent** 按鈕。
+
+> 生成績效評估報告模板，包括成就、改進領域和未來目標的部分
+> 生成績效評估模板。
+>
+> ![A screenshot of a report AI-generated content may be
+> incorrect.](./media/image25.png)
+>
+> 結果：新員工獲得建設性的反饋和支持，有助於其職業成長，並為公司內的長期成功做出貢獻。
+>
+> **摘要**
+>
+> 在本實驗室中，你成功地利用 Microsoft 365 Copilot
+> 構建了一個人力資源助理代理，以簡化員工招聘和入職流程。你學會了如何通過分析簡歷快速篩選數據分析師候選人，並基於SQL、Python和數據可視化等技術技能進行篩選，然後為新員工制定了全面的入職培訓計劃和互動演示。你為面試官製作了反饋表，並為新員工製作了調查問卷，以評估和改進招聘流程，並制定了季度績效評估計劃，並用結構化模板跟蹤成就和目標。通過利用
+> AI
+> 驅動的工具，你展示了組織如何自動化人力資源工作流程，提升效率，並確保新員工順利過渡。
+>
+> 你已經成功完成了這個實驗。請點擊“Next \>\>”繼續。

@@ -1,618 +1,502 @@
-# Lab 5 Design Scalable AI Agents with Microsoft Foundry and Agent Framework
-
-**Overview**
-
-In this hands-on lab spanned across 3 days for designing and building
-scalable AI agents using Microsoft Foundry and the Microsoft Agent
-Framework. Participants will begin by creating their first AI agent
-through the Microsoft Foundry portal, where they will learn to upload
-enterprise policy documents and ingest them into Azure AI Search to
-prepare a searchable knowledge base. The workshop then progresses to
-building multi-agent systems using the Microsoft Agent Framework SDK,
-where multiple specialized agents collaborate through Agent-to-Agent
-(A2A) communication patterns. Learners will extend their agent
-capabilities by integrating external tools and data sources using the
-Model Context Protocol (MCP), connecting to both Azure AI Search for
-knowledge retrieval and external APIs like Freshdesk for ticket
-management. The training advances to deploying agents into the Microsoft
-Foundry Agent Service as persistent, cloud-hosted solutions with state
-management and enterprise-grade reliability. Finally, participants will
-implement advanced workflow patterns including orchestrated multi-agent
-systems with centralized coordination and handoff-based systems where
-conversations seamlessly transition between specialized agents based on
-user intent and domain expertise.
-
-**Objectives**
-
-By the end of this lab, you will be able to:
-
-- **Set Up AI Project and Perform Chat Completion from VS
-  Code:** Configure a production-ready AI development environment by
-  creating an Microsoft Foundry project, deploying GPT-4 and embedding
-  models, and establishing secure connections from Visual Studio Code.
-  You will validate the setup by executing chat completion calls,
-  ensuring seamless integration between your local development
-  environment and Azure AI services with proper authentication and
-  project configuration.
-
-- **Build a Health Insurance Plans Analyzer AI Agent:** Develop an
-  intelligent AI Agent specialized in analyzing and visualizing health
-  insurance data. You will create an agent that processes complex health
-  benefit plan information and automatically generates comparative bar
-  charts, demonstrating core AI agent capabilities including data
-  interpretation, natural language understanding, code execution, and
-  automated visualization generation for decision support.
-
-- **Develop a Multi-Agent Collaborative System:** Design and implement
-  an advanced multi-agent architecture where specialized AI agents work
-  together to analyze health plan documents and generate comprehensive
-  reports. You will build a Search Agent for intelligent document
-  retrieval using Azure AI Search, a Report Agent for generating
-  detailed analytical reports, a Validation Agent for ensuring
-  compliance and accuracy, and an Orchestrator Agent for managing
-  inter-agent communication and workflow coordination, showcasing
-  enterprise-grade agent collaboration patterns.
-
-**Prerequisites**
-
-Participants should have:
-
-- **Azure & Cloud Experience** - Familiarity with Azure Portal, Resource
-  Groups, and Azure AI services
-
-- **Programming Skills** - Basic Python knowledge (async/await,
-  environment variables, API calls)
-
-- **AI Concepts** - Understanding of LLMs, embeddings, RAG
-  (Retrieval-Augmented Generation), and prompt engineering
-
-- **Development Tools** - Proficiency with Visual Studio Code, terminal
-  usage, and Git
-
-- **Agent Framework Awareness** - Basic knowledge of agent
-  architectures, tools, and orchestration patterns
-
-Explanation of Components
-
-- **Microsoft Foundry**: Microsoft Foundry is a cloud platform for
-  developing, deploying, and managing enterprise AI agents. It provides
-  managed Agent Service runtime, centralized project management, and
-  Application Insights monitoring, ensuring enterprise-grade
-  reliability, security, and observability throughout the agent
-  lifecycle.
-
-- **Microsoft Agent Framework SDK**: The official Python SDK for
-  building intelligent, modular agents that replace AutoGen and Semantic
-  Kernel. It features native Agent-to-Agent communication, Model Context
-  Protocol integration, and Microsoft Foundry support, enabling
-  production-ready enterprise agent systems with standardized tool
-  usage.
-
-- **Azure AI Search**: A vector-based search engine enabling
-  Retrieval-Augmented Generation workflows. It provides hybrid retrieval
-  combining vector similarity and keyword search, semantic ranking for
-  improved relevance, and document indexing capabilities, ensuring
-  agents deliver grounded, factually accurate responses from enterprise
-  knowledge sources.
-
-- **Model Context Protocol (MCP)**: A standardized interface enabling
-  agents to access external knowledge and tools securely. MCP connects
-  to enterprise data sources, external APIs like Freshdesk, and custom
-  tools with structured schemas, ensuring reliable, auditable
-  interactions and forming the foundation for extensible enterprise AI
-  systems.
+# 使用 Microsoft Foundry 和 Agent Framework 設計可擴展的 AI 代理
 
-- **Chat Response Agent**: A single-turn, stateless agent model for
-  local development and testing. It processes requests independently
-  without retaining context, running within local environments and
-  responding immediately. Ideal for prototyping core logic and
-  validating behavior before advancing to production with persistent
-  agents.
+**概述**
 
-- **Persistent Agent**: A cloud-hosted, long-lived service in Microsoft
-  Foundry maintaining state across conversations. It supports external
-  tool integration via MCP, Agent-to-Agent collaboration, and
-  enterprise-scale reliability with built-in monitoring, providing
-  foundations for production applications requiring stateful, multi-turn
-  conversational experiences.
+這次為期三天的實踐實驗，利用Microsoft
+Foundry和Microsoft代理框架設計和構建可擴展的AI代理。參與者將首先通過Microsoft
+Foundry門戶創建他們的第一個AI代理，學習如何上傳企業政策文檔並將其導入Azure
+AI Search，以準備可搜索的知識庫。研討會隨後進入使用 Microsoft Agent
+Framework SDK
+構建多代理系統，多個專業代理通過代理間（Agent-to-Agent，A2A）通信模式協作。
+學習者將通過整合外部工具和數據源，使用模型上下文協議（MCP）擴展代理能力，連接Azure
+AI搜索進行知識檢索，並使用Freshdesk等外部API進行工單管理。培訓進展到將代理部署到Microsoft
+Foundry Agent
+Service中，作為持久的雲託管解決方案，具備狀態管理和企業級可靠性。最後，參與者將實施先進的工作流程模式，包括集中協調的多代理系統和基於交接的系統，使對話能夠根據用戶意圖和領域專業知識在專業代理之間無縫切換。
 
-- **Planner Agent**: An intelligent orchestrator analyzing user queries
-  to route them to appropriate specialist agents. It uses AI reasoning
-  and keyword heuristics to classify queries across domains like HR,
-  Finance, or Compliance, ensuring optimal task distribution and serving
-  as the central coordination point.
+**目標**
 
-- **Worker Agents**: Domain specialists with expertise in specific areas
-  like HR, Finance, or Compliance. Each agent has domain-specific
-  instructions, specialized tools, and relevant knowledge sources. They
-  collaborate with planner agents through A2A communication, delivering
-  authoritative, accurate responses for complex domain-specific
-  inquiries.
+到這個實驗結束時，你就能:
 
-- **Azure OpenAI**: Enterprise-grade service providing access to
-  advanced LLMs through secure API endpoints. It offers chat completion,
-  embedding models, content filtering, and compliance features.
-  Seamlessly integrates with Microsoft Foundry, enabling agents to
-  leverage GPT-4 while maintaining data privacy and governance controls.
+- **搭建AI項目並從VS Code完成聊天:** 通過創建 Microsoft Foundry
+  項目、部署 GPT-4 和嵌入模型，以及通過 Visual Studio Code
+  建立安全連接，配置一個生產準備的 AI
+  開發環境。您將通過執行聊天完成調用來驗證設置，確保本地開發環境與Azure
+  AI服務之間的無縫集成，並進行正確的身份驗證和項目配置。
 
-# Lab 5: Building a Retrieval-Augmented AI Agent with Microsoft Foundry
+- **構建健康保險計劃分析AI代理:** 開發一個專注於分析和可視化健康保險數據的智能
+  AI
+  代理。您將創建一個代理，處理複雜的健康福利計劃信息並自動生成對比條形圖，展示核心AI代理能力，包括數據解釋、自然語言理解、代碼執行和自動可視化生成，以支持決策。
 
-**Overview**
+- **開發多代理協作系統:** 設計並實現先進的多智能體架構，使專業AI智能體協同分析健康計劃文檔並生成全面報告。你將構建一個用於使用
+  Azure AI Search
+  智能文檔檢索的搜索代理，一個用於生成詳細分析報告的報表代理，一個確保合規和準確性的驗證代理，以及一個用於管理代理間通信和工作流協調的編排代理代理，展示企業級代理協作模式。
 
-In this lab, you'll create your first AI Agent using the Microsoft
-Foundry portal. You'll begin by uploading enterprise policy documents
-and ingesting them into Azure AI Search to prepare a knowledge base.
-Then, you'll configure the agent using the Microsoft Agent Framework to
-enable retrieval-augmented generation (RAG). Finally, you'll test the
-agent's responses and analyze execution logs to observe how it retrieves
-and processes information.
+**前提條件**
 
-**Lab Objectives**
+參與者應當有:
 
-You'll perform the following tasks in this lab.
+- **Azure 和雲經驗**- 熟悉 Azure Portal、Resource Groups 和 Azure AI
+  services
 
-- Task 1: Create the Azure resources
+- **編程技能——**基礎Python知識（異步/等待、環境變量、API調用）
 
-- Task 2: Create an AI Agent in Microsoft Foundry
+- **AI概念**——理解大型語言模型、嵌入、RAG（檢索增強生成）和提示工程
 
-- Task 3: Connect Azure AI Search for RAG
+- **開發工具**——熟練掌握Visual Studio Code、終端使用和Git。
 
-- Task 4: Test and Observe Agent Execution Logs
+- **代理框架意識——**對代理架構、工具和編排模式的基礎知識
 
-## Task 1: Create the Azure resources
+組件說明
 
-In this task, you will create all the Azure resources that are required
-to perform this lab.
+- **Microsoft** **Foundry**：Microsoft Foundry
+  是一個用於開發、部署和管理企業級 AI
+  代理的雲平臺。它提供託管代理服務運行時、集中項目管理和應用洞察監控，確保整個代理生命週期內企業級的可靠性、安全性和可觀察性。
 
-### Task 1.1: Create Storage account
+- **Microsoft Agent Framework SDK**：官方 Python
+  SDK，用於構建智能、模塊化代理，取代 AutoGen
+  和語義內核。它具備原生代理間通信、模型上下文協議集成以及 Microsoft
+  Foundry 支持，使得生產準備的企業代理系統能夠標準化使用工具。
 
-1.  Login to the Azure portal at +++https://portal.azure.com+++ using
-    the below credentials and select **Storage accounts**.
+- **Azure AI
+  搜索**：基於矢量的搜索引擎，支持檢索增強生成工作流程。它提供結合向量相似度與關鍵詞搜索的混合檢索，提升相關性所需的語義排序，以及文檔索引功能，確保代理從企業知識源中提供紮實、事實準確的回答。
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+- **Model Context
+  Protocol（MCP）：**一種標準化接口，使代理能夠安全地訪問外部知識和工具。MCP連接企業數據源、Freshdesk等外部API，以及帶有結構化結構的定制工具，確保交互可靠且可審計，並為可擴展的企業AI系統奠定基礎。
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
+- **聊天響應代理**：一種單回合、無狀態代理模型，用於本地開發和測試。它獨立處理請求，無需保留上下文，在本地環境中運行並立即響應。非常適合在使用持久代理進入生產環境前，進行核心邏輯原型設計和驗證行為。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image1.png)
+- **持久代理**：Microsoft Foundry
+  中的一項雲託管、長壽命服務，能在對話間保持狀態。它支持通過MCP、代理間協作和企業級可靠性實現外部工具集成，並內置監控功能，為需要有狀態、多回合對話體驗的生產應用奠定基礎。
 
-2.  Select **Create**.
+- **規劃代理**：一個智能編排器，分析用戶查詢並將其路由到合適的專業代理。它利用
+  AI
+  推理和關鍵詞啟發式，對人力資源、財務或合規等領域的查詢進行分類，確保任務分配最優，並作為核心協調點。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image2.png)
+- **員工代理**：在人力資源、財務或合規等特定領域擁有專業知識的領域專家。每個代理都有領域特定的指令、專業工具和相關知識來源。他們通過A2A溝通與規劃代理人協作，為複雜的領域特定問題提供權威且準確的回答。
 
-3.  Enter the below details and select **Review + create**. Select
-    **Create** in the next screen.
+- **Azure
+  OpenAI**：企業級服務，通過安全的API端點訪問高級LLM。它提供聊天完成、嵌入模型、內容過濾和合規功能。它與
+  Microsoft Foundry
+  無縫集成，使代理能夠在維護數據隱私和治理控制的同時利用 GPT-4。
 
-	- Storage account name - +++aistorage@lab.LabInstance.Id+++
+# 實驗5：使用Microsoft Foundry構建檢索增強型AI代理
 
-	- Preferred storage type - Select **Azure Blob Storage or Azure Data
-	  Lake Storage Gen2**
+**概述**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image3.png)
+在這個實驗室中，你將使用 Microsoft Foundry 門戶創建你的第一個 AI
+代理。您將首先上傳企業政策文檔並將其導入Azure AI
+Search，以準備知識庫。然後，你將使用Microsoft代理框架配置代理，以啟用檢索增強生成（RAG）。最後，你將測試代理的響應並分析執行日誌，觀察其如何檢索和處理信息。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image4.png)
+**實驗室目標**
 
-4.  Once the resource is created, select **Go to resource**.
+你將在實驗室執行以下任務。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image5.png)
+- 任務1：創建Azure資源
 
-5.  Select **Upload**, select **Create new** to create a new container.
-    Name it as +++**datasets**+++ and then select **Ok**.
+- 任務二：在 Microsoft Foundry 中創建 AI 代理
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image6.png)
+- 任務3：連接Azure AI搜索RAG
 
-    ![A screenshot of a login box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image7.png)
+- 任務4：測試並觀察代理執行日誌
 
-6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 2** and click **Upload**.
+## 任務1：創建Azure資源
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image8.png)
+在這個任務中，你將創建完成該實驗室所需的所有Azure資源。
 
-    ![A screenshot of a upload box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image9.png)
+### 任務1.1：創建存儲賬戶
 
-Now, the Storage account is create successfully and loaded with the
-policy documents.
+1.  使用以下憑據登錄 Azure 門戶 +++https://portal.azure.com+++
+    並選擇存儲賬戶。
 
-### Task 1.2: Create Foundry resource
+- 用戶名 - +++@lab.CloudPortalCredential(User1).Username+++
 
-In this task, you will create a Foundry resource which is required to
-access the Microsoft Foundry.
+- TAP - <+++@lab.CloudPortalCredential(User1).TAP>+++
 
-1.  From the Home page of the Azure
-    portal(+++https://portal.azure.com+++), select **Foundry**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image10.png)
+2.  選擇 **Create**。
 
-2.  Select **Foundry** from the left pane, and then select **Create** to
-    create the Foundry resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image11.png)
+3.  輸入以下信息，選擇 **Review + create**。在下一界面選擇“Create”。
 
-3.  Enter the below details and select **Review + create**.
+- 存儲賬戶名稱 - +++aistorage@lab.LabInstance.Id+++
 
-    - Name - +++agentic-@lab.LabInstance.Id+++
+- 首選存儲類型 – 選擇 **Azure Blob Storage or Azure Data Lake Storage
+  Gen2**
 
-    - Default project name - +++agentic-ai-project-@lab.LabInstance.Id+++
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image3.png)
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image12.png)
+4.  資源創建後，選擇 **“Go to resource**”。
 
-4.  Select **Create** once validated.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image13.png)
+5.  選擇 **Upload**，選擇 **Create new** 容器以創建新容器。命名為
+    +++**datasets**+++，然後選擇 **Ok**。
 
-5.  Ensure that the resource is created.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image14.png)
+![A screenshot of a login box AI-generated content may be
+incorrect.](./media/image7.png)
 
-6.  Open the **agentic-ai-project-@lab.LabInstance.Id** and select
-    **Go to Foundry portal**.
+6.  選擇“**Browse for files**”，從**C:\Labfiles\Day
+    2**中選擇策略文件，點擊**Upload**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image16.png)
+![A screenshot of a upload box AI-generated content may be
+incorrect.](./media/image9.png)
 
-7.  In the Microsoft Foundry, select Models + endpoints from the left
-    pane. Select + **Deploy model** -> **Deploy base model**.
+現在，存儲賬戶已成功創建並加載了策略文檔。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image17.png)
+### 任務1.2：創建Foundry資源
 
-8.  Search for +++gpt-4o-mini+++, select it and click on Confirm to
-    deploy the model.
+在此任務中，您將創建一個 Foundry 資源，訪問 Microsoft Foundry 是必要的。
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image18.png)
+1.  在Azure門戶（+++https：//portal.azure.com+++）主頁，選擇
+    **Foundry**。
 
-9.  Select **Deploy** in the deployment window.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image19.png)
+2.  從左側窗格選擇**Foundry**，然後選擇 **Create** Foundry資源。
 
-10. Similarly, search for +++text-embedding-ada-002+++ and deploy it.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image20.png)
+3.  輸入以下信息，選擇 **Review + create**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image21.png)
+- 名稱 – <+++agentic-@lab.LabInstance.Id>+++
 
-In this task, you have successfully created the Foundry resource and
-deployed a chat and an embedding model in it.
+- 默認項目名稱 – <+++agentic-ai-project-@lab.LabInstance.Id>+++
 
-### Task 1.3: Create Application insights
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-In this task, you will create an Application insights resource, which is
-required for monitoring.
+4.  驗證後選擇 **Create**。
 
-1.  From the Home page of the Azure portal, select **Subscriptions** and
-    select the assigned subscription.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image22.png)
+5.  確保資源已經建立。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-2.  Select **Resource providers** from the left pane.
+6.  打開 **<agentic-ai-project-@lab.LabInstance.Id>** ，選擇 **“Go to
+    Foundry portal**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-3.  Search for +++Operational+++, select the 3 dots next to
-    **Microsoft.OperationalInsights** and click **Register**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image16.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image25.png)
+7.  在 Microsoft Foundry 中，從左側面板選擇 Models + endpoints。選擇 +
+    **Deploy model** -\> **Deploy base model**。
 
-4.  From the left pane of the Microsoft Foundry, select **Monitoring**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image26.png)
+8.  搜索 +++gpt-4o-mini+++，選擇並點擊確認以部署該模型。
 
-5.  Select **Create New** -> provide the name as
-    +++agent-insights-@lab.LabInstance.Id+++ and then select
-    **Create**.
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image18.png)
 
-    ![A screenshot of a application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image27.png)
+9.  在部署窗口中選擇**Deploy**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image29.png)
+10. 同樣，搜索 +++text-embedding-ada-002+++ 並部署。
 
-In this task, you have created the Application Insight resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-### Task 1.4: Create Search resource
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
 
-Before an AI Agent can answer enterprise questions accurately, it must
-access trusted data sources. Azure AI Search enables Retrieval-Augmented
-Generation (RAG) by indexing documents such as policies, contracts, and
-manuals. An index acts like a searchable catalog that breaks content
-into chunks, adds metadata, and enables the agent to retrieve the right
-information during a conversation.
+在這個任務中，你已經成功創建了Foundry資源，並在其中部署了一個聊天和一個嵌入模型。
 
-In this task, index the uploaded documents using Azure AI Search to
-create a searchable knowledge base.
+### 任務1.3：創建應用洞察
 
-1.  From the Home page of the Azure portal, select **Foundry**.
+在此任務中，您將創建應用洞察資源，這是監控所必需的。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image30.png)
+1.  在Azure門戶的主頁，選擇 **“Subscriptions”** 並選擇分配的訂閱。
 
-2.  Select **AI Search** from the left pane and then select **+
-    Create.**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image31.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-3.  Enter the below details, select **Review + create**.
+2.  從左側面板選擇 **Resource providers**。
 
-	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
-    
-	**Note:** Please select a region that allows the Standard pricing tier
+3.  搜索 +++Operational+++，選擇 **Microsoft.OperationalInsights** 旁的
+    3 個點，點擊 **Register**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image32.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-4.  Select **Create** once the validation passes. Select Go to resource
-    once the resource is created.
+4.  在 Microsoft Foundry 的左側面板中，選擇 **“Monitoring**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image33.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image34.png)
+5.  選擇 **Create New** -\>，輸入名稱為
+    <+++agent-insights-@lab.LabInstance.Id>+++，然後選擇**Create**。
 
-5.  Select **Import data (new)**.
+![A screenshot of a application AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image35.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-6.  Select the **Azure Blob Storage** under **Choose data source**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image36.png)
+在這個任務中，你創建了應用洞察資源。
 
-7.  In the next pane, select the **RAG** option as we are building a
-    retrieval-based agent.
+### 任務1.4：創建搜索資源
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image37.png)
+在AI代理能夠準確回答企業問題之前，必須訪問可信的數據源。Azure AI
+搜索通過索引政策、合同和手冊等文檔，實現檢索增強生成（RAG）。索引就像一個可搜索的目錄，將內容拆分成塊，添加元數據，並使代理在對話中檢索到正確的信息。
 
- Here is what each of these options for -
+在此任務中，利用 Azure AI Search 索引上傳的文檔，創建可搜索的知識庫。
 
-1.  **Keyword Search:** Used for traditional search experiences based on
-    exact keywords. It indexes text so users can find information
-    through keyword matching, without AI reasoning.
+1.  在 Azure 門戶的主頁，選擇 **Foundry**。
 
-2.  **RAG (Retrieval-Augmented Generation):** Combines document
-    retrieval with AI generation.It ingests text (and simple OCR images)
-    so an AI agent can provide grounded, context-aware answers.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-3.  **Multimodal RAG:** Extends RAG to handle complex visual content
-    like diagrams, tables, workflows, or charts. It enables AI to
-    interpret both text and visual elements for richer, insight-based
-    responses.
+2.  從左側窗格選擇“**AI Search**”，然後選擇 **+ Create**。
 
-8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
-    and **datasets** **under Blob container** and select **Next**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image38.png)
+3.  輸入以下信息，選擇 **Review + create。**
 
-9.  Select the below details and select **Next**.
+- 服務名稱 - +++ai-knowledge-@lab.LabInstance.Id+++
 
-	- Kind - **Azure AI Foundry (Preview)**
+- 地區 - East US2
 
-	- Azure AI Foundry/Hub project -
-	  **agentic-ai-project-@lab.LabInstance.Id**
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image32.png)
 
-	- Model deployment - **text-embedding-002-ada**
+4.  驗證通過後選擇 **Create**。創建資源後選擇“Go to resource”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image39.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-10. Select **Next** in the next screens until the **Review and create**
-    screen appears.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image34.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image40.png)
+5.  選擇 **Import data (new)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image41.png)
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image35.png)
 
-11. Select **Create** in the **Review and create** screen.
+6.  在“**Choose data source**”下選擇 **Azure Blob Storage**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image42.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-12. Select **Close** in the Create succeeded dialog.
+7.  在下一格，選擇**RAG**選項，因為我們正在構建基於檢索的代理。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image43.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image37.png)
 
-You've successfully ingested the dataset into Azure AI Search and
-created a searchable index. In the next task, you'll create an AI agent
-and connect this index as its knowledge source.
+> 以下是這些選項的用途 -
 
-## Task 2: Create an AI Agent in Microsoft Foundry
+1.  **關鍵詞搜索：**用於基於精確關鍵詞的傳統搜索體驗。它會索引文本，讓用戶通過關鍵詞匹配找到信息，無需AI推理。
 
-In this task, you will create a new AI Agent in Microsoft Foundry and
-configure its core purpose, instructions, and model using the Microsoft
-Agent Framework interface.
+2.  **RAG（檢索增強生成）：**結合文檔檢索與 AI
+    生成。它會接收文本（以及簡單的OCR圖像），因此AI代理能夠提供紮實、具上下文感知的回答。
 
-1.  Navigate back to your resource group, from the resource list,
-    select **agentic--@lab.LabInstance.Id** foundry resource.
+3.  **多模態RAG：**擴展RAG以處理複雜的視覺內容，如圖表、表格、工作流程或圖表。它使
+    AI 能夠解讀文本和視覺元素，提供更豐富、基於洞察的回答。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image44.png)
+&nbsp;
 
-2.  In the next pane, click on **Go to Foundry portal**. You will now be
-    navigated to the Microsoft Foundry portal, where you will be
-    creating your first agent.
+8.  在 **Storage account** 和 **datasets** **under Blob
+    containe**r下選擇
+    <aistorage@lab.LabInstance.Id>，然後選擇“**Next**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image45.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-3.  Once navigated to Foundry Portal, select **Agents** from the
-    left menu you will already see an agent **pre created**. If not
-    created, then please click on the **+ New agent** option to get
-    it created.
+9.  請選擇以下詳情，然後選擇 **“Next**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image46.png)
+- Kind – Azure AI Foundry （預覽版）
 
-4.  Select the newly created **agent**, and a configuration pane will be
-    opened on the right. Provide the following details.
+- Azure AI Foundry/Hub 項目 – <agentic-ai-project-@lab.LabInstance.Id>
 
-	
-	| Column 1 | Column 2 |
-	| -------- | -------- |
-	| **Agent name **  |     +++**EnterpriseAgent**+++     |
-	| **Instructions **   |   +++You are an enterprise knowledge assistant. Retrieve relevant policy information before answering questions.+++       |
+- 模型部署 – text-embedding-002-ada
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image47.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-5.  You've successfully created an agent in Microsoft Foundry. Next,
-    it's time to enrich it with knowledge by connecting your indexed
-    data in the upcoming task.
+10. 在接下來的界面選擇“**Next**”，直到出現 **Review and create** 界面。
 
-## Task 3: Connect Azure AI Search for RAG
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image40.png)
 
-In this task, you will integrate Azure AI Search with your agent using
-the knowledge integration panel, enabling retrieval-augmented responses
-through MCP (Model Context Protocol).
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-1.  In the same agent configuration pane, scroll down and click on **+
-    Add** for **Knowledge** parameter.
+11. 在“**Review and create**”屏幕中選擇“**Create**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image48.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-2.  In the **Add knowledge** pane, select **Azure AI Search** as you
-    have the index prepared in the AI Search resource.
+12. 在“Create succeeded”對話框中選擇“**Close**”。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image49.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-3.  In the next pane, for **Azure AI Search resource
-    connection** option, click on **drop-down arrow** and
-    select **Connect other Azure AI Search resource**.
+你已經成功將數據集導入 Azure AI
+搜索並創建了可搜索索引。在下一個任務中，你將創建一個 AI
+代理，並將該索引作為其知識來源連接起來。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image50.png)
+## 任務二：在 Microsoft Foundry 中創建 AI 代理
 
-4.  In the next pane, review that the correct AI Search resource is
-    selected and click on **Add connection**.
+在這項任務中，你將在 Microsoft Foundry 中創建一個新的 AI 代理，並通過
+Microsoft 代理框架界面配置其核心目的、指令和模型。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image51.png)
+1.  回到你的資源組，從資源列表中選擇**agentic-foundry**資源。
 
-5.  In the **Adding Azure AI Search** step, configure the following
-    details and click on **Connect** once completed.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-	| **Detail** | **Value** |
-	| -------- | -------- |
-	| **Azure AI Search resource connection**   |     **AIknowledge@lab.LabInstance.Id**     |
-	| **Azure AI Search index** |    **rag index**     |
-	| **Display name**   |    +++**knowledge-index**+++      |
-	| **Search type**   |    **Hybrid (vector + keword )**      |
+2.  在下一頁，點擊“**Go to Foundry
+    portal**”。現在，您將被引導到Microsoft
+    Foundry門戶，在那裡創建您的第一個代理。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image52.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-6.  The agent is now successfully enriched with knowledge using the
-    Azure AI Search index, which acts as a searchable knowledge base for
-    retrieving accurate information during conversations.
+3.  進入Foundry門戶後，從左側菜單選擇 **Agents
+    (1)**，你會看到**已經預創建**的代理。如果沒有創建，請點擊**+ New
+    agent (2)** ”選項以創建該代理。 
 
-## Task 4: Test and Observe Agent Execution Logs
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-In this task, you will test your agent by asking policy-related
-questions and reviewing structured logs to verify tool usage, search
-calls, and grounded responses.
+4.  選擇新創建的**代理**，右側會打開一個配置面板。請提供以下詳細信息。
 
-1.  Before testing the agent, connect Application Insights to enable
-    detailed logs and trace visibility.
+[TABLE]
 
-2.  In Microsoft Foundry portal, select **Monitoring** from left
-    menu, select **agent-insights-@lab.LabInstance.Id** and click on **Connect**
+> ![A screenshot of a computer program AI-generated content may be
+> incorrect.](./media/image47.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image53.png)
+5.  你已經成功在 Microsoft Foundry
+    中創建了一個代理。接下來，是時候通過連接你索引數據來豐富它。
 
-3.  Once done, select, **Agents** from left menu, and then choose
-    the **EnterpriseAssistant** agent and click on **Try in
-    playground**.
+## 任務3：連接Azure AI搜索RAG
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image54.png)
+在此任務中，您將通過知識集成面板將Azure AI
+Search與代理集成，通過MCP（模型上下文協議）實現檢索增強響應。
 
-4.  A chat panel will open where you can enter your prompts. The agent
-    will now respond using the documents and datasets you've connected.
+1.  在同一個代理配置窗格中，向下滾動並單擊“**+ Add** **知識**參數”。
 
-	Sample prompts -
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image48.png)
 
-	- +++What is the employee travel reimbursement policy?+++
+2.  在 **Add knowledge** 面板中，選擇 **Azure AI
+    Search**，因為你已經在AI搜索資源中準備好了索引。
 
-	- +++Summarize the contract approval rules and cite the document.+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image49.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image55.png)
+3.  在下一窗格中，選擇 **Azure AI Search resource
+    connection** 選項，點擊**下拉箭頭（1）**，然後選擇 **Connect other
+    Azure AI Search resource (2)**。
 
-5.  Once the agent responds to questions, click on **Thread logs** from
-    the top menu to check the logs and traces of the current thread.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image56.png)
+4.  在下一欄，確認選中了正確的AI搜索資源，並點擊**“Add connection**”。
 
-6.  Explore and review these metrics, traces, and evaluations which
-    showcase a detailed overiew on the agent log.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image51.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image57.png)
+5.  在 **Adding Azure AI Search** 步驟中，配置以下細節，完成後點擊
+    **Connect (5)**。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image58.png)
+[TABLE]
 
-7.  Now, navigate to the **monitoring** pane, where you have connected
-    application insights before, and select the **Resource usage** tab
-    and review all the metrics and values.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image52.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image59.png)
+6.  該代理現已通過Azure
+    AI搜索索引成功豐富知識，該索引作為可搜索的知識庫，用於在對話中獲取準確信息。
 
-8.  You've successfully built a RAG-based agent powered by curated
-    enterprise datasets. Next, you'll take this further by enabling
-    multi-agent collaboration, where agents can delegate, reason, and
-    work together intelligently.
+## 任務4：測試並觀察代理執行日誌
 
-Summary
+在此任務中，您將通過提出與政策相關的問題和結構化日誌來測試您的客服，以驗證工具使用情況、搜索調用和基於實際的響應。
 
-In this lab, you successfully created your first AI Agent in Microsoft
-Foundry and connected it to an indexed knowledge base. You uploaded
-documents, ingested them into Azure AI Search, and enabled RAG through
-Microsoft Agent Framework integration. By testing the agent and
-reviewing execution logs, you gained firsthand experience in how agents
-retrieve grounded information and generate enterprise-ready responses.
+1.  在測試代理之前，連接 Application
+    Insights，以啟用詳細日誌和跟蹤可視化。
 
+2.  在 Microsoft Foundry 門戶中，從左側菜單選擇 **Monitoring
+    (1)** ，選擇 **agent-insights- (2)** ，點擊 **Connect (3)**
 
+![](./media/image53.png)
 
+3.  完成後，從左側菜單選擇 **Agents (1)** ，然後選擇
+    **EnterpriseAssistant（2）**代理，點擊 **Try in playground (3)**。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image54.png)
+
+4.  會打開一個聊天面板，你可以在那裡輸入提示。客服現在會根據你連接的文檔和數據集進行響應。
+
+示例提示 -
+
+- +++What is the employee travel reimbursement policy?+++
+
+- +++Summarize the contract approval rules and cite the document.+++
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image55.png)
+
+5.  代理回答問題後，從頂部菜單點擊“**Thread
+    logs** ”，查看當前線程的日誌和痕跡。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image56.png)
+
+6.  請查看這些指標、記錄和評估，這些指標在代理日誌中展示了詳細的主張。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image57.png)
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image58.png)
+
+7.  現在，進入**監控**窗格，你之前已連接過應用洞察，選擇 **Resource
+    usage** 標簽，查看所有指標和數值。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image59.png)
+
+8.  你成功構建了一個基於RAG的代理，由精心策劃的企業數據集驅動。接下來，你將進一步實現多代理協作，讓代理能夠委託、推理並智能協作。
+
+摘要
+
+在這個實驗室裡，你成功地在Microsoft
+Foundry創建了你的第一個AI代理，並將其連接到一個索引知識庫。你上傳了文檔，導入了
+Azure AI 搜索，並通過 Microsoft Agent Framework 集成啟用了
+RAG。通過測試代理並審查執行日誌，你親身體驗了代理如何獲取有根據的信息並生成企業級響應。

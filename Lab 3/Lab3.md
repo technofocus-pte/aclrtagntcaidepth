@@ -1,89 +1,66 @@
+# 實驗3：構建健康保險計劃分析器AI代理
 
-# Lab 3: Build a Health Insurance Plans Analyser AI Agent
+**概述**
 
-**Overview**
+在本實驗室中，您將構建一個專門用於處理和分析健康保險計劃數據的健康保險計劃分析器AI代理。該智能代理通過解讀計劃細節、分析保障選項並生成支持決策的可視化表示，自動比較不同健康福利計劃。利用Microsoft
+Foundry和Azure
+AI服務，客服人員將創建對比條形圖，清晰顯示保險計劃之間的差異，幫助用戶更輕鬆地瞭解選項並選擇最合適的健康保險。
 
-In this lab, you will build a Health Insurance Plans Analyser AI Agent
-designed specifically to process and analyze health insurance plan data.
-This intelligent agent automates the comparison of different health
-benefit plans by interpreting plan details, analyzing coverage options,
-and generating visual representations to support decision-making. Using
-Microsoft Foundry and Azure AI services, the agent will create
-comparative bar charts that clearly display differences between
-insurance plans, making it easier for users to understand their options
-and choose the most suitable health insurance coverage.
+**實驗室目標**
 
-**Lab Objectives**
+你將在實驗室完成以下任務。
 
-You'll perform the following task in this lab.
+- 任務一：創建一個簡單的AI代理
 
-- Task 1: Create a Simple AI Agent
+## 任務一：創建一個簡單的AI代理
 
-## Task 1: Create a Simple AI Agent
+在此任務中，您將構建一個簡單的AI代理，處理數據並生成條形圖，利用Azure
+AI服務比較不同健康福利計劃進行分析和可視化。
 
-In this task, you will build a simple AI Agent that processes data and
-generates a bar chart comparing different health benefit plans using
-Azure AI services for analysis and visualization.
+1.  打開 **實驗2 - 創建一個簡單的 AI agent.ipynb** 文件。本 **實驗2 -
+    創建一個簡單的 AI agent.ipynb**
+    筆記本引導你構建一個簡單的AI代理，它能處理數據並生成比較不同健康福利計劃的條形圖。
 
-1.  Open the **Lab 2 - Create A Simple AI Agent.ipynb** file. This **Lab
-    2 - Create A Simple AI Agent.ipynb** notebook guides you through how
-    to build a simple AI Agent that processes data and generates a bar
-    chart comparing different health benefit plans.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image1.png)
+2.  選擇右上角可選的**“ Select kernel **”設置。從列表中選擇
+    **venv（Python 3.x.x）。**
 
-2.  Select the **Select kernel** setting available in the top right
-    corner. Select **venv (Python 3.x.x)** from the list.
+![A blue and red rectangle with white text AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A blue and red rectangle with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image2.png)
+3.  運行下面的單元格導入必要的庫並加載環境變量，以便使用 Azure AI
+    項目。這種設置實現了與Azure AI服務的安全認證和交互。
 
-3.  Run the below cell to import necessary libraries and load
-    environment variables for working with Azure AI Projects. This setup
-    enables secure authentication and interaction with Azure AI
-    services.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image3.png)
+4.  運行下面的單元，連接到你的 Microsoft Foundry 項目，訪問已部署的
+    **gpt-4o** 模型。這通過項目連接字符串和 Azure 憑證建立安全連接。
 
-4.  Run the below cell to connect to your Microsoft Foundry project and
-    access the deployed **gpt-4o** model. This establishes a secure
-    connection using the project connection string and Azure
-    credentials.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image4.png)
+5.  運行該單元格創建一個 **simple AI Agent**，處理數據並生成條形圖，使用
+    Microsoft Foundry 比較不同的健康福利計劃。該腳本初始化 AI
+    代理，發送包含健康計劃數據的提示，並請求條形圖。代理處理請求，生成圖表，保存圖像文件，然後通過刪除代理進行清理。
 
-5.  Run this cell to create a **simple AI Agent** that processes data
-    and generates a bar chart comparing different health benefit plans
-    using Microsoft Foundry.This script initializes the AI agent, sends
-    a prompt containing health plan data, and requests a bar chart. The
-    agent processes the request, generates the chart, saves the image
-    file, and then cleans up by deleting the agent.
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image5.png)
+6.  最後觀察輸出。
 
-6.  Finally observe the output.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image6.png)
+**摘要**
 
-**Summary**
+在本實驗室中，您成功地利用 Microsoft Foundry 和 Azure AI
+服務構建了健康保險計劃分析器 AI
+代理，實現了健康福利計劃的分析與比較。你學會了如何連接你的Microsoft
+Foundry項目，訪問已部署的GPT-4o模型，並創建一個能夠處理複雜健康保險計劃數據的智能代理。代理人解讀計劃細節，分析保障選項，並自動生成比較條形圖，以可視化保險計劃之間的差異。這次親身體驗展示了
+AI
+代理如何簡化數據分析、支持決策過程，並幫助用戶輕鬆理解和比較健康保險選項。
 
-In this lab, you successfully built a Health Insurance Plans Analyser AI
-Agent using Microsoft Foundry and Azure AI services to automate the
-analysis and comparison of health benefit plans. You learned how to
-connect to your Microsoft Foundry project, access the deployed GPT-4o
-model, and create an intelligent agent that processes complex health
-insurance plan data. The agent interpreted plan details, analyzed
-coverage options, and automatically generated comparative bar charts to
-visualize differences between insurance plans. This hands-on experience
-demonstrated how AI agents can streamline data analysis, support
-decision-making processes, and help users easily understand and compare
-their health insurance options.
-
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
+你已經成功完成了這個實驗。請點擊“Next \>\>”繼續。

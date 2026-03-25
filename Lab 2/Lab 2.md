@@ -1,403 +1,344 @@
+# 實驗2：搭建AI項目並從VS Code中完成聊天
 
-# Lab 2: Setup AI Project and perform Chat Completion from VS Code
+**概述**
 
-**Overview**
+在本實驗室中，你將通過在 Microsoft Foundry 中創建和配置 AI
+項目，部署大型語言模型（LLM）和嵌入模型，並將項目連接到 Visual Studio
+Code，準備構建 AI
+代理所需的完整開發環境。然後，你將通過運行代碼中的簡單聊天完成來驗證設置，確保環境配置正確，準備好開發AI驅動應用。
 
-In this lab, you will prepare the complete development environment
-required for building AI agents by creating and configuring an AI
-Project in Microsoft Foundry, deploying a Large Language Model (LLM) and
-an embedding model, and connecting the project to Visual Studio Code.
-You will then validate the setup by running a simple chat completion
-from code, ensuring that your environment is correctly configured and
-ready for developing AI-powered applications.
+實驗室目標
 
-Lab Objectives
+你將在實驗室執行以下任務。
 
-You'll perform the following tasks in this lab.
+- 任務1：在Microsoft Foundry建立AI項目
 
-- Task 1: Setting up the AI Project in the Microsoft Foundry
+- 任務2：部署大型語言模型並嵌入模型
 
-- Task 2: Deploying an LLM and embedding models
+- 任務3：安裝依賴，創建虛擬環境，並創建環境變量文件
 
-- Task 3: Install dependencies, create a virtual environment, and create
-  an environment variables file
+## 任務一：在Microsoft Foundry建立AI項目
 
-## Task 1: Setting up the AI Project in the Microsoft Foundry
+在這個任務中，你將在 Microsoft Foundry 中創建並配置一個 AI
+項目。這包括設置必要資源、定義項目參數，並確保環境準備好部署AI模型。完成這項任務時，你將擁有一個完全初始化的AI項目，作為進一步開發和實驗的基礎。
 
-In this task, you will create and configure an AI Project within
-Microsoft Foundry. This involves setting up the necessary resources,
-defining project parameters, and ensuring that the environment is ready
-for deploying AI models. By the end of this task, you will have a fully
-initialized AI Project, serving as the foundation for further
-development and experimentation.
+1.  在 Azure Portal 頁面頂部的搜索資源框中，輸入 **Microsoft Foundry
+    （1），**然後在 服務中選擇 **Microsoft Foundry （2）。**
 
-1.  On the Azure Portal page (+++https://portal.azure.com+++), in the Search resources box at the top of
-    the portal, enter +++Microsoft Foundry+++, and then
-    select **Microsoft Foundry** under Services.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image1.png)
+2.  在左側導航窗格“**Use with Foundry**”中，選擇 **AI Hubs
+    (1)**。在AI樞紐頁面，點擊 **Create (2)** ，從下拉菜單中選擇 **Hub
+    (3)** 。
 
-2.  In the left navigation pane for the **Use with Foundry**,
-    select **AI Hubs**. On the AI Hubs page, click on **Create** and select **Hub** from the drop-down.
+![](./media/image2.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image2.png)
+3.  在**Create an Azure AI hub **的面板中，輸入以下細節，在
+    **Basics (1)** 項下。 :
 
-3.  On the **Create an Azure AI hub** pane enter the following details
-    under **Basics**:
+    - 訂閱 : **Leave default subscription** **(2)**
 
-    - Subscription : **Leave default subscription** 
+    - 資源組 : **AgenticAI** **(3)**
 
-    - Resource Group : **AgenticAI**
+    - 地區 : **East US2** (4)
 
-    - Region : **@lab.CloudResourceGroup(AgenticAI).Location**
+    - 名稱 : ** <+++ai-foundry-hub@lab.LabInstance.Id>+++ (5)**
 
-    - Name : +++ai-foundry-hub@lab.LabInstance.Id+++
+    - 連接 AI 服務，包括OpenAI：點擊 **Create New (6)。**
 
-    - Connect AI Services incl. OpenAI : Click on **Create
-      New**.
+    - Connect AI Services，包括 OpenAI：提供名稱
+      **<+++my-ai-service@lab.LabInstance.Id>+++ （7）**。
 
-    - Connect AI Services incl. OpenAI : Provide a
-      name +++my-ai-service@lab.LabInstance.Id+++.
+    - 點擊 **Save** **(8)**，然後點擊 **Next:Storage** **(9)**,
 
-    - Click on **Save**, followed by **Next:Storage** 
+> ![](./media/image3.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image3.png)
+4.  點擊“**Review + Create** 標簽”，然後點擊**“Create”。**
 
-4.  Click on **Review + Create** tab followed by **Create.**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image4.png)
+![](./media/image5.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image5.png)
+5.  等待部署完成後，點擊**“Go to resource**”。
 
-5.  Wait for the deployment to complete and then click on **Go to
-    resource**.
+![](./media/image6.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image6.png)
+6.  在概覽面板中，點擊**“Azure AI Foundry**”。這會引導你進入 Microsoft
+    Foundry 門戶。
 
-6.  On the Overview pane, click on **Launch Azure AI Foundry**. This
-    will navigate you to the Microsoft Foundry portal.
+![](./media/image7.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image7.png)
+7.  向下滾動，點擊 中心概覽中的**+ New project**。
 
-7.  Scroll down and click on **+ New project** on the Hub Overview.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image8.png)
+8.  輸入項目名稱為
+    [**+++ai-foundry-project@lab.LabInstance.Id+++，**然後點擊](mailto:+++ai-foundry-project@lab.LabInstance.Id+++，然后点击)
+    **Create (2)。**
 
-8.  Provide the project name
-    as +++ai-foundry-project@lab.LabInstance.Id+++, then click
-    on **Create**.
+![](./media/image9.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image9.png)
+9.  項目創建後，向下滾動並複製 **Project connection
+    string**，然後粘貼到記事本或安全位置，因為這些字符串將是即將完成任務的必需品。
 
-9.  Once the project is created, scroll down and copy the **Project
-    connection string**, then paste them into Notepad or a secure
-    location, as they will be required for upcoming tasks.
+![A screenshot of a project AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a project AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image10.png)
+## 任務2：部署 LLM 模型並嵌入模型
 
-## Task 2: Deploying an LLM and embedding models
+在這項任務中，你將在Microsoft
+Foundry項目中部署一個大型語言模型（LLM）和一個嵌入模型。這些模型將在即將到來的實驗室中用於AI驅動應用和基於矢量的搜索功能。
 
-In this task, you will deploy a large language model (LLM) and an
-embedding model within your Microsoft Foundry project. These models will
-be used for AI-driven applications and vector-based search capabilities
-in upcoming labs.
+1.  在你的 **Microsoft Foundry project**中，進入“**My
+    assets** **(1)** ”部分，然後選擇 **Models +
+    endpoints** **(2)**。點擊 **Deploy model** **(3)**，然後選擇
+    **Deploy base model** **(4)** 以繼續。
 
-1.  In your **Microsoft Foundry project**, navigate to the **My
-    assets** section, then select **Models +
-    endpoints**. Click **Deploy model** , and
-    choose **Deploy base model**  to proceed.
+![](./media/image11.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image11.png)
+2.  在“**Select a model** ”窗口中，搜索 **gpt-4o** **(1)**，選擇
+    **gpt-4o** **(2)** ，選擇 **Confirm** **(3)**
 
-2.  On a **Select a model** window, search for +++gpt-4o+++ ,
-    select **gpt-4o** and select **Confirm** 
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image12.png)
+3.  在 **Deploy model gpt-4o** 窗口中，選擇 **Customize**。 
 
-3.  On **Deploy model gpt-4o** window, select **Customize**.
+![](./media/image13.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image13.png)
+- 部署名稱: **gpt-4o** **(1)**
 
-	- Deployment Name: **gpt-4o** 
+- 部署類型: **Global Standard** **(2)**
 
-	- Deployment type: **Global Standard**
+- 將**型號版本**更改**為2024-08-06（默認）（3）**
 
-	- Change the **Model version to 2024-08-06 (Default)** 
+- 將每分鐘代幣的匯率限制改為**20萬（4）**
 
-	- Change the Tokens per Minute Rate Limit to **200K** 
+- 點擊 **Connect and Deploy (5)**
 
-	- Click on **Connect and Deploy** 
+![](./media/image14.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image14.png)
+4.  點擊 **Model + Endpoints** **(1)**，你可以看到已部署的
+    **gpt-4o** **(2)**  模型。 
 
-4.  Click on **Model + Endpoints** , there you can see the
-    deployed **gpt-4o** model.
+![](./media/image15.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image15.png)
+5.  返回 **Azure Portal**，搜索 **Open AI** **(1)** 並選擇 **Azure Open
+    AI** **(2)** 資源。 
 
-5.  Navigate back to **Azure Portal** and search for +++Open
-    AI+++  and select **Azure Open AI** resource.
+![](./media/image16.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image16.png)
+6.  關於**Microsoft Foundry | Azure OpenAI** 頁面，選擇 **+
+    Create** **(1)** ，然後選擇 **Azure OpenAI** **(2)** 以創建 Azure
+    OpenAI 資源。
 
-6.  On the **Microsoft Foundry | Azure OpenAI** page, select **+
-    Create**  then select **Azure OpenAI** to create
-    Azure OpenAI resource.
+![](./media/image17.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image17.png)
+7.  在 **Create Azure
+    OpenAI** 頁面，提供以下設置，點擊“**Next** **(6)**” :
 
-7.  On **Create Azure OpenAI** page, provide the following settings and
-    click on **Next** :
+[TABLE]
 
-    
-    | Detail | Value |
-    | ------ | ------ |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Resource Group** | **@lab.CloudResourceGroup(AgenticAI).Name** |
-    | **Region** | **@lab.CloudResourceGroup(AgenticAI).Location** |
-    | **Name** | +++my-openai-service@lab.LabInstance.Id+++ |
-    | **Pricing Tier** | **Standard S0** |
+> ![](./media/image18.png)
 
+8.  點擊**“Next**”，直到出現“審核+提交”標簽。
 
+9.  在“**Review + submit**”頁面，點擊“**Create**” 
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image18.png)
+![](./media/image19.png)
 
-8.  Click on **Next** till Review + submit tab appears.
+10. 等部署成功後，選擇“**Go to resource**”。
 
-9.  On the **Review + submit** page, click on **Create**
+![](./media/image20.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image19.png)
+11. 在 **my-openai-service** 資源頁面，選擇 **Go to Foundry portal**。
 
-10. Wait until the deployment got succeeded and select **Go to
-    resource**.
+![](./media/image21.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image20.png)
+12. 在你的 AI Foundry 項目中，導航到 **Shared resources**  部分，選擇
+    **Deployments** **(1)**。點擊 **Deploy model** **(2)**，然後選擇
+    **Deploy base model** **(3)** 繼續。
 
-11. On the **my-openai-service** resource page, select **Go to Foundry
-    portal**.
+![](./media/image22.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image21.png)
+**注意**：Azure AI
+Search中的導入和矢量化嚮導（後續實驗室將使用）尚未支持在您的AI
+Foundry項目中嵌入文本模型。因此，我們需要創建一個Azure
+OpenAI服務，並在那裡部署文本嵌入模型。我們稍後創建向量索引時會使用這個文本嵌入模型。
 
-12. In your AI Foundry project, navigate to the **Shared
-    resources** section, then select **Deployments** .
-    Click **Deploy model**, and choose **Deploy base
-    model**  to proceed.
+13. 在“**Select a model** ”窗口中，搜索
+    **text-embedding-3-large** **(1)**，然後選擇
+    **text-embedding-3-large** **(2)** ，選擇 **Confirm** **(3)**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-	>[!Note]: The import and vectorize wizard in Azure AI Search, which will
-	be used in subsequent labs, does not yet support text embedding models
-	within your AI Foundry project. Because of this, we need to create an
-	Azure OpenAI service and deploy a text embedding model there. We will
-	use this text embedding model later when we create our vector index.
+14. 在 **Deploy model text-embedding-3-large** 窗口中，
 
-13. On a **Select a model** window, search
-    for **text-embedding-3-large** , then
-    select **text-embedding-3-large** and
-    select **Confirm** 
+    - 部署類型: 選擇 **Standard (1)**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image23.png)
+    - 每分鐘代幣數的速率限制: **120K (2)**
 
-14. On **Deploy model text-embedding-3-large** window,
+    - 選擇 **Deploy (3)** 以部署該模型。
 
-    - Deployment type: Select **Standard**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    - Tokens per Minutes Rate Limit: **120K**
+15. 點擊 **Deployment (1)**，你可以看到已部署的 **text-embedding-3-large
+    (2)**  模型。
 
-    - Select **Deploy** to deploy the model.
+![](./media/image25.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image24.png)
+## 任務3：安裝依賴，創建虛擬環境，並創建環境變量文件
 
-15. Click on **Deployment**, you can see the
-    deployed **text-embedding-3-large** model.
+在這個任務中，你將安裝所需的依賴，搭建虛擬環境，並創建環境變量文件。這確保了受控的開發環境，並安全地管理您的
+AI 項目配置設置。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image25.png)
+1.  在你的 **Lab VM** 上，啟動 **Visual Studio Code。**
 
-## Task 3: Install dependencies, create a virtual environment, and create an environment variables file
+2.  點擊 **File** **(1)**，然後選擇**Open Folder**。
 
-In this task, you will install the required dependencies, set up a
-virtual environment, and create an environment variables file. This
-ensures a controlled development environment and securely manages
-configuration settings for your AI project.
+![](./media/image26.png)
 
-1.  On your **Lab VM**, launch **Visual Studio Code**.
+3.  進入 C：\LabFiles\Day-1 \\ **（1）**，選擇 **azure-ai-agents-labs
+    （2）** 文件夾，然後點擊 **Select folder** **(3)**。
 
-2.  Click on **File** , then **Open Folder**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image26.png)
+4.  點擊 **Yes, I Trust the authors**,
 
-3.  Navigate to C:\LabFiles\Day-1, select
-    the **azure-ai-agents-labs** folder and then click
-    on **Select folder** .
+![](./media/image28.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image27.png)
+5.  點擊 **elipses(...)** **(1)**，然後是 **Terminal** **(2)** ，然後是
+    **New Terminal** **(3)**。
 
-4.  Click on **Yes, I Trust the authors**,
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image28.png)
+6.  確保你在 **azure-ai-agents-labs**
+    項目目錄裡。請執行以下PowerShell命令創建並激活您的虛擬環境:
 
-5.  Click on the **elipses(...)** , then **Terminal** and
-    then **New Terminal** .
+7.  python -m venv venv
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image29.png)
++++venv/Scripts/activate+++
 
-6.  Make sure your in **azure-ai-agents-labs** project directory. Run
-    the below powershell commands to create and activate your virtual
-    environment:
+![](./media/image30.png)
 
-	+++python -m venv venv+++
+8.  運行下面的 PowerShell 命令。這樣就能安裝所有所需的軟件包:
 
-	+++venv/Scripts/activate+++
+9.  pip install -r requirements.txt
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image30.png)
++++pip install azure-ai-ml azure-identity+++
 
-8.  Run the below powershell command. This installs all the required packages:
+![A screen shot of a computer code AI-generated content may be
+incorrect.](./media/image31.png)
 
-    +++pip install -r requirements.txt+++
+10. 運行下面的 PowerShell 命令來安裝或升級 PIP 到最新版本。
 
-	+++pip install azure-ai-ml azure-identity+++
++++python.exe -m pip install --upgrade pip+++
 
-    ![A screen shot of a computer code AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image31.png)
+![](./media/image32.png)
 
-10. Run the below powershell command to install or upgrade pip to the
-    latest version.
+11. 執行以下命令登錄你的Azure賬戶。
 
-	+++python.exe -m pip install --upgrade pip+++
++++az login+++
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image32.png)
+12. 選擇授權的用戶賬戶。
 
-11. Run the below command to log into your Azure account.
+13. 授權完成後，返回Visual Studio代碼。
 
-	+++az login+++
+![](./media/image33.png)
 
-12. Select the user account to authorize.
+14. 打開 **Sample.env** 文件，輸入必要的環境變量。
 
-13. Once the Authorization is completed, navigate back to the Visual
-    studio code.
+![](./media/image34.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image33.png)
+- 進入 Microsoft Foundry 門戶，在“My assets”下的 **Models +
+  endpoints(1)** 部分點擊
+  **gpt-4o** **(2)** 模型，從右側面板複製底下，複製粘貼 **Target URI
+  （1）** 和 **Key (2)** 在記事本中**Endpoint**
 
-14. Open the **Sample.env** file and provide the necessary environment
-    variables.
+![](./media/image35.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image34.png)
+![](./media/image36.png)
 
-	- Navigate to Microsoft foundry portal, click
-	  on **gpt-4o** model from the **Models + endpoints(1)** section
-	  under My assets, copy and paste the **Target URI** and **Key** in a notepad
+15. 在 **Sample.env** 文件中,
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image35.png)
+    - AIPROJECT_CONNECTION_STRING：提供你在任務1第9步複製的 **Project
+      connection string**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image36.png)
+    - CHAT_MODEL_ENDPOINT: 提供你在上一步複製的**gpt-4o**模型的 **Target
+      URI** 
 
-15. On the **Sample.env** file,
+    - CHAT_MODEL_API_KEY: 提供你在上一步複製的**gpt-4o**模型的**Key** 值
 
-    - AIPROJECT_CONNECTION_STRING: Provide **Project connection
-      string** value you have copied in Task 1
+    - CHAT_MODEL: **gpt-4o**
 
-    - CHAT_MODEL_ENDPOINT: Provide the **Target
-      URI** of **gpt-4o** model you have copied in the previous step
+![](./media/image37.png)
 
-    - CHAT_MODEL_API_KEY: Provide the **Key** value of **gpt-4o** model
-      you have copied in the previous step
+16. 將更改保存到**Sample.env**文件中。
 
-    - CHAT_MODEL: **gpt-4o**
+17. 運行下面的 PowerShell 命令。這樣可以創建你的 **.env** 文件:
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image37.png)
++++cp sample.env .env+++
 
-16. Save changes to the **Sample.env** file.
+![](./media/image38.png)
 
-17. Run the below powershell command. This creates your **.env** file:
+18. 稍後打開**實驗室1 - Project Setup.ipynb**文件。**實驗室 1 - Project
+    Setup.ipynb** 筆記本指導你如何在 Microsoft Foundry 中搭建 AI
+    項目，部署大型語言模型和嵌入模型，以及配置 VS Code
+    連接。它還包含一個簡單的聊天完成API調用來驗證設置。運行此筆記本確保您的環境為開發AI驅動應用而配置正確。
 
-	+++cp sample.env .env+++
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image39.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image38.png)
+19. 選擇右上角可選的“**Select kernel (1)** ”設置，並選擇
+    **Install/enable selected extensions (python+jupyter) (2)**。
 
-18. Later Open the **Lab 1 - Project Setup.ipynb** file. The **Lab 1 -
-    Project Setup.ipynb** notebook guides you through setting up an AI
-    Project in Microsoft Foundry, deploying an LLM and embedding models,
-    and configuring VS Code connectivity. It also includes a simple Chat
-    Completion API call to verify the setup. Running this notebook
-    ensures that your environment is correctly configured for developing
-    AI-powered applications.
+![](./media/image40.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image39.png)
+20. 選擇 **Python Environments **，確保 Jupyter Notebook 運行在正確的
+    Python 解釋器和必要的依賴中。
 
-19. Select the **Select kernel** setting available in the top right
-    corner and select **Install/enable selected extensions
-    (python+jupyter)**.
+![](./media/image41.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image40.png)
+21. 從列表中選擇**venv（Python 3.x.x），**因為該版本很可能是與Microsoft
+    Foundry SDK及其他依賴兼容的必要條件。
 
-20. Select **Python Environments** to ensure that Jupyter Notebook runs
-    in the correct Python interpreter with the necessary dependencies
-    installed.
+![](./media/image42.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image41.png)
+**注意：**如果 **venv（Python 3.x.x）**未出現在列表中。關閉並打開Visual
+Studio代碼。
 
-21. Select **venv (Python 3.x.x)** from the list as this version is
-    likely required for compatibility with Microsoft Foundry SDK and
-    other dependencies.
+22. 運行第一個單元，導入用於使用 Azure AI 服務所需的 Python 庫。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image42.png)
+![](./media/image43.png)
 
-    >[!Note]: If **venv (Python 3.x.x)** does not appear in the list. Close
-and Open the Visual studio code.
+23. 運行下面的單元格，從環境變量中獲取項目連接字符串和模型名稱。這些數值對於安全地與大型語言模型（LLM）交互，無需硬編碼敏感信息。
 
-22. Run the first cell to import necessary Python libraries for working
-    with Azure AI services.
+![](./media/image44.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image43.png)
+24. 運行下面的單元格，使用連接字符串連接到你的 Microsoft Foundry
+    項目。這與 AIProjectClient 建立了安全連接，使您能夠與項目資源交互。
 
-23. Run the below cell to retrieve the project connection string and
-    model name from environment variables. These values are needed to
-    interact with the Large Language Model (LLM) securely, without
-    hardcoding sensitive information.
+![](./media/image45.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image44.png)
+25. 運行下面的單元格，使用你的 Microsoft Foundry 項目與 GPT-4o
+    模型交互。該代碼初始化聊天客戶端，發送關於泰迪熊的笑話請求，並打印回復。最後看看聊天模型提供的輸出。
 
-24. Run the below cell to connect to your Microsoft Foundry project
-    using the connection string. This establishes a secure connection
-    with AIProjectClient, enabling interactions with your project
-    resources.
+![](./media/image46.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image45.png)
+> **注意：**這一步的輸出由AI模型動態生成，每次可能有所不同。
 
-25. Run the below cell to interact with the GPT-4o model using your
-    Microsoft Foundry project. This code initializes a chat client,
-    sends a request for a joke about a teddy bear, and prints the
-    response. Finally see the output provided from the chat model.
+**摘要**
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image46.png)
+在本實驗室中，你通過在Microsoft
+Foundry中創建和配置AI項目，部署GPT-4o大型語言模型和文本嵌入3-large嵌入模型，並建立Visual
+Studio
+Code的安全連接，成功搭建了一個完整的AI開發環境。你安裝了所需的依賴，創建了虛擬環境，並配置了環境變量以安全地管理敏感信息。最後，你通過運行簡單的聊天完成API調用驗證了設置，確認環境配置正確，準備好開發AI驅動應用。
 
-	>[!Note]: The output in this step is generated dynamically by the AI model and may vary each time.
-
-**Summary**
-
-In this lab, you successfully set up a complete AI development
-environment by creating and configuring an AI Project in Microsoft
-Foundry, deploying a GPT-4o Large Language Model and
-text-embedding-3-large embedding model, and establishing secure
-connectivity from Visual Studio Code. You installed the required
-dependencies, created a virtual environment, and configured environment
-variables to manage sensitive information securely. Finally, you
-validated the setup by running a simple Chat Completion API call,
-confirming that your environment is correctly configured and ready for
-developing AI-powered applications.
-
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
-
-
+你已經成功完成了這個實驗。請點擊“Next \>\>”繼續。
