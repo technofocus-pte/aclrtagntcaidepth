@@ -1,89 +1,74 @@
+# ラボ3: 健康保険プラン分析エージェントの作成
 
-# Lab 3: Build a Health Insurance Plans Analyser AI Agent
+**概要**
 
-**Overview**
+このラボでは、健康保険プランデータを処理および分析するために特別に設計されたHealth
+Insurance Plans Analyser AI Agent
+を構築します。このインテリジェントエージェントは、プランの詳細を解釈し、補償オプションを分析し、意思決定を支援する視覚的な表現を生成することで、さまざまな健康保険プランの比較を自動化します。Microsoft
+FoundryとAzure
+AIサービスを使用することで、エージェントは保険プラン間の違いを明確に示す比較棒グラフを作成します。これにより、ユーザーは選択肢を理解し、最適な健康保険を選択しやすくなります。
 
-In this lab, you will build a Health Insurance Plans Analyser AI Agent
-designed specifically to process and analyze health insurance plan data.
-This intelligent agent automates the comparison of different health
-benefit plans by interpreting plan details, analyzing coverage options,
-and generating visual representations to support decision-making. Using
-Microsoft Foundry and Azure AI services, the agent will create
-comparative bar charts that clearly display differences between
-insurance plans, making it easier for users to understand their options
-and choose the most suitable health insurance coverage.
+**ラボの目的**
 
-**Lab Objectives**
+このラボでは次のタスクを実行します。
 
-You'll perform the following task in this lab.
+- タスク1: シンプルなAIエージェントを作成する
 
-- Task 1: Create a Simple AI Agent
+## タスク1: シンプルなAIエージェントを作成する
 
-## Task 1: Create a Simple AI Agent
+このタスクでは、Azure AI
+サービスを使用して分析と視覚化を行い、データを処理し、さまざまな健康保険プランを比較する棒グラフを生成するシンプルな
+AI エージェントを構築します。
 
-In this task, you will build a simple AI Agent that processes data and
-generates a bar chart comparing different health benefit plans using
-Azure AI services for analysis and visualization.
+1.  **Lab 2 - Create A Simple AI
+    Agent.ipynbファイルを**開きます。この**Lab 2 - Create A Simple AI
+    Agent.ipynb**ノートブックでは、データを処理し、さまざまな健康保険プランを比較する棒グラフを生成するシンプルな
+    AI エージェントの構築方法を学習します。
 
-1.  Open the **Lab 2 - Create A Simple AI Agent.ipynb** file. This **Lab
-    2 - Create A Simple AI Agent.ipynb** notebook guides you through how
-    to build a simple AI Agent that processes data and generates a bar
-    chart comparing different health benefit plans.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image1.png)
+2.  右上にある**「Select
+    kernel 」**を選択します。リストから**venv（Python
+    3.xx）**を選択します。
 
-2.  Select the **Select kernel** setting available in the top right
-    corner. Select **venv (Python 3.x.x)** from the list.
+![A blue and red rectangle with white text AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A blue and red rectangle with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image2.png)
+3.  以下のセルを実行して、Azure
+    AIプロジェクトを操作するために必要なライブラリをインポートし、環境変数を読み込みます。この設定により、Azure
+    AIサービスとの安全な認証とやり取りが可能になります。
 
-3.  Run the below cell to import necessary libraries and load
-    environment variables for working with Azure AI Projects. This setup
-    enables secure authentication and interaction with Azure AI
-    services.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image3.png)
+4.  以下のセルを実行してMicrosoft
+    Foundryプロジェクトに接続し、デプロイされた**gpt-4o**モデルにアクセスします。これにより、プロジェクトの接続文字列とAzure資格情報を使用して安全な接続が確立されます。
 
-4.  Run the below cell to connect to your Microsoft Foundry project and
-    access the deployed **gpt-4o** model. This establishes a secure
-    connection using the project connection string and Azure
-    credentials.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image4.png)
+5.  このセルを実行すると、Microsoft Foundry
+    を使用してデータを処理し、さまざまな健康保険プランを比較する棒グラフを生成する**シンプルな
+    AI エージェント**が作成されます。このスクリプトは、AI
+    エージェントを初期化し、健康保険プランデータを含むプロンプトを送信して、棒グラフの生成を要求します。エージェントは要求を処理し、グラフを生成して画像ファイルを保存した後、エージェントを削除してクリーンアップを行います。
 
-5.  Run this cell to create a **simple AI Agent** that processes data
-    and generates a bar chart comparing different health benefit plans
-    using Microsoft Foundry.This script initializes the AI agent, sends
-    a prompt containing health plan data, and requests a bar chart. The
-    agent processes the request, generates the chart, saves the image
-    file, and then cleans up by deleting the agent.
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image5.png)
+6.  最後に出力を観察します。
 
-6.  Finally observe the output.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%203/media/image6.png)
+**まとめ**
 
-**Summary**
+このラボでは、Microsoft Foundry と Azure AI サービスを使用して、Health
+Insurance Plans Analyser AI
+Agentを構築し、健康保険プランの分析と比較を自動化しました。Microsoft
+Foundry プロジェクトに接続し、デプロイ済みの GPT-4o
+モデルにアクセスし、複雑な健康保険プランデータを処理するインテリジェントエージェントを作成する方法を学習しました。エージェントはプランの詳細を解釈し、補償オプションを分析し、比較棒グラフを自動生成して保険プラン間の違いを視覚化しました。このハンズオンエクスペリエンスでは、AI
+エージェントがデータ分析を効率化し、意思決定プロセスをサポートし、ユーザーが健康保険オプションを簡単に理解して比較できるようにする方法を実証しました。
 
-In this lab, you successfully built a Health Insurance Plans Analyser AI
-Agent using Microsoft Foundry and Azure AI services to automate the
-analysis and comparison of health benefit plans. You learned how to
-connect to your Microsoft Foundry project, access the deployed GPT-4o
-model, and create an intelligent agent that processes complex health
-insurance plan data. The agent interpreted plan details, analyzed
-coverage options, and automatically generated comparative bar charts to
-visualize differences between insurance plans. This hands-on experience
-demonstrated how AI agents can streamline data analysis, support
-decision-making processes, and help users easily understand and compare
-their health insurance options.
-
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
+このラボは正常に完了しました。「Next
+\>\>」をクリックして次に進んでください。

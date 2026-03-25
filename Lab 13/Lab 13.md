@@ -1,336 +1,321 @@
+# ラボ 13: Human-in-the-Loop AI による企業内不正検出の実装
 
-# Lab 13: Implementing Enterprise Fraud Detection with Human-in-the-Loop AI
+**推定所要時間**： 60分
 
-**Estimated Duration**: 60 Minutes
+**概要**
 
-**Overview**
+Contoso
+Ltd.のAIエンジニアで、human-in-the-loop（HITL）AIワークフローの実装を担当しています。このラボでは、Contoso
+Fraud Detection &
+Responseワークフローについて学習します。このワークフローでは、AIエージェントが疑わしいアクティビティを分析し、高リスクのアクションを人間のアナリストにルーティングしてレビューを行います。リアルタイムのReact +
+FastAPIダッシュボードを使用して、監視とインタラクションを行います。
 
-You are an AI Engineer at Contoso Ltd., responsible for implementing
-human-in-the-loop (HITL) AI workflows. In this lab, you will explore the
-Contoso Fraud Detection & Response Workflow, where AI agents analyze
-suspicious activity and route high-risk actions to human analysts for
-review, using a real-time React + FastAPI dashboard for monitoring and
-interaction.
+ラボの目的
 
-Lab Objective
+このラボでは次のタスクを実行します。
 
-You'll perform the following tasks in this lab.
+- タスク 1: Azure エージェント フレームワークを使用したHuman-in-the-Loop
+  AI ワークフローの実装
 
-- Task 1: Implementing Human-in-the-Loop AI Workflows with Azure Agent
-  Framework
+## タスク0: コードを設定する
 
-## Task 0: Set up the code 
+1.  C:\Labfiles\Day 3 から、OpenAIWorkshop-Framework
+    ファイルを抽出します。
 
-1.  From C:\Labfiles\Day 3, extract the **OpenAIWorkshop-Framework**
-    file.
+2.  LabVM デスクトップから Visual Studio Code をクリックします。
 
-2.  Click on the **Visual Studio Code** from the LabVM desktop.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image1.png)
+3.  File (1)を選択し、**Open
+    Folder** **(2)** をクリックして**OpenAIWorkshop-Framework**フォルダーを開きます。
 
-3.  Select **File**  and click **Open Folder**  to open
-    the **OpenAIWorkshop-Framework** folder.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image2.png)
+4.  C:\Labfiles\Day 3\\**OpenAIWorkshop-Framework**
+    パスに移動し、**OpenAIWorkshop-Framework**
+    を選択してから、**フォルダーを選択します**。
 
-4.  Navigate to **C:\Labfiles\Day 3\\OpenAIWorkshop-Framework** path,
-    select **OpenAIWorkshop-Framework**  and then **Select Folder**.
+5.  「**Yes, I trust the authors**」を選択します。
 
-5.  Select **Yes, I trust the authors**.
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image3.png)
+6.  **省略記号(...)
+    (1)**をクリックし、次に**Terminal** **(2)** をクリックして、**New
+    Terminal** **(3)**をクリックします。
 
-6.  Click on the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+7.  以下のコマンドを入力して**applications** ディレクトリに移動し、**pyproject.toml
+    / uv.lock** ファイルから必要な依存関係をすべてインストールします。
 
-7.  Enter the below command to navigate to
-    the **applications** directory and install all required dependencies
-    from the **pyproject.toml / uv.lock** file.
+> cd agentic_ai/applications
+>
+> uv sync
 
-	+++cd agentic_ai/applications+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-	+++pip install uv+++
+**注記：**エラーが発生した場合は、以下のコマンドを実行してください。
 
-	+++uv sync+++
+> +++pip install uv+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im1.png)
++++uv sync+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/im2.png)
+8.  このコマンドは完了までに5～10分かかる場合があります。**その間、タスク1を続行してください。**
 
-9.  The command may take 5–10 minutes to complete. **Meanwhile, you can
-    proceed with Task 1**.
+## タスク 1: Agent Frameworkを使用したHuman-in-the-Loop AI ワークフローの実装
 
-## Task 1: Implementing Human-in-the-Loop AI Workflows with Azure Agent Framework
+このラボでは、Contoso 社のFraud Detectionシステムに Human-in-the-Loop
+(HITL)
+ワークフローを実装します。マルチエージェントによる不正検出の実行、高リスクアラートの確認、人間による意思決定、そして
+React + FastAPI
+ダッシュボードを用いたワークフローのリアルタイム可視化を行います。
 
-In this lab, you will implement a Human-in-the-Loop (HITL) workflow for
-Contoso’s Fraud Detection system. You’ll run multi-agent fraud
-detection, review high-risk alerts, make human decisions, and visualize
-the workflow in real time using the React + FastAPI dashboard.
+1.  Visual Studio Codeから、**agentic_ai (1) \> workflow (2)\>
+    fraud_detection (3)**を展開し、**fraud_detection_workflow.py
+    (4)**を選択します。Code **(5)**を表示します 。
 
-1.  From the Visual Studio Code, expand **agentic_ai ** \> workflow
-    **\> fraud_detection**, select **fraud_detection_workflow.py**. View the Code .
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image6.png)
+2.  **fraud_detection（1）**の下で、**.env.sample（2）**を右クリックし、**Rename** **(3)**を選択します。
 
-2.  Under **fraud_detection** , right click
-    on **.env.sample**  and then select **Rename** .
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image7.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image7.png)
+3.  名前を .env に変更し、クリックしてファイルを開きます。
 
-3.  Rename as .env and click on it to open the file.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image8.png)
+4.  AZURE_OPENAI_API_KEY (1) と AZURE_OPENAI_ENDPOINT (2)
+    の値を、前のラボでコピーした実際の値に置き換えます。
 
-4.  Replace the value
-    of AZURE_OPENAI_API_KEY  and AZURE_OPENAI_ENDPOINT  with
-    the actual values that you have copied in the previous lab.
+5.  AZURE_OPENAI_CHAT_DEPLOYMENTを**gpt-4o-mini (3)**として追加します。
 
-5.  Add the AZURE_OPENAI_CHAT_DEPLOYMENT as **gpt-4o-mini**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image9.png)
+- **Microsoft
+  Foundry**ポータルに移動し、**Overview** **(1)**,を選択し、「**Azure
+  OpenAI** **(2)**を選択します。**Azure OpenAI key** **(3)** と**Azure
+  OpenAI endpoint** **(4)**をコピーします。
 
-	- Navigate to **Microsoft Foundry** portal, select **Overview** ,
-	  select **Azure OpenAI** . Copy the **Azure OpenAI
-	  key**  and **Azure OpenAI endpoint** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image10.png)
+6.  File (1)を選択し、**Save** **(2)**を選択します。
 
-6.  Select **File**  and then **Save** .
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image11.png)
+7.  Visual Studio Code ウィンドウで、**省略記号 (...) (1)**
+    をクリックし、次に**Terminal** **(2)** をクリックして、**New
+    Terminal** **(3)**をクリックします。
 
-7.  In the Visual Studio Code Window, click on
-    the **ellipsis(...)**  then **Terminal**  and
-    then **New Terminal** .
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+8.  以下のコマンドを実行します。
 
-8.  Run the below command.
+> cd mcp
+>
+> uv run python mcp_service.py
 
-	```
-	cd mcp
-	uv run python mcp_service.py
-	```
+9.  コマンドを実行し、新しいターミナルを開きます。
 
-9.  Let the command run, open a new terminal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
+10. コマンドラインでワークフローを実行するには、以下のコマンドを入力します。
 
-10. Enter the command given below to run the Workflow with the command
-    line.
+> cd agentic_ai/workflow/fraud_detection
+>
+> uv run python fraud_detection_workflow.py
+>
+> ![A black screen with white text AI-generated content may be
+> incorrect.](./media/image12.png)
 
-	```
-	cd agentic_ai/workflow/fraud_detection
-	uv run python fraud_detection_workflow.py
-	```
+**注記**:
+コマンドの完了には5～10分かかる場合があります。完了するまでお待ちください。
 
-    ![A black screen with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image12.png)
+11. この例には 3 つのサンプル アラートが含まれています。
 
-    >[!Note]: The command may take 5–10 minutes to complete. Please wait
-until it finishes.
+    - **警告1: Multi-Country Login** （重大度が高い）
 
-11. The example includes three sample alerts:
+    - アラートID: "ALERT-001"
 
-    - **Alert 1: Multi-Country Login** (High Severity)
+    - 顧客ID: 1
 
-    - alert_id: "ALERT-001"
+    - アラートタイプ: 「multi_country_login」
 
-    - customer_id: 1
+    - 説明: 「2 Login attempts from USA and Russia within 2 hours.」
 
-    - alert_type: "multi_country_login"
+重大度：「high」
 
-    - description: "Login attempts from USA and Russia within 2 hours."
+- **アラート2: Data Spike** （中程度の重大度）
 
-	severity: "high"
+- アラートID: "ALERT-002"
 
-	- **Alert 2: Data Spike** (Medium Severity)
+- 顧客ID: 2
 
-	- alert_id: "ALERT-002"
+- アラートタイプ: "data_spike"
 
-	- customer_id: 2
+- 説明: 「Data usage increased by 500% in the last 24 hours.」
 
-	- alert_type: "data_spike"
+重大度:「medium」
 
-	- description: "Data usage increased by 500% in the last 24 hours."
+- **警告3: Unusual Charges**（重大度が高い）
 
-	severity: "medium"
+- アラートID: "ALERT-003"
 
-	- **Alert 3: Unusual Charges** (High Severity)
+- 顧客ID: 3
 
-	- alert_id: "ALERT-003"
+- アラートタイプ: 「unusual_charges」
 
-	- customer_id: 3
+- 説明: 「Three large purchases totaling $5,000 in 10 minutes」
 
-	- alert_type: "unusual_charges"
+重大度：「high」
 
-	- description: "Three large purchases totaling $5,000 in 10 minutes."
+12. 実行が成功すると、以下のターミナルが表示されます。リスクの重大度に応じてアクションを選択してください。リスクの重大度が0.6以上の場合は、人間によるレビューが必要です。
 
-	severity: "high"
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-12. Once the run succeeded, you can see the terminal as below. Select
-    the action based on the risk severity. If the risk
-    severity ≥0.6 human review is needed.
+13. リスクの重大度が高いため、2を入力して顧客アカウントをロックすることができます（1）
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image13.png)
+    - アナリストのコメント：3つの分析すべてで高リスクが確認されました。即時対応：不正アクセス防止のためアカウントをロックします。**(2)**
 
-13. As the risk severity is high, you can enter 2 to lock the customer
-    account 
+    - アナリストIDを入力してください（デフォルト：analyst_cli）：**Enter**キーを押します**（3）**
 
-    - Enter analyst notes: High risk confirmed from all three analyses.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
+
+14. ワークフローが完了すると、次のような出力が表示されます。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
+
+15. コマンドが成功したら、**実行中の既存のターミナル
+    セッションをすべて削除します。**
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
+
+## Contoso 不正検出および対応ワークフロー向けReal-Time Workflow Visualizer UI
+
+Real-Time Workflow Visualizer UIを使用して、Contoso Fraud Detection &
+Responseワークフローを監視および操作します。すべてのサービス（MCPサーバー、バックエンド、フロントエンド）を起動し、サンプルアラートを選択し、ライブワークフローの実行を監視し、高リスクの不正行為アラートを確認し、アナリストの決定を送信し、イベントストリームをリアルタイムで監視します。
+
+1.  新しいターミナルを開きます。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
+
+2.  すべてのサービスを開始（3つのターミナル）:
+
+    - ターミナル1 -​​ MCPサーバー:
+
+> cd mcp
+>
+> uv run mcp_service.py
+
+- ターミナル2 - FastAPIバックエンド:
+
+> cd agentic_ai/workflow/fraud_detection
+>
+> uv run --prerelease allow backend.py
+>
+> ![A screen shot of a computer program AI-generated content may be
+> incorrect.](./media/image17.png)
+
+- ターミナル3 - Reactフロントエンド:
+
+> cd agentic_ai/workflow/fraud_detection/ui
+>
+> npm run dev
+>
+> **注記**: エラーが発生した場合は、+++npm install+++
+> コマンドを実行してから、+++npm run dev+++
+> コマンドを再実行してください。
+>
+> ![A computer screen with white text AI-generated content may be
+> incorrect.](./media/image18.png)
+
+- http://localhost:3000 を**Ctrl +
+  クリックして、**ブラウザでアプリケーションを開きます。
+
+> ![A screen shot of a computer AI-generated content may be
+> incorrect.](./media/image19.png)
+
+3.  Real-Time Workflow Visualizer UIを表示します。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
+
+4.  **Select Alerts** ドロップダウンからサンプルアラートを表示できます。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
+
+**注記**:
+2つ目のターミナル（backend.py）で接続が確立された後、ドロップダウンからアラートが表示されるようになります。接続が確立されていることを確認してください。
+
+5.  **アラートの選択**:
+    3つのサンプルアラート（ALERT-001、ALERT-002、ALERT-003）から選択してください（1）
+
+    - **Start Workflow (2)** をクリックして処理を開始します。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
+
+6.  **ライブアップデートを見る**:
+    実行プログラムが実行されるたびにノードの色が変わります
+
+    - 🔵 青 = ランニング
+
+    - 🟢 緑 = 完了
+
+    - ⚪ 灰色 = アイドル状態
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
+
+7.  **アナリストレビュー**: 高リスクの不正行為が検出されると、レビュー
+    パネルが表示されます。
+
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
+
+8.  **決定を送信**: アクションを選択してメモを追加する
+
+    - Your Decision: 重大度が高い場合は、**Lock Account
+      (1)**を選択します。
+
+    - Analyst notes：High risk confirmed from all three analyses.
       Immediate action: locking account to prevent unauthorized
-      access. 
+      access. **(2)**を入力します
 
-    - Enter analyst ID (default: analyst_cli): Press **Enter** 
+    - **SUBMIT WORKFLOW (3)**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image14.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-14. Once the workflow is completed, you will receive an output like
-    this.
+9.  **イベントの監視**: 右側のパネルには、完全なイベント
+    ストリームが表示されます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-15. Once the command is succeeded, **delete all the existing running
-    terminal sessions**.
+**まとめ**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image16.png)
-
-## Real-Time Workflow Visualizer UI for Contoso Fraud Detection & Response Workflow
-
-You will use the Real-Time Workflow Visualizer UI to monitor and
-interact with the Contoso Fraud Detection & Response Workflow. You’ll
-start all services (MCP server, backend, frontend), select sample
-alerts, observe live workflow execution, review high-risk fraud alerts,
-submit analyst decisions, and monitor event streams in real time.
-
-1.  Open a new terminal.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image4.png)
-
-2.  Start All Services (3 terminals):
-
-    - Terminal 1 - MCP Server:
-
-	```
-	cd mcp
-	uv run mcp_service.py 
-	```
-
-	- Terminal 2 - FastAPI Backend:
-
-	```
-	cd agentic_ai/workflow/fraud_detection
-	uv run --prerelease allow backend.py
-	```
-
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image17.png)
-
-	- Terminal 3 - React Frontend:
-
-	```
-	cd agentic_ai/workflow/fraud_detection/ui
- 	npm install
-	npm run dev
-	```
-
-	>[!Note]: If you get any error, execute the +++npm install+++ command and then rerun the +++npm run dev+++ command.
-
-    ![A computer screen with white text AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image18.png)
-
-	- **ctrl + click** on http://localhost:3000 to open the application in a
-	  browser
-
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image19.png)
-
-3.  View the Real-Time Workflow Visualizer UI.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image20.png)
-
-4.  You can see sample alerts from the **Select Alerts** drop-down.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image21.png)
-
-    >[!Note]: You will be able to see the alerts from the drop-down only
-	after the connection is open in the 2nd terminal (backend.py). Make sure
-	the connection is open.
-
-5.  **Select Alert**: Choose from 3 sample alerts (ALERT-001, ALERT-002,
-    ALERT-003) 
-
-    - Cick on **Start Workflow** to begin processing
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image22.png)
-
-6.  **Watch Live Updates**: Nodes change color as executors run
-
-    - 🔵 Blue = Running
-
-    - 🟢 Green = Completed
-
-    - ⚪ Gray = Idle
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image23.png)
-
-7.  **Analyst Review**: When high-risk fraud is detected, a review panel
-    appears.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image24.png)
-
-8.  **Submit Decision**: Choose action and add notes
-
-    - Your Decision: If the severity is high, select **Lock Account**
-
-    - Analyst notes: Enter High risk confirmed from all three analyses.
-      Immediate action: locking account to prevent unauthorized
-      access. 
-
-    - Select **SUBMIT WORKFLOW**
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image25.png)
-
-9.  **Monitor Events**: The right panel shows the complete event stream.
-
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2013/media/image26.png)
-
-**Summary**
-
-In this lab, you implemented a human-in-the-loop (HITL) workflow for
-fraud detection using the Azure Agent Framework. You explored how AI
-agents analyze suspicious activity, route high-risk cases to human
-analysts, and interact with a real-time React + FastAPI dashboard to
-monitor workflow execution and submit decisions.
-
-
-
-
+このラボでは、Azure Agent Framework
+を用いて不正行為検出のためのHuman-in-the-Loop (HITL)
+ワークフローを実装しました。AI
+エージェントが疑わしいアクティビティを分析し、高リスクのケースを人間のアナリストにルーティングし、リアルタイムの
+React + FastAPI
+ダッシュボードと連携してワークフローの実行状況を監視し、意思決定を送信する仕組みを学習しました。

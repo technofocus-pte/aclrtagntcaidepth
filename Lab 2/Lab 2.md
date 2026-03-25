@@ -1,403 +1,367 @@
+# ラボ 2: AI プロジェクトをセットアップし、VS Code からチャット補完を実行する
 
-# Lab 2: Setup AI Project and perform Chat Completion from VS Code
+**概要**
 
-**Overview**
+このラボでは、Microsoft Foundry で AI プロジェクトを作成・構成し、Large
+Language Models (LLM) と埋め込みモデルをデプロイし、プロジェクトを
+Visual Studio Code に接続することで、AI
+エージェントの構築に必要な開発環境を準備します。その後、コードから簡単なチャット補完を実行してセットアップを検証し、環境が正しく構成され、AI-poweredアプリケーションの開発準備が整っていることを確認します。
 
-In this lab, you will prepare the complete development environment
-required for building AI agents by creating and configuring an AI
-Project in Microsoft Foundry, deploying a Large Language Model (LLM) and
-an embedding model, and connecting the project to Visual Studio Code.
-You will then validate the setup by running a simple chat completion
-from code, ensuring that your environment is correctly configured and
-ready for developing AI-powered applications.
+ラボの目的
 
-Lab Objectives
+このラボでは次のタスクを実行します。
 
-You'll perform the following tasks in this lab.
+- タスク 1: Microsoft Foundry での AI プロジェクトのセットアップ
 
-- Task 1: Setting up the AI Project in the Microsoft Foundry
+- タスク2: LLMの導入とモデルの埋め込み
 
-- Task 2: Deploying an LLM and embedding models
+- タスク3:
+  依存関係をインストールし、仮想環境を作成し、環境変数ファイルを作成する
 
-- Task 3: Install dependencies, create a virtual environment, and create
-  an environment variables file
+## タスク 1: Microsoft FoundryでのAIプロジェクトのセットアップ
 
-## Task 1: Setting up the AI Project in the Microsoft Foundry
+このタスクでは、Microsoft Foundry 内で AI
+プロジェクトを作成および構成します。必要なリソースの設定、プロジェクトパラメータの定義、AI
+モデルのデプロイ環境の準備などを行います。このタスクを完了すると、完全に初期化された
+AI
+プロジェクトが完成し、今後の開発と実験の基盤として活用できるようになります。
 
-In this task, you will create and configure an AI Project within
-Microsoft Foundry. This involves setting up the necessary resources,
-defining project parameters, and ensuring that the environment is ready
-for deploying AI models. By the end of this task, you will have a fully
-initialized AI Project, serving as the foundation for further
-development and experimentation.
+1.  Azure Portal ページで、ポータルの上部にある \[リソースの検索\]
+    ボックスに**「Microsoft Foundry (1) 」と入力し**、 \[サービス\]
+    の**\[Microsoft Foundry (2)\]を選択します**。
 
-1.  On the Azure Portal page (+++https://portal.azure.com+++), in the Search resources box at the top of
-    the portal, enter +++Microsoft Foundry+++, and then
-    select **Microsoft Foundry** under Services.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image1.png)
+2.  **Use with Foundry**の左側のナビゲーションペインで、 **AI Hubs
+    (1)**を選択します。AIハブページで、**Create（2）**をクリックし、ドロップダウンから**Hub（3）**を選択します。
 
-2.  In the left navigation pane for the **Use with Foundry**,
-    select **AI Hubs**. On the AI Hubs page, click on **Create** and select **Hub** from the drop-down.
+![](./media/image2.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image2.png)
+3.  **Create an Azure AI
+    hub **ペインで、**Basics（１）**の下に次の詳細を入力します。 :
 
-3.  On the **Create an Azure AI hub** pane enter the following details
-    under **Basics**:
+    - Subscription : **Leave default subscription** **(2)**
 
-    - Subscription : **Leave default subscription** 
+    - Resource Group : **AgenticAI** **(3)**
 
-    - Resource Group : **AgenticAI**
+    - Region : **East US2** (4)
 
-    - Region : **@lab.CloudResourceGroup(AgenticAI).Location**
+    - Name : ** <+++ai-foundry-hub@lab.LabInstance.Id>+++ (5)**
 
-    - Name : +++ai-foundry-hub@lab.LabInstance.Id+++
-
-    - Connect AI Services incl. OpenAI : Click on **Create
-      New**.
+    - Connect AI Services incl. OpenAI : Click on **Create
+      New** **(6)**.
 
     - Connect AI Services incl. OpenAI : Provide a
-      name +++my-ai-service@lab.LabInstance.Id+++.
+      name **<+++my-ai-service@lab.LabInstance.Id>+++ (7)**.
 
-    - Click on **Save**, followed by **Next:Storage** 
+    - **「Save 」(8)**をクリックし 、**Next:Storage** **(9)**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image3.png)
+> ![](./media/image3.png)
 
-4.  Click on **Review + Create** tab followed by **Create.**
+4.  **Review + Create **タブをクリックし、 **Create**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image5.png)
+![](./media/image5.png)
 
-5.  Wait for the deployment to complete and then click on **Go to
-    resource**.
+5.  デプロイメントが完了するまで待ってから、 **Go to
+    resource**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image6.png)
+![](./media/image6.png)
 
-6.  On the Overview pane, click on **Launch Azure AI Foundry**. This
-    will navigate you to the Microsoft Foundry portal.
+6.  「概要」ペインで、 **「Launch Azure AI
+    Foundry」**をクリックします。これにより、Microsoft
+    Foundryポータルに移動します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image7.png)
+![](./media/image7.png)
 
-7.  Scroll down and click on **+ New project** on the Hub Overview.
+7.  Hub Overviewで**+ New project**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image8.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-8.  Provide the project name
-    as +++ai-foundry-project@lab.LabInstance.Id+++, then click
-    on **Create**.
+8.  プロジェクト名を[**+++**
+    **ai-foundry-project@lab.LabInstance.Id**](mailto:+++ai-foundry-project@lab.LabInstance.Id)
+    **+++** として入力し、 **Create（2）**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image9.png)
+![](./media/image9.png)
 
-9.  Once the project is created, scroll down and copy the **Project
-    connection string**, then paste them into Notepad or a secure
-    location, as they will be required for upcoming tasks.
+9.  プロジェクトが作成されたら、下にスクロールして**Project connection
+    string**をコピーし、メモ帳または安全な場所に貼り付けます。今後のタスクで必要になります。
 
-    ![A screenshot of a project AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image10.png)
+![A screenshot of a project AI-generated content may be
+incorrect.](./media/image10.png)
 
-## Task 2: Deploying an LLM and embedding models
+## タスク2: LLMの導入とモデルの埋め込み
 
-In this task, you will deploy a large language model (LLM) and an
-embedding model within your Microsoft Foundry project. These models will
-be used for AI-driven applications and vector-based search capabilities
-in upcoming labs.
+このタスクでは、Microsoft Foundry プロジェクト内にLarge Language Models
+（LLM）と埋め込みモデルをデプロイします。これらのモデルは、今後のラボで
+AI 駆動型アプリケーションやベクターベースの検索機能に使用されます。
 
-1.  In your **Microsoft Foundry project**, navigate to the **My
-    assets** section, then select **Models +
-    endpoints**. Click **Deploy model** , and
-    choose **Deploy base model**  to proceed.
+1.  **Microsoft Foundry project**で、**My
+    assets (1) **セクションに移動し、**Models +
+    endpoints (2)**を選択します。**Deploy
+    model (3)**をクリックし、**Deploy base
+    model (4) **を選択して続行します。　
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image11.png)
+![](./media/image11.png)
 
-2.  On a **Select a model** window, search for +++gpt-4o+++ ,
-    select **gpt-4o** and select **Confirm** 
+2.  **Select a model ウィンドウ**で、
+    **gpt-4o（1）**を検索します。 **gpt-4o（2）**を選択して **Confirm（3） **を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-3.  On **Deploy model gpt-4o** window, select **Customize**.
+3.  **Deploy model gpt-4o **ウィンドウで、 **Customize**を選択します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image13.png)
+![](./media/image13.png)
 
-	- Deployment Name: **gpt-4o** 
+- Deployment Name: gpt-4o (1)
 
-	- Deployment type: **Global Standard**
+- Deployment type: Global Standard (2)
 
-	- Change the **Model version to 2024-08-06 (Default)** 
+- **Model versionを2024-08-06 (Default) (3)に**変更します。 
 
-	- Change the Tokens per Minute Rate Limit to **200K** 
+- Tokens per Minute Rate Limitを**200K (4)に変更します。** **（4）**
 
-	- Click on **Connect and Deploy** 
+- **Connect and Deploy (5)**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image14.png)
+![](./media/image14.png)
 
-4.  Click on **Model + Endpoints** , there you can see the
-    deployed **gpt-4o** model.
+4.  **Model +
+    Endpoints (1)**をクリックし、展開された**gpt-4o (2) **を見ることができます。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image15.png)
+>  ![](./media/image15.png)
 
-5.  Navigate back to **Azure Portal** and search for +++Open
-    AI+++  and select **Azure Open AI** resource.
+5.  **Azure Portal **に戻り、 **Open AI (1) **を検索し、**Azure Open
+    AI（２）**資源を選択 します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image16.png)
+![](./media/image16.png)
 
-6.  On the **Microsoft Foundry | Azure OpenAI** page, select **+
-    Create**  then select **Azure OpenAI** to create
-    Azure OpenAI resource.
+6.  **Microsoft Foundry | Azure OpenAI**ページで、 **+
+    Create (1) **を選択し、**Azure OpenAI(2) **を選択して、Azure
+    OpenAIリソースを作成します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image17.png)
+![](./media/image17.png)
 
-7.  On **Create Azure OpenAI** page, provide the following settings and
-    click on **Next** :
+7.  **Create Azure
+    OpenAI ページ**で、次の設定を指定して**Next (6)**をクリックします:
 
-    
-    | Detail | Value |
-    | ------ | ------ |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Resource Group** | **@lab.CloudResourceGroup(AgenticAI).Name** |
-    | **Region** | **@lab.CloudResourceGroup(AgenticAI).Location** |
-    | **Name** | +++my-openai-service@lab.LabInstance.Id+++ |
-    | **Pricing Tier** | **Standard S0** |
+[TABLE]
 
+> ![](./media/image18.png)
 
+8.  **「Next 」**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image18.png)
+9.  **「Review + submit 」ページ**で、 **「Create」**をクリックします。
 
-8.  Click on **Next** till Review + submit tab appears.
+![](./media/image19.png)
 
-9.  On the **Review + submit** page, click on **Create**
+10. デプロイメントが成功するまで待ってから、 **Go to
+    resource**を選択します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image19.png)
+![](./media/image20.png)
 
-10. Wait until the deployment got succeeded and select **Go to
-    resource**.
+11. **my- openai -service**リソース ページで、 **Go to Foundry
+    portal**を選択します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image20.png)
+![](./media/image21.png)
 
-11. On the **my-openai-service** resource page, select **Go to Foundry
-    portal**.
+12. AI Foundryプロジェクトで、**Shared
+    resources **セクションに移動し、**Deployments (1)**を選択します。**Deploy
+    model (2)**をクリックし、**Deploy base
+    model (3) **を選択して続行します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image21.png)
+![](./media/image22.png)
 
-12. In your AI Foundry project, navigate to the **Shared
-    resources** section, then select **Deployments** .
-    Click **Deploy model**, and choose **Deploy base
-    model**  to proceed.
+**注**：後続のラボで使用するAzure AI
+Searchのインポートおよびベクター化ウィザードは、AI
+Foundryプロジェクト内のテキスト埋め込みモデルをまだサポートしていません。そのため、Azure
+OpenAIサービスを作成し、そこにテキスト埋め込みモデルをデプロイする必要があります。このテキスト埋め込みモデルは、後でベクターインデックスを作成する際に使用します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image22.png)
+13. **Select a model **ウィンドウで、
+    **text-embedding-3-large (1)**を検索します。**text-embedding-3-large (2)**を選択して、**Confirm **を選択します。 **（3）**
 
-	>[!Note]: The import and vectorize wizard in Azure AI Search, which will
-	be used in subsequent labs, does not yet support text embedding models
-	within your AI Foundry project. Because of this, we need to create an
-	Azure OpenAI service and deploy a text embedding model there. We will
-	use this text embedding model later when we create our vector index.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-13. On a **Select a model** window, search
-    for **text-embedding-3-large** , then
-    select **text-embedding-3-large** and
-    select **Confirm** 
+14. **Deploy model text-embedding-3-large **ウィンドウで、
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image23.png)
+    - Deployment type: Select Standard (1)
 
-14. On **Deploy model text-embedding-3-large** window,
+    - Tokens per Minutes Rate Limit: 120K (2)
 
-    - Deployment type: Select **Standard**
+    - モデルをデプロイするには、 **Deploy (3) **を選択します。
 
-    - Tokens per Minutes Rate Limit: **120K**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-    - Select **Deploy** to deploy the model.
+15. **Deployment
+    (1)**をクリックすると、デプロイされた**text-embedding-3-large
+    (2) **モデルが表示されます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image24.png)
+![](./media/image25.png)
 
-15. Click on **Deployment**, you can see the
-    deployed **text-embedding-3-large** model.
+## タスク3: 依存関係をインストールし、仮想環境を作成し、環境変数ファイルを作成する
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image25.png)
+このタスクでは、必要な依存関係をインストールし、仮想環境をセットアップし、環境変数ファイルを作成します。これにより、制御された開発環境が確保され、AIプロジェクトの構成設定が安全に管理されます。
 
-## Task 3: Install dependencies, create a virtual environment, and create an environment variables file
+1.  **Lab VM**で**Visual Studio Code**を起動します。
 
-In this task, you will install the required dependencies, set up a
-virtual environment, and create an environment variables file. This
-ensures a controlled development environment and securely manages
-configuration settings for your AI project.
+2.  **File (1)**をクリックして、 **Open Folder**をクリックします。　
 
-1.  On your **Lab VM**, launch **Visual Studio Code**.
+![](./media/image26.png)
 
-2.  Click on **File** , then **Open Folder**.
+3.  C:\LabFiles\Day-1\\ **(1)**に移動し、
+    **azure-ai-agents-labs（２）**を選択します。それから、**Select
+    folder (3)**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image26.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-3.  Navigate to C:\LabFiles\Day-1, select
-    the **azure-ai-agents-labs** folder and then click
-    on **Select folder** .
+4.  **「Yes, I Trust the authors」**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image27.png)
+![](./media/image28.png)
 
-4.  Click on **Yes, I Trust the authors**,
+5.  **省略記号(...)**をクリックし、**Terminal** **(2)**、それから**New
+    Terminal** **(3)**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-5.  Click on the **elipses(...)** , then **Terminal** and
-    then **New Terminal** .
+6.  **azure-ai-agents-labsプロジェクトディレクトリ**にいることを確認してください。以下のPowerShellコマンドを実行して、仮想環境を作成し、アクティブ化してください。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image29.png)
+7.  python -m venv venv
 
-6.  Make sure your in **azure-ai-agents-labs** project directory. Run
-    the below powershell commands to create and activate your virtual
-    environment:
++++venv/Scripts/activate+++
 
-	+++python -m venv venv+++
+![](./media/image30.png)
 
-	+++venv/Scripts/activate+++
+8.  以下のPowerShellコマンドを実行してください。これにより、必要なパッケージがすべてインストールされます。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image30.png)
+9.  pip install -r requirements.txt
 
-8.  Run the below powershell command. This installs all the required packages:
++++pip install azure-ai-ml azure-identity+++
 
-    +++pip install -r requirements.txt+++
+![A screen shot of a computer code AI-generated content may be
+incorrect.](./media/image31.png)
 
-	+++pip install azure-ai-ml azure-identity+++
+10. 以下のPowerShellコマンドを実行して、pip
+    をインストールまたは最新バージョンにアップグレードします。
 
-    ![A screen shot of a computer code AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image31.png)
++++python.exe -m pip install --upgrade pip+++
 
-10. Run the below powershell command to install or upgrade pip to the
-    latest version.
+![](./media/image32.png)
 
-	+++python.exe -m pip install --upgrade pip+++
+11. 以下のコマンドを実行して、Azure アカウントにログインします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image32.png)
++++az login+++
 
-11. Run the below command to log into your Azure account.
+12. 承認するユーザー アカウントを選択します。
 
-	+++az login+++
+13. 承認が完了したら、Visual Studio codeに戻ります。
 
-12. Select the user account to authorize.
+![](./media/image33.png)
 
-13. Once the Authorization is completed, navigate back to the Visual
-    studio code.
+14. **Sample.env**ファイルを開き、必要な環境変数を指定します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image33.png)
+![](./media/image34.png)
 
-14. Open the **Sample.env** file and provide the necessary environment
-    variables.
+- Microsoft Foundry ポータルに移動します。My assetsの**Models +
+  endpoints(1)** セクションから
+  **gpt-4o(2)** をクリックし、右側のペインから**Endpoint**の下の**Target
+  URI(1)**と**Key(2)**をコピーしてメモ帳に貼り付けます。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image34.png)
+![](./media/image35.png)
 
-	- Navigate to Microsoft foundry portal, click
-	  on **gpt-4o** model from the **Models + endpoints(1)** section
-	  under My assets, copy and paste the **Target URI** and **Key** in a notepad
+![](./media/image36.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image35.png)
+15. **Sample.envファイル**では、
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image36.png)
+    - AIPROJECT_CONNECTION_STRING:タスク 1 の手順 9
+      でコピーした**Project connection string** **の値**を指定します。
 
-15. On the **Sample.env** file,
+    - CHAT_MODEL_ENDPOINT:前の手順でコピーした**gpt-4oモデル**の**Target
+      URI** を指定します。
 
-    - AIPROJECT_CONNECTION_STRING: Provide **Project connection
-      string** value you have copied in Task 1
+    - CHAT_MODEL_API_KEY:前の手順でコピーした**gpt-4oモデル**の**Key** の**値**を入力します。
 
-    - CHAT_MODEL_ENDPOINT: Provide the **Target
-      URI** of **gpt-4o** model you have copied in the previous step
+    - チャットモデル: **gpt-4o**
 
-    - CHAT_MODEL_API_KEY: Provide the **Key** value of **gpt-4o** model
-      you have copied in the previous step
+![](./media/image37.png)
 
-    - CHAT_MODEL: **gpt-4o**
+16. **Sample.envファイル**への変更を保存します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image37.png)
+17. 以下のPowerShellコマンドを実行してください。これにより、
+    **.env**ファイルが作成されます。
 
-16. Save changes to the **Sample.env** file.
++++cpサンプル.env .env+++
 
-17. Run the below powershell command. This creates your **.env** file:
+![](./media/image38.png)
 
-	+++cp sample.env .env+++
+18. 後で**Lab 1 - Project Setup.ipynb**ファイルを開いてください。Lab
+    **1 - Project Setup.ipynb**ノートブックは、Microsoft
+    FoundryでのAIプロジェクトのセットアップ、LLMのデプロイとモデルの埋め込み、VS
+    Code接続の設定をガイドします。また、セットアップを確認するための簡単なChat
+    Completion
+    API呼び出しも含まれています。このノートブックを実行することで、AI-poweredアプリケーションの開発環境が正しく構成されていることを確認できます。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image38.png)
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image39.png)
 
-18. Later Open the **Lab 1 - Project Setup.ipynb** file. The **Lab 1 -
-    Project Setup.ipynb** notebook guides you through setting up an AI
-    Project in Microsoft Foundry, deploying an LLM and embedding models,
-    and configuring VS Code connectivity. It also includes a simple Chat
-    Completion API call to verify the setup. Running this notebook
-    ensures that your environment is correctly configured for developing
-    AI-powered applications.
+19. 右上隅にある**Select kernel
+    (1)** を選択し、**選択した拡張機能のインストール/有効化（
+    python+jupyter ）（2）**を選択します。
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image39.png)
+![](./media/image40.png)
 
-19. Select the **Select kernel** setting available in the top right
-    corner and select **Install/enable selected extensions
-    (python+jupyter)**.
+20. **Python 環境**を選択して、必要な依存関係がインストールされた正しい
+    Python インタープリターでJupyter Notebook が実行されるようにします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image40.png)
+![](./media/image41.png)
 
-20. Select **Python Environments** to ensure that Jupyter Notebook runs
-    in the correct Python interpreter with the necessary dependencies
-    installed.
+21. Microsoft Foundry SDK
+    およびその他の依存関係との互換性を保つためにこのバージョンが必要になる可能性が高いため、リストから**venv
+    (Python 3.xx)**を選択します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image41.png)
+![](./media/image42.png)
 
-21. Select **venv (Python 3.x.x)** from the list as this version is
-    likely required for compatibility with Microsoft Foundry SDK and
-    other dependencies.
+**注: venv (Python 3.xx)**がリストに表示されない場合は、Visual Studio
+Code を閉じて開きます。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image42.png)
+22. 最初のセルを実行して、Azure AI サービスを使用するために必要な Python
+    ライブラリをインポートします。
 
-    >[!Note]: If **venv (Python 3.x.x)** does not appear in the list. Close
-and Open the Visual studio code.
+![](./media/image43.png)
 
-22. Run the first cell to import necessary Python libraries for working
-    with Azure AI services.
+23. 以下のセルを実行すると、環境変数からプロジェクトの接続文字列とモデル名を取得できます。これらの値は、機密情報をハードコーディングすることなく、Large
+    Language Models （LLM）と安全にやり取りするために必要です。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image43.png)
+![](./media/image44.png)
 
-23. Run the below cell to retrieve the project connection string and
-    model name from environment variables. These values are needed to
-    interact with the Large Language Model (LLM) securely, without
-    hardcoding sensitive information.
+24. 以下のセルを実行して、接続文字列を使用してMicrosoft
+    Foundryプロジェクトに接続します。これにより、AIProjectClientとの安全な接続が確立され、プロジェクトのリソースとのやり取りが可能になります。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image44.png)
+![](./media/image45.png)
 
-24. Run the below cell to connect to your Microsoft Foundry project
-    using the connection string. This establishes a secure connection
-    with AIProjectClient, enabling interactions with your project
-    resources.
+25. 以下のセルを実行すると、Microsoft
+    Foundryプロジェクトを使用してGPT-4oモデルを操作できます。このコードはチャットクライアントを初期化し、テディベアに関するジョークのリクエストを送信し、レスポンスを出力します。最後に、チャットモデルからの出力を確認してください。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image45.png)
+![](./media/image46.png)
 
-25. Run the below cell to interact with the GPT-4o model using your
-    Microsoft Foundry project. This code initializes a chat client,
-    sends a request for a joke about a teddy bear, and prints the
-    response. Finally see the output provided from the chat model.
+> **注:**このステップの出力は AI
+> モデルによって動的に生成されるため、毎回異なる場合があります。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%202/media/image46.png)
+**まとめ**
 
-	>[!Note]: The output in this step is generated dynamically by the AI model and may vary each time.
+このラボでは、Microsoft
+FoundryでAIプロジェクトを作成および構成し、GPT-4o Large Language
+Modelとtext-embedding-3-large埋め込みモデルをデプロイし、Visual Studio
+Codeから安全な接続を確立することで、完全なAI開発環境を正常にセットアップしました。必要な依存関係をインストールし、仮想環境を作成し、機密情報を安全に管理するために環境変数を構成しました。最後に、簡単なChat
+Completion
+API呼び出しを実行してセットアップを検証し、環境が正しく構成され、AI-poweredアプリケーションの開発準備が整っていることを確認しました。
 
-**Summary**
-
-In this lab, you successfully set up a complete AI development
-environment by creating and configuring an AI Project in Microsoft
-Foundry, deploying a GPT-4o Large Language Model and
-text-embedding-3-large embedding model, and establishing secure
-connectivity from Visual Studio Code. You installed the required
-dependencies, created a virtual environment, and configured environment
-variables to manage sensitive information securely. Finally, you
-validated the setup by running a simple Chat Completion API call,
-confirming that your environment is correctly configured and ready for
-developing AI-powered applications.
-
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
-
-
+このラボは正常に完了しました。次のステップに進むには、「Next
+\>\>」をクリックしてください。

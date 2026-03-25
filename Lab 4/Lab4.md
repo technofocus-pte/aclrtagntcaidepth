@@ -1,446 +1,405 @@
+# ラボ4: 健康計画レポート生成のためのマルチ・エージェントシステムの開発
 
-# Lab 4: Develop a Health plan report generation multi-agent system
+**概要**
 
-**Overview**
+このラボでは、包括的な健康保険プランレポートの自動生成に特化したインテリジェントなマルチ・エージェントシステムを開発します。このシステムは、4つの専門AIエージェントが連携して動作し、詳細な健康保険関連書類の取得、分析、生成、検証を行います。このマルチ・エージェントアーキテクチャは、自律型エージェントが連携して、単一のエージェントでは効率的に処理することが困難な複雑なタスクを遂行する方法を示します。
 
-In this lab, you will develop an intelligent multi-agent system
-specifically designed to automate the generation of comprehensive health
-plan reports. This system leverages the collaborative power of four
-specialized AI agents working in coordination to retrieve, analyze,
-generate, and validate detailed health insurance documentation. The
-multi-agent architecture demonstrates how autonomous agents can work
-together to accomplish complex tasks that would be challenging for a
-single agent to handle effectively.
+以下の 4 つの AI エージェントを構築します。
 
-You will build these 4 AI Agents:
+- **検索エージェント**- このエージェントは、Azure AI Search
+  インデックスで特定の健康保険プランに関する情報を検索します。
 
-- **Search Agent** - This agent will search an Azure AI Search index for
-  information about specific health plan policies.
+- **レポートエージェント**-
+  このエージェントは、検索エージェントから返された情報に基づいて、健康保険プランのポリシーに関する詳細なレポートを生成します。
 
-- **Report Agent** - This agent will generate a detailed report about
-  the health plan policy based on the information returned from the
-  Search Agent.
+- **検証エージェント**-
+  このエージェントは、生成されたレポートが指定された要件を満たしているかどうかを検証します。このケースでは、レポートに補償対象外に関する情報が含まれていることを確認します。
 
-- **Validation Agent** - This agent will validate that the generated
-  report meets specified requirements. In our case, making sure that the
-  report contains information about coverage exclusions.
-
-- **Orchestrator Agent** - This agent will act as an orchestrator that
-  manages the communication between the Search Agent, Report Agent, and
-  Validation Agent.
+- **オーケストレーターエージェント**-
+  このエージェントは、検索エージェント、レポート
+  エージェント、検証エージェント間の通信を管理するオーケストレーターとして機能します。
 
 ![A diagram of a company AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image1.png)
+incorrect.](./media/image1.png)
 
-Orchestration is a key part of multi-agentic systems since the agents
-that we create need to be able to communicate with each other in order
-to accomplish the objective.
+オーケストレーションは、マルチ・エージェント
+システムの重要な部分です。これは、作成するエージェントが目的を達成するために相互に通信できる必要があるためです。
 
-We'll use the Azure AI Agent Service to create the Search, Report, and
-Validation agents. However, to create the Orchestrator Agent, we'll use
-Semantic Kernel. The Semantic Kernel library provides out-of-the-box
-functionality for orchestrating multi-agent systems.
+検索エージェント、レポートエージェント、検証エージェントの作成には、Azure
+AI Agent Serviceを使用します。一方、Orchestrator Agentの作成にはSemantic
+Kernelを使用します。Semantic
+Kernelライブラリは、マルチ・エージェントシステムのオーケストレーションに必要な機能をすぐに提供します。
 
-**Lab Objectives**
+**ラボの目的**
 
-You'll perform the following tasks in this lab.
+このラボでは次のタスクを実行します。
 
-- Task 1: Create the Azure AI Search Index
+- タスク 1: Azure AI 検索インデックスを作成する
 
-- Task 2: Create the Search, Report, and Validation Agents.
+- タスク 2:
+  検索エージェント、レポートエージェント、および検証エージェントを作成する
 
-## Task 1: Create the Azure AI Search Index
+## タスク 1: Azure AI 検索インデックスを作成する
 
-In this task, you will create an **Azure AI Search index** to store
-vectorized representations of health insurance plan documents, enabling
-efficient retrieval for AI-driven search and analysis.
+このタスクでは、**Azure AI 検索インデックス**を作成し、健康保険プラン
+ドキュメントのベクトル化された表現を保存して、AI
+駆動型検索と分析のための効率的な取得を可能にします。　
 
-1.  Navigate to **Azure portal**, search for +++AI Search+++ and
-    select **AI Search** resource from the services.
+1.  **Azureポータル**に移動し、**AI Search (1)**
+    を検索して、サービスから **AI Search (2)** リソースを選択します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image2.png)
+![](./media/image2.png)
 
-2.  This will navigate you to the AI Foundry, within **AI Search** ,
-    click on **Create**.
+2.  そうすると、 AI Foundry に移動し、**AI Search (1)** 内で **Create
+    (2)** をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image3.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-3.  On the **Create a Search service** pane enter the following details
-    and click on **Review + Create** 
+3.  「**Create a Search
+    service** 」パネルで次の詳細を入力し、「**Review +
+    Create** (4)」をクリックします。
 
-    - Subscription : **Leave default subscription**
+    - Subscription: デフォルトのサブスクリプションのままにします。
 
-    - Resource Group : Select **@lab.CloudResourceGroup(AgenticAI).Name**
+    - Resource Group: **AgenticAI (1)** を選択します。
 
-    - Service Name : +++my-search-service-@lab.LabInstance.Id+++
+    - Service Name：**my-search-service- (2)**
 
-    - Location : **@lab.CloudResourceGroup(AgenticAI).Location**
+    - Location: (3)
 
-    - Tier : **Standard**
+![](./media/image4.png)
 
-    >[!Alert] Please verify the **Location** allows the **Standard** Tier. 
+4.  「**Review + Create**」で「**Create**」をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image4.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-4.  On the **Review + Create**, click on **Create**
+5.  デプロイメントが完了するまで待ってから、**Go to
+    resource**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image5.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-5.  Wait for until the deployment is completetd and then click on **Go
-    to resource**
+6.  左側のメニューの**Settings** から**Keys**（1）に移動します**API
+    Access control**で**Both**（2）を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image6.png)
+![](./media/image7.png)
 
-6.  Navigate to **Keys** under **Settings** in the left menu.
-    Under **API Access control** select **Both**.
+7.  **Are you sure want to update the API Access Control for this serach
+    service**? で \[**Yes** \] を選択します。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image7.png)
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image8.png)
 
-7.  Select **Yes** for **Are you sure want to update the API Access
-    Control for this serach service**.
+8.  「**Settings**」の**Identity** (1)
+    に移動します。System-assignedでStatusを「**On**」(2)
+    に設定し、**Save** (3) をクリックします。
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image8.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image9.png)
 
-8.  Navigate to **Identity** under **Settings**. Under
-    System-assigned set the Status to **On** and click
-    on **Save**.
+9.  **Enable System assigned managed identity**には \[**Yes** \]
+    を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image9.png)
+![A close-up of a computer error AI-generated content may be
+incorrect.](./media/image10.png)
 
-9.  Select **Yes** for **Enable System assigned managed identity**.
+10. Azure ポータルで、**Storage accounts** (1)
+    を検索し、サービスから**Storage accounts** (2) を選択します。
 
-    ![A close-up of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image10.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-10. On the Azure portal, search for +++**Storage accounts**+++ and
-    select **Storage accounts** from the services.
+11. **aifoundry** で始まるストレージ アカウントを選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image11.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image12.png)
 
-11. Select the storage account that begins with **aifoundry**.
+12. **Access
+    control（IAM）（1）**を選択し、**Add（2）**をクリックして、**Add
+    role assignment**を選択します。
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-12. Select **Access control (IAM)**, then click on **Add**, and
-    then select **Add role assignment**.
+13. **Job function roles**の下で、**Storage Blob Data Reader (1)** (1)
+    を検索し、**Storage Blob Data Reader** **(2)** を選択して、**Next
+    (3)** を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-13. Under **Job function roles**, search for +++**Storage Blob Data Reader**+++, select **Storage Blob Data Reader**, and then
-    select **Next**.
+14. **Add role assignment** ページで、
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image14.png)
+    - Membersの下で、**Managed identity(1)**を選択します。
 
-14. On the **Add role assignment** page,
+    - **Members (2)**を選択します。
 
-    - Under Members, select **Managed identity**
+    - Managed identity: **search service(1)** **(3)**
 
-    - Select **Members**
+    - 次に**my-search-service-**(4)検索サービスを選択します。
 
-    - Managed identity: **search service** 
+    - **Select (5)**をクリックします。
 
-    - Then select **my-search-service-@lab.LabInstance.Id** search service.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-    - Click on **Select**
+15. 「**Review + assign** 」を 2 回クリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image15.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image16.png)
 
-15. Click on **Review + assign** twice.
+16. **Azure OpenAI**, **my-openai-service**にアクセスします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-16. Go to the **Azure OpenAI**, that starts with **my-openai-service**.
+17. **Access control (IAM)
+    (1)**を選択し、**Add**（2）をクリックして、**Add role
+    assignment**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image17.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image18.png)
 
-17. Select **Access control (IAM)**, then click on **Add**, and
-    then select **Add role assignment**.
+18. \[**Job function roles**\] で **Cognitive Services OpenAI User
+    (1)**を検索し、**Cognitive Services OpenAI User (2)**を選択してから
+    **Next (3)**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image18.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-18. Under **Job function roles**, search for +++**Cognitive Services OpenAI User**+++, select **Cognitive Services OpenAI User**, and then
-    select **Next**.
+19. **Add role assignment** ページで、　
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image19.png)
+    - Membersの下で、**Managed identity(1)**を選択します。
 
-19. On the **Add role assignment** page,
+    - **Members (2)**を選択します。
 
-    - Under Members, select **Managed identity**
+    - Managed identity: **search service(1)** **(3)**
 
-    - Select **Members**
+    - 次に**my-search-service-**(4)検索サービスを選択します。
 
-    - Managed identity: **search service** 
+    - **Select (5)**をクリックします。
 
-    - Then select **my-search-service-** search service.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-    - Click on **Select**
+20. **Review + assign** を 2 回選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image20.png)
+![](./media/image21.png)
 
-20. Select **Review + assign** twice.
+21. Azure ポータルに移動し、**Storage account
+    (1)** を検索して、**Storage account (2)**を選択します。　
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-21. Navigate to **Azure Portal**, search for +++**Storage account**+++ and
-    select the **Storage account**.
+22. **aifoundryhub** で始まるストレージ アカウントを選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-22. Select the Storage account that starts with **aifoundryhub**.
+23. データストレージの下の**Containers
+    (1)** をクリックし、**+Container(2)**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-23. Click on **Containers** under data storage, then
-    select **+ Add container**.
+24. New
+    Containerページで、名前として**healthplan(1)** を入力し、**Create
+    (2)**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-24. On New Container page enter +++**healthplan**+++ as name and click
-    on **Create**.
+25. **healthplan** コンテナーをクリックして開きます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image25.png)
+![](./media/image26.png)
 
-25. Open **healthplan** container by clicking on it.
+26. **Upload
+    (1)** をクリックして、ファイルをアップロードし、次に**browse for
+    files (2)**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image26.png)
+> ![](./media/image27.png)
 
-26. Click on **upload** to upload the file and then Click
-    on **browse for files**.
+27. C:\LabFiles\Day-1\azure-ai-agents-labs\data (1)
+    に移動し、アップロードする PDF を両方選択し (2)、**Open
+    (3)**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-27. Navigate to C:\LabFiles\Day-1\azure-ai-agents-labs\data  and
-    select both the PDFs to upload , and click on **Open**.
+28. **Upload**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image28.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-28. Click on **Upload**.
+**注記：**既存のコンテナを選択するように求められた場合は、ドロップダウンから
+healthplan を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image29.png)
+29. Azure AI 検索サービスに移動し、**my-search-service-** を選択します。
 
-    >[!Note]: If it ask you to select existing container, from the drop down
-select healthplan.
+![](./media/image30.png)
 
-29. Navigate to **Azure AI search** service and
-    select the service that starts with **my-search-service-**.
+30. **import data (new)**をクリックします。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image30.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-30. Click on **import data (new)**.
+31. **Azure blob storage**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image31.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-31. Select **azure blob storage**.
+32. **RAG** モデルを選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image32.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-32. Choose **RAG** Model.
+33. Azure Blob Storage の構成で、次の詳細を入力し、**Next (5)**
+    をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image33.png)
+[TABLE]
 
-33. On Configure your Azure Blob Storage , enter the following details
-    and click on **Next**:
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image34.png)
 
-    | Detail | Value |
-    | ------ | ------ |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Storage Account** | **ai-foundry-hub@lab.LabInstance.Id** |
-    | **Blob Container** | **healthplan** |
-    | **Managed Identity Type** | **system-assigned** |
+34. 「テキストをベクター化する」で、次の詳細を入力し、「次へ」(7)
+    をクリックします。
 
+[TABLE]
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image34.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image35.png)
 
-34. On Vectorize your text, enter the following details and click
-    on **Next**:
+35. 「**Next** 」を2回クリックします。
 
-    | Detail | Value |
-    | ------ | ------ |
-    | **Kind** | **Azure OpenAI** |
-    | **Subscription** | **@lab.CloudSubscription.Name** |
-    | **Azure OpenAI Service** | **my-openai-service@lab.LabInstance.Id** |
-    | **Model Deployment** | **text-embedding-3-large** |
-    | **Authentication Type** | **System assigned identity** |
-    | **Acknowledge the additional costs** | **Enabled** |
+36. **Objects name prefix** に **health-plan (1)** と入力し、**Create
+    (2)**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image35.png)
+![A screenshot of a computer screen AI-generated content may be
+incorrect.](./media/image36.png)
 
-35. Click on **Next** twice.
+**注記**: 検索サービスのインデックスへのデータのアップロードには 5 ～ 10
+分かかる場合があります。
 
-36. Enter +++**health-plan**+++ for **Objects name prefix** and click
-    on **Create**.
+37. ポップアップで「**Start searching** 」をクリックします。
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image36.png)
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image37.png)
 
-    >[!Note]: The uploading of data to indexes in search service might take 5-10 minutes.
+38. **ai-foundry-project-**の**Overview** (1)ページに移動し、**Open In
+    management center**(2)をクリックします。
 
-37. Click on **Start searching** on the pop-up.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image37.png)
+39. **Connected resources** (1)を選択し、**New
+    connection** (2)をクリックします。
 
-38. Navigate to your **Overview**  page of **ai-foundry-project-**.
-    and click on **Open In management center**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image38.png)
+40. 検索バーに**Azure AI Search**(1)と入力し、**Azure AI
+    Search**(2)を選択します。
 
-39. Select **Connected resources** under Project and click on **New
-    connection** .
+![](./media/image40.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image39.png)
+41. **Add connection** をクリックして続行します。
 
-40. Enter **Azure AI Search** in search bar and select **Azure AI
-    Search**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image40.png)
+## タスク 2: 検索エージェント、レポートエージェント、検証エージェントを作成する
 
-41. Click on **Add connection** to proceed.
+このタスクでは、健康プランレポートの取得、生成、検証を行う検索エージェント、レポートエージェント、検証エージェントを作成します。これらのエージェントは連携して、レポートの正確性と要件への準拠を確保します。各エージェントは、レポートの取得、コンパイル、そして正確性の確保において、それぞれ異なる役割を果たします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image41.png)
+1.  **Lab 4 - Develop A Mult-Agent System.ipynb**
+    ファイルを開きます。この **Lab 4 - Develop A Mult-Agent
+    System.ipynb**
+    ノートブックでは、検索エージェント、レポートエージェント、検証エージェント、オーケストレーターエージェントを備えたマルチ・エージェントシステムを開発し、医療保険プランレポートの生成と検証を行う手順を解説します。各エージェントは、レポートの取得、コンパイル、そして正確性の確保という異なる役割を果たします。
 
-## Task 2: Create the Search, Report, and Validation Agents
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-In this task, you will create the Search, Report, and Validation Agents
-to retrieve, generate, and validate health plan reports. These agents
-will work together to ensure accuracy and compliance with requirements.
-Each agent plays a distinct role in retrieving, compiling, and ensuring
-the accuracy of the reports.
+2.  右上隅にある**Select kernel (1)** 設定を選択し、リストから**venv
+    (Python 3.x.x) (2)** を選択します。
 
-1.  Open the **Lab 4 - Develop A Mult-Agent System.ipynb** file,
-    this **Lab 4 - Develop A Mult-Agent System.ipynb** notebook guides
-    you through developing a multi-agent system with Search, Report,
-    Validation, and Orchestrator Agents to generate and validate health
-    plan reports. Each agent plays a distinct role in retrieving,
-    compiling, and ensuring the accuracy of the reports.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image42.png)
+3.  このセルを実行すると、Azure AI Search、GPT-4o、Semantic
+    Kernelを統合し、インテリジェントなタスク実行を実現するマルチ・エージェントシステムを開発できます。このセットアップにより、複数のAIエージェントが連携して、情報の取得、レスポンスの生成、複雑なクエリの処理を行うことができます。
 
-2.  Select the **Select kernel** setting available in the top right
-    corner and select **venv (Python 3.x.x)** from the list.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image44.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image43.png)
+4.  このセルを実行すると、GPT-4o を使用して Azure AI Search
+    から健康保険プランの詳細を取得する**検索エージェント**が作成されます。このエージェントにより、健康保険プランのドキュメントから構造化された情報を効率的に取得できます。
 
-3.  Run this cell to develop a **multi-agent system** that integrates
-    Azure AI Search, GPT-4o, and Semantic Kernel for intelligent task
-    execution. This setup enables multiple AI agents to collaborate on
-    retrieving information, generating responses, and handling complex
-    queries.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image44.png)
+5.  このセルを実行すると、GPT-4oを使用して健康保険プランに関する詳細なレポートを生成する**レポートエージェント**が作成されます。このエージェントは、様々なプランの構造化されたインサイト、補償内容の詳細、除外事項を提供することで、ドキュメント作成を強化します。
 
-4.  Run this cell to create the **Search Agent**, which retrieves health
-    plan details from Azure AI Search using GPT-4o. This agent enables
-    efficient retrieval of structured information from health plan
-    documents.
+![](./media/image46.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image45.png)
+6.  このセルを実行して**検証エージェント**を作成します。これにより、レポート
+    エージェントによって生成されたレポートが品質基準を満たしていることが確認され、特に対象範囲の除外がチェックされます。
 
-5.  Run this cell to create the **Report Agent**, which generates
-    detailed reports on health plans using GPT-4o. This agent enhances
-    documentation by providing structured insights, coverage details,
-    and exclusions for various plans.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image46.png)
+7.  **マルチ・エージェントシステムを作成する**:
+    以下のセルを実行すると、VS Code の上部にチャット
+    ボックスがポップアップ表示され、健康保険プランの名前を入力するように求められます。
 
-6.  Run this cell to create the **Validation Agent**, which ensures that
-    reports generated by the Report Agent meet quality standards,
-    specifically checking for coverage exclusions.
+![A screen shot of a computer program AI-generated content may be
+incorrect.](./media/image48.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image47.png)
+8.  ご存知のとおり、2つの健康保険プランを検索インデックスにアップロードしました。プロンプトが表示されたら、上部に表示されるボックスに以下の健康保険プランのいずれかを入力し、Enterキーを押して、マルチ・エージェントシステムの実行を開始してください。
 
-7.  **Create a multi-agent system** : When you run the below cell, you
-    will see a chat box pop up at the top of VS Code asking you to input
-    the name of a health plan.
+    - **Northwind Health Standard**
 
-    ![A screen shot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image48.png)
+    - **Northwind Health Plus**1
 
-8.  If you recall, we uploaded two health plans to the search index.
-    When prompted, type any one of the following health plans in the box
-    that appears at the top and press **Enter** to begin running the
-    multi-agent system:
+![](./media/image49.png)
 
-    - +++Northwind Health Standard+++
+9.  上部にボックスが表示されたら、ボックスに exit と入力して Enter
+    キーを押して、実行中のコード ブロックを停止します。
 
-    - +++Northwind Health Plus+++
+**注記**: セルの実行が正常に完了すると、次の結果が表示されます。
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%204/media/image49.png)
+> Orchestrator Agent is starting...
+>
+> Calling SearchAgent...
+>
+> SearchAgent completed successfully.
+>
+> Calling ReportAgent...
+>
+> ReportAgent completed successfully.
+>
+> Calling ValidationAgent...
+>
+> ValidationAgent completed successfully.
+>
+> The report for Northwind Plus has been generated. Please check the
+> Northwind Plus Report.md file for the report.
+>
+> Orchestrator Agent is starting...
 
-9.  When the box appears at the top, type exit into the box and press
-    Enter to stop the running code block.
+**まとめ**
 
-    >[!Note]: After the successful run of the cell you will recieve the
-following outcome.
+このラボでは、4 つの専用 AI
+エージェントを連携させることで、包括的な健康保険プランレポートの生成を自動化するインテリジェントなマルチ・エージェント
+システムを開発しました。ベクトル化された健康保険ドキュメントを保存するための
+Azure AI Search
+インデックスを作成し、ポリシー情報を取得する検索エージェント、詳細なドキュメントを生成するレポートエージェント、要件への準拠を確認する検証エージェント、そしてSemantic
+Kernelを使用してすべてのエージェント間の通信を管理するオーケストレーター
+エージェントを構築しました。実際の健康保険プランデータを使用してマルチ・エージェント
+システムを実行することで、自律型エージェントが効果的に連携し、単一のエージェントでは困難な複雑なタスクを達成する様子を実証し、実用的なビジネス
+アプリケーション向けのエンタープライズ グレードのエージェント
+オーケストレーション パターンを示しました。
 
-	> Orchestrator Agent is starting...
-	>
-	> Calling SearchAgent...
-	>
-	> SearchAgent completed successfully.
-	>
-	> Calling ReportAgent...
-	>
-	> ReportAgent completed successfully.
-	>
-	> Calling ValidationAgent...
-	>
-	> ValidationAgent completed successfully.
-	>
-	> The report for Northwind Plus has been generated. Please check the
-	> Northwind Plus Report.md file for the report.
-	>
-	> Orchestrator Agent is starting...
-
-**Summary**
-
-In this lab, you successfully developed an intelligent multi-agent
-system designed to automate the generation of comprehensive health plan
-reports through the coordination of four specialized AI agents. You
-created an Azure AI Search index to store vectorized health insurance
-documents, then built a Search Agent to retrieve policy information, a
-Report Agent to generate detailed documentation, a Validation Agent to
-ensure compliance with requirements, and an Orchestrator Agent using
-Semantic Kernel to manage communication between all agents. By running
-the multi-agent system with real health plan data, you demonstrated how
-autonomous agents can collaborate effectively to accomplish complex
-tasks that would be challenging for a single agent, showcasing
-enterprise-grade agent orchestration patterns for practical business
-applications.
-
-Congratulations! You have successfully completed the lab.
-
+おめでとうございます！ラボは完了しました。

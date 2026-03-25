@@ -1,595 +1,580 @@
+# ラボ 11: AgentOps – 可観測性と管理
 
-# Lab 11: AgentOps – Observability and Management
+**推定所要時間**：60分
 
-**Estimated Duration**: 60 Minutes
+**概要**
 
-**Overview**
+AgentOpsに焦点を当てます。Microsoft Agent
+Frameworkに組み込まれた**OpenTelemetry**との統合機能を利用して、Application
+Insightsでオブザーバビリティとテレメトリを実現する方法を学びます。
 
-In this lab, you will focus on AgentOps, the discipline of monitoring,
-governing, and managing AI agents in production environments. You’ll
-explore how to enable observability and telemetry using the Microsoft
-Agent Framework’s built-in integration with Application Insights
-using **OpenTelemetry**.
+Microsoft Agent Framework のOpenTelemetryについて
 
-About OpenTelemetry in Microsoft Agent Framework
+Microsoft Agent Framework
+は、分散トレース、メトリクス、ログ記録のオープンスタンダードであるOpenTelemetryとネイティブに統合されています。スパントレース、ツール呼び出し、モデル応答、ワークフローパフォーマンスなどのテレメトリデータを自動的にキャプチャすることで、エージェントの動作をエンド・ツー・エンドで可視化します。この統合により、開発者は
+Azure Monitor、Application
+Insights、またはその他のOpenTelemetry互換バックエンドに観測データを直接エクスポートできます。この標準化されたアプローチにより、複雑なマルチエージェントシステム全体のあらゆるエージェントアクションを追跡し、最小限の構成でパフォーマンスチューニング、トラブルシューティング、コンプライアンス監査が可能になります。
 
-The Microsoft Agent Framework natively integrates with OpenTelemetry,
-the open standard for distributed tracing, metrics, and logging. It
-provides end-to-end visibility into agent behavior by automatically
-capturing telemetry data such as span traces, tool calls, model
-responses, and workflow performance. Using this integration, developers
-can export observability data directly to Azure Monitor, Application
-Insights, or any other OpenTelemetry-compatible backend. This
-standardized approach helps track every agent action across complex
-multi-agent systems, enabling performance tuning, troubleshooting, and
-compliance auditing with minimal configuration.
+ラボの目的
 
-Lab Objectives
+このラボでは次のタスクを実行します。
 
-You'll perform the following tasks in this lab.
+- OpenTelemetryを使用してエージェントの可観測性を有効にする
 
-- Task 1: Enable Observability of Agent with OpenTelemetry
+- タスク2: エージェントメトリクスの視覚化
 
-- Task 2: Visualize Agent Metrics
+- タスク3: Foundryポータルでエージェント固有のメトリクスを監視する
 
-- Task 3: Monitor Agent-specific metrics in Foundry Portal
+## OpenTelemetryを使用してエージェントの可観測性を有効にする
 
-## Task 1: Enable Observability of Agent with OpenTelemetry
+OpenTelemetryとAgent
+Frameworkの可観測性をプロジェクトに統合します。テレメトリエクスポーターを構成し、
+setup_observability
+()を使用してトレースを初期化し、エージェントルーティング、Azure AI
+Searchの取得、チケット作成など、ワークフローの各ステージの詳細なスパンをキャプチャします。これにより、Application
+InsightsのトレースIDを使用して、エージェントの動作とシステム間の相関関係を統合的に可視化できます。
 
-In this task, you’ll integrate OpenTelemetry and Agent Framework
-observability into your project. You’ll configure telemetry exporters,
-initialize tracing with setup_observability(), and capture detailed
-spans for each stage of your workflow, including agent routing, Azure AI
-Search retrieval, and ticket creation. This enables unified visibility
-into agent behavior and cross-system correlation using trace IDs in
-Application Insights.
+1.  以前のコードを再度変更するのではなく、更新された監視対応ファイルが既に含まれた新しいフォルダーで作業します。Microsoft
+    Agent Framework Observability と Application Insights
+    を使用して、テレメトリ、トレース、監視がどのように統合されるかを理解します。
 
-1.  Instead of modifying the previous code again, you’ll work in a new
-    folder that already contains the updated observability-enabled
-    files. Understand how telemetry, tracing, and monitoring are
-    integrated using Microsoft Agent Framework Observability and
-    Application Insights.
+2.  Visual Studio Code で、新しいフォルダーを開く前に、.env
+    ファイルを選択し、その内容をコピーしてメモ帳に安全に保管します。
 
-2.  In Visual Studio Code, before openening new folder, select
-    the .env file and copy the content and keep it safely in a notepad.
+3.  上部のメニューから**ファイルオプション**をクリックし、 **Open
+    Folder**を選択します。
 
-3.  Once done, click on **file** option from top menu and select **Open
-    Folder**.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image1.png)
+4.  開いているフォルダー ペインで、C:\telemetry-codefiles
+    に移動し、フォルダーの選択をクリックします。
 
-4.  In the open folder pane, navigate to **C:\Lab Files\Day 3\Enterprise-Agent-Code-files** and
-    click on select folder.
+5.  開くと、エクスプローラー メニュー内のファイルは次のようになります。
 
-5.  Once opened, the files in the explorer menu look similar to this.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image2.png)
+6.  コード
+    ファイルを確認して、すべてのエージェントでopentelemetryがどのように実装されているか、およびトレースがどのように行われているかを確認してください。
 
-6.  Please go through the code files, review how the opentelemetry
-    implemented in all agents, and how the tracing is happening.
+> **統合の概要**
+>
+> agent_framework.observabilityパッケージを使用して、エージェント
+> ワークフロー全体にOpenTelemetryトレースを統合しました。
 
-	> **Integration Overview**
-	>
-	integrated OpenTelemetry tracing throughout the agent workflow using
-	> the agent_framework.observability package.
+- get_tracer ()をインポートし、
+  OpenTelemetryスパンを使用して、重要な操作ごとに構造化されたテレメトリをキャプチャしました。
 
-	- Imported get_tracer() and used OpenTelemetry spans to capture
-	  structured telemetry for each critical operation.
+- コンテキスト属性を持つスパンに主要な機能
+  (分類、ルーティング、RAG、チケット作成など) をラップします。
 
-	- Wrapped key functions (e.g., classification, routing, RAG, ticket
-	  creation) in spans with contextual attributes.
+- エクスポーターとメトリック パイプラインを構成するために、
+  setup_observability
+  ()を使用して統合されたスタートアップ監視設定を追加しました。
 
-	- Added unified startup observability setup using setup_observability()
-	  to configure exporters and metrics pipelines.
+- より詳細な可視性を実現するために、クエリ
+  テキスト、ルーティングの決定、フォールバック
+  メソッドなどのカスタム属性を記録します。
 
-	- Recorded custom attributes such as query text, routing decisions, and
-	  fallback methods for deeper visibility.
+- 例外トレースを記録し、各ワークフロー実行をトレース ID
+  にリンクしてシステム間の相関関係を確立するためのエラー処理が強化されました。
 
-	- Enhanced error handling to record exception traces and link each
-	  workflow execution to a trace ID for cross-system correlation.
+> **ファイルの強化**
+>
+> main.py – エンド・ツー・エンドのトレースとメトリクス
 
-	> **File Enhancements**
-	>
-	> main.py – End-to-End Tracing and Metrics
+- OpenTelemetryトレース
+  パイプラインとエクスポーターのセットアップを構成しました。
 
-	- Configured OpenTelemetry tracing pipeline and exporter setup.
+- 完全なワークフローの可視性を実現するために、Span
+  内にマルチエージェント オーケストレーションをラップします。
 
-	- Wrapped multi-agent orchestration inside spans for complete workflow
-	  visibility.
+- ルーティング、データ取得
+  (RAG)、エージェント応答、チケット作成というサブステップの範囲を追加しました。
 
-	- Added spans for sub-steps: routing, data retrieval (RAG), agent
-	  responses, and ticket creation.
+> planner_agent.py – ルーティングの観測性強化
 
-	> planner_agent.py – Enhanced Routing Observability
+- トレーサー インスタンス ( get_tracer ()) を追加しました。
 
-	- Added a tracer instance (get_tracer()) to monitor classification
-	  logic.
+- 生の LLM 応答、信頼スコア、およびフォールバック キーワード
+  メトリックをスパン属性としてキャプチャしました。
 
-	- Captured raw LLM responses, confidence scores, and fallback keyword
-	  metrics as span attributes.
+- ラベル付きスパン ( SpanKind.INTERNAL )を使用した AI
+  ベースの分類とヒューリスティック分類を区別します。
 
-	- Differentiated between AI-based and heuristic classification with
-	  labeled spans (SpanKind.INTERNAL).
+> azure_search_tool.py – RAG オブザーバビリティ
 
-	> azure_search_tool.py – RAG Observability
+- 待機時間と成功率を測定するために、Azure Search API
+  呼び出しの範囲を追加しました。
 
-	- Added spans for Azure Search API calls to measure latency and success
-	  rates.
+- 取得したドキュメント数とペイロード サイズをカスタム
+  メトリックとして記録します。
 
-	- Logged retrieved document counts and payload sizes as custom metrics.
+- OpenTelemetryトレース内でキャプチャされた検索エラーとパフォーマンス
+  データ。
 
-	- Captured search errors and performance data within OpenTelemetry
-	  traces.
+> freshdesk_tool.py – チケット作成の可観測性
 
-	> freshdesk_tool.py – Ticket Creation Observability
+- チケット作成期間と応答ステータスを追跡するための API
+  呼び出し範囲を追加しました。
 
-	- Added API call spans to track ticket creation duration and response
-	  status.
+- 追跡可能な監査ログに記録されたチケット
+  ID、タグ、およびリクエスタの詳細。
 
-	- Logged ticket IDs, tags, and requester details for traceable audit
-	  logs.
+- インシデント追跡を改善するために、外部 API
+  のレイテンシとエラー応答を監視しました。
 
-	- Monitored external API latency and error responses for better incident
-	  tracking.
+7.  **.env.example (1)**ファイルを右クリックし**、 Rename
+    (2)**を選択してファイルの名前を変更します。
 
-7.  Once reviewed, right-click on **.env.sample** file and
-    select **Rename** to rename the file.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image3.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image3.png)
+8.  完了したら、ファイルの名前を **.env.example --\>** **.env**
+    に変更して**、**この**環境ファイル**をこのエージェントに対してアクティブにします。
 
-8.  Rename the file from **.env.example** --\> **.env** to
-    make this environment file active for this agent.
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image4.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image4.png)
+9.  次に、.env ファイルを選択し、先ほどコピーした内容を貼り付けます。
 
-10. In the Azure Portal, navigate to **agenticai** resource group, and
-    from the resource list select **ai-knowledge-** Search service.
+10. Azure ポータルで、 **agenticai**リソース グループに移動し、リソース
+    リストから**ai-knowledge-** Search serviceを選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image5.png)
- 
-11. Select **Keys** from the left menu, under Settings, and copy
-    the **Query key** using the copy option as shown. Save it in a notepad.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image6.png)
+11. 左側のメニューのSettingsから**Keys (1)** を選択し、図のようにコピー
+    オプションを使用して**Query key（2）**をコピーします。
 
-12. Once copied, paste it safely in a notepad, select **Indexes** from
-    the left menu under Search Management, and copy the **Index Name**. Save it in a notepad.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image7.png)
+12. コピーしたら、メモ帳などに安全に貼り付け、左のメニューから「検索管理」の**Indexes** **を選択し**、**Index
+    Name（2）**をコピーします。
 
-13. Populate the **.env** file, with the below content, replace the place holders of the Query_Key and the Index_name with the values copied and saved above.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image7.png)
 
-	```
-	# Azure AI Search (MCP)
-	AZURE_SEARCH_ENDPOINT=https://ai-knowledge-@lab.LabInstance.Id.search.windows.net/
-	AZURE_SEARCH_API_KEY=[Query_Key]
-	AZURE_SEARCH_INDEX=[Index_Name]
-	```
+13. Visual Studio Code ペインで、接続用の AI
+    検索キーを追加する必要があるため、 **.envファイルを選択します。**
 
-14. Add the content of the .env file with the below content.
+> \# Azure AI Search (MCP)
+>
+> AZURE_SEARCH_ENDPOINT=https://ai-knowledge--@lab.LabInstance.Id.search.windows.net/
+>
+> AZURE_SEARCH_API_KEY=\[Query_Key\]
+>
+> AZURE_SEARCH_INDEX=\[Index_Name\]
 
-	```
-	AZURE_OPENAI_ENDPOINT=https://agentic-@lab.LabInstance.Id.cognitiveservices.azure.com/
-	AZURE_OPENAI_API_KEY=<Replace with Azure OpenAI key>
-	AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
-	AZURE_OPENAI_API_VERSION=2025-03-01-preview
-	```
+**注:** Query_KeyとIndex_Name
+の値を、先ほどコピーしたものに置き換えてください。
 
-15. Add the following Foundry project key variables to the .env file.
+14. 以下の内容で .env ファイルの内容を追加します。
 
-	```
-	# Azure AI Project Configuration
-	AZURE_AI_PROJECT_ENDPOINT=<Microsoft Foundry endpoint>
-	AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
-	```
+> AZURE_OPENAI_ENDPOINT=https://agentic-
+> @lab.LabInstance.Id.cognitiveservices.azure.com/
+>
+> AZURE_OPENAI_API_KEY=\<Replace with Azure OpenAI key\>
+>
+> AZURE_OPENAI_RESPONSES_DEPLOYMENT_NAME=gpt-4o-mini
+>
+> AZURE_OPENAI_API_VERSION=2025-03-01-preview
 
-	Find the Microsoft Foundry project endpoint from the Overview page and replace **\<Microsoft Foundry endpoint\>** with that value.
+15. 次の Foundry プロジェクト キー変数を .env ファイルに追加します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image8.png)
+> \# Azure AI Project Configuration
+>
+> AZURE_AI_PROJECT_ENDPOINT=**\<Microsoft Foundry endpoint\>**
+>
+> AZURE_AI_MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+>
+> Overviewページから Microsoft Foundry
+> プロジェクトのエンドポイントを見つけて、 **\<Microsoft Foundry
+> endpoint\>を**その値で置き換えます。
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image8.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image9.png)
+![](./media/image9.png)
 
-16. Once done, add the following App Insights variables to the same
-    file.
+16. 完了したら、次の App Insights 変数を同じファイルに追加します。
 
-	```
-	# Observability and Monitoring Configuration
-	APPLICATIONINSIGHTS_CONNECTION_STRING=<Connection string>
-	ENABLE_OTEL=true
-	ENABLE_SENSITIVE_DATA=true
+> \# Observability and Monitoring Configuration
+>
+> APPLICATIONINSIGHTS_CONNECTION_STRING=**\<Connection string\>**
+>
+> ENABLE_OTEL=true
+>
+> ENABLE_SENSITIVE_DATA=true
+>
+> Azure ポータルから Application Insights
+> リソースを開き、接続文字列をコピーして、 **\<Connection
+> string\>を**コピーした値に置き換えます。
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image10.png)
 
-	```
+17. .env ファイルに次の内容を追加し、先ほどコピーした Freshdesk の API
+    キーとアカウント URL を追加します。
 
-	Open the Application insight resource from the Azure portal, copy the connection string and replace **< Connection string >** with the value copied.
+> \# Freshdesk Configuration
+>
+> FRESHDESK_DOMAIN=\[Domain_URL\]
+>
+> FRESHDESK_API_KEY=\[API_Key\]
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image10.png)
+18. 最終的な .env ファイルは、指定された画像のようになるはずです。
 
-17. In the .env file, add the following content and add the API key and
-    Account URL of Freshdesk that you copied earlier.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ```
-    # Freshdesk Configuration
-    FRESHDESK_DOMAIN=[Domain_URL]
-    FRESHDESK_API_KEY=[API_Key]
-    
-    ```
+19. 完了したら、**File** **(1)** **を選択します。** **Save** **(2)** をクリックして、ファイルを保存します。
 
-18. Final .env file should look like the given image.
+![A screenshot of a computer menu AI-generated content may be
+incorrect.](./media/image12.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/im4.png)
+20. **...（1）**オプションを選択してメニューを拡張します。
+    **Terminal（2）**を選択し、 **New Terminal（3）**をクリックします。
 
-19. Once done, select **File**  and then
-    click **Save**  to save the file.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-    ![A screenshot of a computer menu AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image12.png)
+21. **VS Codeターミナル**で、Azure CLI サインイン コマンドを実行します。
 
-20. Select the **...** option from the top menu to extend the menu.
-    Select **Terminal** and click on **New Terminal**.
++++ az login +++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image13.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-21. In **VS Code** Terminal, run the Azure CLI sign-in command:
+22. **Sign in** ウィンドウで**Work or school account** を選択し、
+    **Continue**をクリックします。
 
-	+++az login+++
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image14.png)
+23. **\[Sign into
+    Microsoft** **\]**タブで、以下の資格情報を使用してログインします。
 
-22. On the **Sign in** window, select **Work or school account** and
-    click **Continue**.
+- Username - <+++@lab.CloudPortalCredential(User1).Username>+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image15.png)
+- TAP - +++@lab.CloudPortalCredential(User1).TAP+++
 
-23. On the **Sign into Microsoft** tab, and login using the below
-    credentials.
+24. サインイン オプションのプロンプトが表示されたら、 **\[No, this app
+    only** **\]**を選択して、他のデスクトップ
+    アプリをリンクせずに続行します。
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+![A screenshot of a computer error AI-generated content may be
+incorrect.](./media/image16.png)
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
+25. **Select a subscription and tenant**で「 **1」**と入力して Enter
+    キーを押します。
 
-24. When prompted with the sign-in options, select **No, this app
-    only** to continue without linking other desktop apps.
+![A screenshot of a computer program AI-generated content may be
+incorrect.](./media/image17.png)
 
-    ![A screenshot of a computer error AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image16.png)
+26. ターミナルが開いたら、次のコマンドを実行します。
 
-25. Type **1** and hit enter in the **Select a subscription and
-    tenant**.
+> +++pip install -r requirements.txt+++
+> を実行して、必要なパッケージをすべてインストールします。
 
-    ![A screenshot of a computer program AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image17.png)
+27. 検索ツールの動作をテストするには、以下のコマンドを実行します。
 
-26. Rename the **requirements.txt.txt** to **requirements.txt**.
++++python main.py+++
 
-27. Once the terminal is open, execute the command,
+> ![A screenshot of a computer screen AI-generated content may be
+> incorrect.](./media/image18.png)
 
-    +++pip install -r requirements.txt+++ to install all the required packages.
+## タスク2: エージェントメトリクスの視覚化
 
-28. Run the command given below to test out the working of the search
-    tool.
+このタスクでは、Azure Application Insights
+を使用してエージェントのテレメトリデータを視覚化します。応答時間、ルーティング精度、チケット作成成功率などのカスタムメトリックを探索します。さらに、主要業績評価指標（KPI）と傾向を表示するインタラクティブな
+Azure Monitor
+ダッシュボードを構築します。これにより、ボトルネックの特定、効率の測定、そしてデプロイされたエージェントの正常な動作をリアルタイムで確認できるようになります。
 
-	+++python main.py+++
+1.  Azure Portal に移動し、リソース グループを開いて、リソース
+    リストから**agent-insights-** app insight resource を選択します。
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image18.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-## Task 2: Visualize Agent Metrics
+2.  概要ページに移動すると、いくつかのデフォルトのメトリックが表示されます。
 
-In this task, you’ll use Azure Application Insights to visualize agent
-telemetry data. You’ll explore custom metrics for response time, routing
-accuracy, and ticket creation success. Then, you’ll build interactive
-Azure Monitor dashboards to display key performance indicators and
-trends. This helps identify bottlenecks, measure efficiency, and ensure
-the healthy operation of your deployed agents in real time.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-1.  Navigate to Azure Portal, open your resource group, and from the
-    resource list, select **agent-insights-** app insight resource.
+3.  左側のメニューから**Search（1）**を選択し、 **See all data in last
+    24 hours (2)**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image19.png)
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image21.png)
 
-2.  Once in the overview page, you can see some of the default metrics
-    shown.
+4.  開いたら、下から**Traces（1）**を確認し、**View as individual items
+    （2）**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image20.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-3.  From the left menu, select **Search**, click on **See all data
-    in last 24 hours**.
+5.  完了すると、エージェントとのコミュニケーションの詳細と、指定した期間内に行われたすべてのトランザクションを確認できます。期間を調整して、さらに詳しく調べることもできます。
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image21.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-4.  Once opened, from bottom, review the **Traces** and then **click
-    on View as individual items**.
+6.  トランザクションを詳しく確認するには、クリックするだけで詳細ビューを開くことができます。エージェント、メッセージ、取得の詳細など、すべての詳細を確認する方法をご確認ください。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image22.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-5.  Once done, you will be able to see all the communication details
-    that happened with the agent, as well as all the transactions that
-    took place within the given time range. You can also adjust the time
-    range to explore more.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image23.png)
+7.  次に、**Failures (1)** 、**failed requests**
+    **(2)**を選択して、失敗したすべての実行を一元的に表示し、詳細なトレース分析を通じて根本的な原因を特定します。
 
-6.  Explore and review these transations, you can open a detailed view
-    just by clicking on them. Review how you can see all the details,
-    like agents, messages, and retrieval details.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image24.png)
+8.  次に、 **Performance （1）**を選択し、**operations and response
+    times（2）**を確認します。これに基づいて、エージェントのパフォーマンスSLAを判断できます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image25.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image27.png)
 
-7.  Next, select **Failures**, Review **failed requests** to
-    gain a centralized view of all unsuccessful executions and identify
-    the underlying causes through detailed trace analysis.
+9.  次に、左側のメニューのMonitoringから**Metrics**を選択します。SPAN
+    を通じて公開されているカスタムメトリックを確認できます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image26.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-8.  Next, select **Performance** and check on the **operations and
-    response times**, based on which you can determine the
-    performance SLA of the agent.
+10. 選択したら、**Metric
+    Namespace（1）で**azure.applicationinsights**（２**
+    ）を選択します。 
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-9.  Now, under monitoring from the left menu, select **Metrics**. You
-    can explore the custom metrics that are published through span.
+11. 次に、メトリクスで**gen_ai.client.operation.duration**を選択し**、aggregationをavg
+    （1）**に設定します。**ライングラフ（2）**で、エージェントがユーザーに返信するのにかかった**Response
+    Time**メトリックを確認します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image28.png)
+![A screen shot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-10. Once selected, under **Metric Namespace**,
-    select azure.applicationinsights .
+12. 同様に、
+    **gen_ai.client.token.usage**を選択し、**aggregation**を**avg
+    （1）に設定します**。**ライングラフ（2）**で、エージェントからのトークン使用量を確認します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image29.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-11. Now, under metrics, select **gen_ai.client.operation.duration and
-    set the aggregation to avg**. Check the **line chart** to
-    review the **Response Time** metric, which agent took to reply to
-    the user.
+13. 次に、左側のメニューから**Logs (1)**を選択し、**Queries hub
+    (2)**ペインをキャンセルします。
 
-    ![A screen shot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image30.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image32.png)
 
-12. In a similar way, select **gen_ai.client.token.usage and set the
-    aggregation to avg**. Check the **line chart** to review the
-    token usage from the agent.
+14. 閉じたら、**Tables**オプションをクリックし、
+    **customMetrics**パラメータにマウスを移動すると**Run** オプションが表示されるので、それをクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image31.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-13. Next, select **Logs** from left menu, cancel the **Queries hub
-   ** pane.
+![A close-up of a message AI-generated content may be
+incorrect.](./media/image34.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image32.png)
+15. クエリが正常に実行されると、以下にリストされているすべてのカスタム
+    メトリックがクエリ結果として表示されます。
 
-14. Once closed, click on **tables** option, hover over
-    the **customMetrics** parameter, you'll see a **Run** option, click
-    on that.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image35.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image33.png)
+16. 次に、左側のメニューから**Workbooks(1)**を選択し、**Quick start
+    の下のEmpy(2)**ワークブックをクリックします。
 
-    ![A close-up of a message AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image34.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-15. Once the query runs successfully, you will see all the custom
-    metrics listed below as query results.
+17. 開いたら、 **+ Add（1）**をクリックし、 **Add
+    metric（2）**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image35.png)
+![A screenshot of a phone AI-generated content may be
+incorrect.](./media/image37.png)
 
-16. Next, select **Workbooks** from the left menu and click on
-    the **Empty** workbook under Quick start.
+18. メトリック ペインが開いたら、 **Add
+    metric** オプションをクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image36.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-17. Once opened, click on **+ Add** and select **Add metric**.
+19. ここで、**Metric** としてgen_ai.client.token.usage**(1)**を選択します。 Display
+    nameにトークン使用法**(2)**を入力し、 **Save (3)**をクリックします。
 
-    ![A screenshot of a phone AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image37.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-18. Once the metric pane is opened, click on the **Add metric** option.
+20. もう一度、 **Add metric **オプションをクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image38.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-19. Now, select **Metric** as gen_ai.client.token.usage ,
-    provide **Display name** as Token Usage  and click on **Save**.
+21. ここで、**Metric**としてgen_ai.client.operation.duration。 **(1)**
+    を選択します。**Display nameを**Response Time  **(2)**として入力し、
+    **Save (3)**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image39.png)
+![A screenshot of a screenshot of a metric settings AI-generated content
+may be incorrect.](./media/image40.png)
 
-20. Again click on **Add metric** option.
+22. 両方のメトリックを選択したら、 **Run Metrics**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image38.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-21. Now, select **Metric** as gen_ai.client.operation.duration ,
-    provide **Display name** as Response Time  and click
-    on **Save**.
+23. **Visualization** **をArea
+    Chart** に変更すると、同様のグラフが表示されます。他にも様々な視覚化オプションや時間範囲のオプションを試すことができます。
 
-    ![A screenshot of a screenshot of a metric settings AI-generated content
-may be incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image40.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-22. Once selected, both the metrics, click on **Run Metrics**.
+24. 編集が完了したら、 Done
+    editingをクリックします。これでこのカードがワークブックに保存されます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image41.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-23. Now change the **Visualization** to **Area Chart** to get the
-    similar visualization. You can explore many other options of
-    visualization, and also the time range.
+25. 次に、もう一度**+ Add (1)**をクリックし、 **Add
+    query（2）**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image42.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-24. Once the edit is completed, click on **Done editing**. This will
-    save this card to your workbook.
+26. クエリペインで次の**query（1）**を追加し、 **Run
+    Query（2）**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image43.png)
++++customMetrics+++
 
-25. Now, click on **+ Add** again and select **Add query**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image45.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image44.png)
+27. クエリが正常に実行されたら、結果を確認してください。確認後、 **Done
+    Editing**をクリックしてください。
 
-26. In the query pane, add the following **query**, and click
-    on **Run Query**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-	+++customMetrics+++
+28. **Done editing（1）**をクリックし、
+    **Save（2）**アイコンをクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image45.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-27. Check the results once the query runs successfully. Once reviewed,
-    click on **Done Editing**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image48.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image46.png)
+29. Save As paneペインで、Titleにagent-workbook **(1)**と入力し、 **Save
+    As (2)**をクリックします。
 
-28. Once done, click on **Done editing** from the top menu, and then
-    click on **Save** icon.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image49.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image47.png)
+30. これはラボ環境であるため、包括的な監視を行うには利用可能なデータが限られている可能性があります。ただし、エージェントからのカスタムメトリックを追加し、次のような特定の目的に焦点を当てた専用の監視ダッシュボードを作成することで、可視性を向上させることができます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image48.png)
+- **エージェントパフォーマンスダッシュボード**
 
-29. On the Save As pane, enter Title as agent-workbook , then
-    click **Save As**.
+> **表示されるメトリック:**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image49.png)
+- エージェントの応答時間（平均、P95）
 
-30. Since this is a lab environment, the available data may be limited
-    for comprehensive monitoring. However, you can enhance visibility by
-    adding custom metrics from your agents and creating purpose-built
-    monitoring dashboards focused on specific objectives, such as the
-    following:
+- エージェントタイプ別の成功率
 
-- **Agent Performance Dashboard**
+- リクエスト量の傾向
 
-> **Metrics Displayed:**
+- エラー率アラート
 
-- Agent response times (avg, P95)
+> **ビジネスに関する質問への回答:**
 
-- Success rates by agent type
+- どのエージェントが最もパフォーマンスが優れているでしょうか。
 
-- Request volume trends
+- SLA 目標を達成していますか。
 
-- Error rate alerts
+- システムの速度低下の原因は何ですか。
 
-> **Business Questions Answered:**
+&nbsp;
 
-- Which agents perform best?
+- **ユーザーエクスペリエンスダッシュボード**
 
-- Are we meeting SLA targets?
+> **表示されるメトリック:**
 
-- What's causing system slowdowns?
+- エンド・ツーエ・ンドのリクエストレイテンシ
 
-- **User Experience Dashboard**
+- チケット作成率
 
-> **Metrics Displayed:**
+- 知識検索の成功
 
-- End-to-end request latency
+- ユーザー満足度代理指標
 
-- Ticket creation rates
+> **ビジネスに関する質問への回答:**
 
-- Knowledge retrieval success
+- ユーザーは素早い応答を得ていますか。
 
-- User satisfaction proxy metrics
+- リクエストがサポート チケットになる頻度はどのくらいですか。
 
-> **Business Questions Answered:**
+- ナレッジベースはユーザーに役立っていますか。
 
-- Are users getting fast responses?
+## タスク3: Foundryポータルでエージェント固有のメトリクスを監視する
 
-- How often do requests become support tickets?
+このタスクでは、Azure Application Insights
+を使用してエージェントのテレメトリデータを視覚化します。Microsoft
+Foundry ポータルからエージェント固有のカスタムメトリックを調べます。
 
-- Is the knowledge base helping users?
+1.  Application Insights は既に Microsoft Foundry
+    ポータルに接続しているので、Foundry
+    ポータルに戻ってエージェントの動作を視覚化できます。
 
-## Task 3: Monitor Agent-specific metrics in Foundry Portal
+2.  リソース グループに戻り、リソース リストから**agent** -foundry
+    リソースを選択します。
 
-In this task, you’ll use Azure Application Insights to visualize agent
-telemetry data. You’ll explore custom agent-specific metrics from the
-Microsoft Foundry Portal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-1.  As you have already connected Application Insights to the Microsoft
-    Foundry portal, you can navigate back to your Foundry portal and
-    visualize the working of your agent.
+3.  次のペインで、 **Go to Foundry portal**をクリックします。Microsoft
+    Foundryポータルに移動し、最初のエージェントを作成します。
 
-2.  Navigate back to your resource group, from the resource list,
-    select **agent-** foundry resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image51.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image50.png)
+4.  エージェントをテストする前に、Application Insights
+    を接続して、詳細なログとトレースの可視性を有効にします。
 
-3.  In the next pane, click on **Go to Foundry portal**. You will now be
-    navigated to the Microsoft Foundry portal, where you will be
-    creating your first agent.
+5.  Microsoft Foundryポータルで、左側のメニューから**Monitoring
+    (1)**を選択し、**agent-insights-  (2)**を選択して**Connect
+    (3)**をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image51.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image52.png)
 
-4.  Before testing the agent, connect Application Insights to enable
-    detailed logs and trace visibility.
+6.  次に、以前にアプリケーション
+    インサイトを接続した**Monitoring**ペインに移動し、 **Resource
+    usage** タブを選択して、すべてのメトリックと値を確認します。
 
-5.  In Microsoft Foundry portal, select **Monitoring** from left
-    menu, select **agent-insights-@Lab.Labinstance.id** and click on **Connect**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image53.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image52.png)
+7.  左側のメニューから**Tracing （1）**を選択し、
+    **Trace（2）**のいずれかをクリックして、エージェントのインタラクションの詳細なトレースを確認します。
 
-6.  Now, navigate to the **Monitoring** pane, where you have connected
-    application insights before, and select the **Resource usage** tab
-    and review all the metrics and values.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image54.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image53.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image55.png)
 
-7.  Select **Tracing** from the left menu, click on any of
-    the **Trace**, and review the detailed traces of agent
-    interactions.
+**まとめ**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image54.png)
+このラボでは、エンタープライズエージェントの可観測性と監視を構成しました。OpenTelemetry
+トレースを使用して、ワークフローの各ステップの詳細な実行データをキャプチャし、Azure
+Application Insights
+と統合することで、パフォーマンスメトリックとエージェントの正常性を視覚化するダッシュボードを作成しました。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2011/media/image55.png)
-
-**Summary**
-
-In this lab, you configured observability and monitoring for your
-enterprise agents. Using OpenTelemetry tracing, you captured detailed
-execution data for every workflow step, and by integrating with Azure
-Application Insights, you created dashboards to visualize performance
-metrics and agent health.
-
-You have successfully completed this lab. Kindly click Next \>\> to
-proceed further.
-
-
+このラボは正常に完了しました。Next
+\>\>をクリックして次に進んでください。

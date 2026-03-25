@@ -1,553 +1,521 @@
+# 大規模な AI エージェントの管理、セキュリティ保護、監視
 
-# Lab 10: Manage, Securing, and Monitoring AI Agents at Scale
-
-**Overview**
-
-This hands-on lab provides a focused on managing, securing, and
-monitoring AI agents at scale using the Azure AI Agent Service SDK and
-Microsoft Foundry. Participants will dive deep into production-grade
-practices essential for enterprise AI deployments, beginning with
-AgentOps—the discipline of observing and governing AI agents through
-OpenTelemetry integration and Azure Application Insights. The workshop
-emphasizes the importance of Responsible AI by implementing Microsoft's
-six foundational principles, including fairness, reliability, privacy,
-and accountability, through configurable content safety filters that
-detect and block harmful outputs such as hate speech, violence, and
-sensitive information. Additionally, participants will build
-sophisticated human-in-the-loop (HITL) workflows, exemplified through a
-fraud detection system where specialized AI agents analyze suspicious
-activity and intelligently route high-risk cases to human analysts for
-critical decision-making. Throughout the lab, you'll work with
-multi-agent systems that collaborate across retrieval, validation, and
-orchestration tasks, gaining hands-on experience with end-to-end
-tracing, custom metrics visualization, performance monitoring
-dashboards, and real-time workflow management. By the end of this
-workshop, participants will have mastered the essential skills for
-deploying, monitoring, and governing AI agents in enterprise
-environments, ensuring they operate safely, ethically, and efficiently
-at scale while maintaining compliance with organizational policies and
-regulatory requirements.
+**概要**
 
-**Objectives**
+このハンズオン ラボでは、Azure AI Agent Service SDK と Microsoft Foundry
+を使用して、大規模な AI
+エージェントの管理、セキュリティ保護、監視に焦点を当てます。参加者は、OpenTelemetry
+統合と Azure Application Insights を通じて AI
+エージェントを監視および管理する分野である AgentOps
+から始めて、エンタープライズ AI
+の展開に不可欠な実稼働レベルのプラクティスを深く掘り下げます。このワークショップでは、Microsoft
+の 6 つの基本原則 (公平性、信頼性、プライバシー、説明責任など)
+を実装し、ヘイトスピーチ、暴力、機密情報などの有害な出力を検出してブロックする構成可能なコンテンツ
+セーフティ フィルターを通じて、
+の重要性を強調します。さらに、参加者は、専門的な AI
+エージェントが疑わしいアクティビティを分析し、重要な意思決定のために高リスクのケースを人間のアナリストにインテリジェントにルーティングする不正検出システムを例に、洗練されたhuman-in-the-loop
+(HITL)
+ワークフローを構築します。ラボ全体を通して、取得、検証、オーケストレーションの各タスクを連携させるマルチエージェントシステムを操作し、エンドツーエンドのトレース、カスタムメトリクスの可視化、パフォーマンス監視ダッシュボード、リアル・タイムワークフロー管理の実践的な経験を積んでいきます。このワークショップの終了までに、参加者はエンタープライズ環境でAIエージェントを展開、監視、管理するための必須スキルを習得し、組織のポリシーと規制要件へのコンプライアンスを維持しながら、大規模かつ安全、倫理的、かつ効率的に運用できるようになります。
 
-By the end of this lab, you will be able to:
+**目的**
 
-- **Enable Observability and Monitoring**: Implement end-to-end tracing
-  and telemetry for AI agents using OpenTelemetry integrated with Azure
-  Application Insights, capturing agent behavior, performance metrics,
-  and execution traces
+このラボを終了すると、次のことができるようになります。
 
-- **Visualize Agent Metrics**: Create custom dashboards and workbooks in
-  Application Insights to monitor agent performance, response times,
-  token usage, routing accuracy, and system health in real-time
+- **可観測性と監視を有効にする**: Azure Application Insights
+  と統合された OpenTelemetry を使用して AI
+  エージェントのエンド・ツー・エンドのトレースとテレメトリを実装し、エージェントの動作、パフォーマンス
+  メトリック、実行トレースをキャプチャします。
 
-- **Implement Responsible AI Practices**: Configure content safety
-  filters in Microsoft Foundry to detect and block harmful outputs (hate
-  speech, violence, sensitive content) and ensure ethical, compliant AI
-  behavior
+- **エージェント メトリックの視覚化**: Application Insights でカスタム
+  ダッシュボードとワークブックを作成し、エージェントのパフォーマンス、応答時間、トークンの使用状況、ルーティングの精度、システムの健全性をリアル・タイムで監視します。
 
-- **Build Human-in-the-Loop Workflows**: Design and deploy fraud
-  detection systems where AI agents analyze alerts and route high-risk
-  cases to human analysts for review and decision-making
+- **Responsible AI プラクティスを実装する**: Microsoft Foundry
+  でコンテンツ セーフティ フィルターを構成して、有害な出力
+  (ヘイトスピーチ、暴力、センシティブなコンテンツ)
+  を検出してブロックし、倫理的でコンプライアンスに準拠した AI
+  の動作を確保します。
 
-- **Monitor Multi-Agent Systems**: Track agent-to-agent communication,
-  trace distributed workflows across multiple specialized agents, and
-  identify bottlenecks or failures in complex agent orchestrations
+- **Human-in-the-Loopワークフローの構築**:
+  AIエージェントがアラートを分析し、リスクの高いケースを人間のアナリストにルーティングしてレビューと意思決定を行う不正検出システムを設計および展開します。
 
-Explanation of Components
+- **マルチ・エージェントシステムの監視**：エージェント間の通信を追跡し、複数の専門エージェントにまたがる分散ワークフローをトレースし、複雑なエージェントオーケストレーションのボトルネックや障害を特定します。
 
-- **Microsoft Foundry**: A cloud-based platform for developing,
-  deploying, and managing AI models with centralized governance,
-  observability, and compliance features for enterprise AI applications.
+コンポーネントの説明
 
-- **Azure AI Hub**: A top-level Azure resource providing a central,
-  secure, and collaborative environment for teams to build, manage, and
-  deploy AI applications with shared resources and governance policies.
+- **Microsoft Foundry** : エンタープライズ AI
+  アプリケーション向けの集中ガバナンス、監視、コンプライアンス機能を備えた
+  AI
+  モデルの開発、展開、管理を行うクラウドベースのプラットフォームです。
 
-- **Azure AI Search**: A vector-based search service enabling
-  Retrieval-Augmented Generation (RAG) by indexing and retrieving
-  relevant documents to improve AI-generated responses with grounded
-  information.
+- **Azure AI Hub** : 共有リソースとガバナンス ポリシーを使用してチームが
+  AI
+  アプリケーションを構築、管理、展開するための、一元化された安全な共同作業環境を提供する最上位レベルの
+  Azure リソース。
 
-- **Azure AI Services**: A collection of cloud-based AI services
-  offering pre-built and customizable APIs and models for vision,
-  language, speech, and decision-making capabilities.
+- **Azure AI Search** :
+  関連ドキュメントのインデックス作成と取得によって、Retrieval-Augmented
+  Generation (RAG) を可能にするベクター
+  ベースの検索サービスで、根拠のある情報に基づいて AI
+  生成の応答を改善します。
 
-- **OpenTelemetry**: An open standard for distributed tracing, metrics,
-  and logging natively integrated into the Microsoft Agent Framework to
-  capture agent execution traces, performance metrics, and error
-  tracking.
+- **Azure AI サービス**:
+  視覚、言語、音声、意思決定機能用の、構築済みでカスタマイズ可能な API
+  とモデルを提供するクラウドベースの AI サービスのコレクション。
 
-- **Content Safety Filters**: Built-in filtering system in Microsoft
-  Foundry that automatically detects and blocks harmful outputs across
-  categories like hate speech, violence, sexual content, and sensitive
-  information (PII).
+- **OpenTelemetry** : エージェント実行トレース、パフォーマンス
+  メトリック、およびエラー追跡をキャプチャするために Microsoft Agent
+  Frameworkにネイティブに統合された分散トレース、メトリック、およびログ記録のオープン
+  スタンダード。
 
-- **LLMs and Embeddings**: Large Language Models provide natural
-  language understanding and generation, while embeddings are vector
-  representations used for text similarity, search, and knowledge
-  retrieval in AI applications.
+- **Content Safetyフィルター**: Microsoft Foundry
+  に組み込まれたフィルタリング
+  システムで、ヘイトスピーチ、暴力、性的コンテンツ、機密情報 (PII)
+  などのカテゴリにわたって有害な出力を自動的に検出し、ブロックします。
 
-# Lab 10: Prerequisites - Setting Up Knowledge Index and Ticketing System
+- **LLM と埋め込み**: Large Language
+  Modelsは、自然言語の理解と生成を提供し、埋め込みは AI
+  アプリケーションでのテキストの類似性、検索、知識取得に使用されるベクトル表現です。
 
-**Estimated Duration**: 30 Minutes
+# ラボ 10: 前提条件 - ナレッジインデックスとチケットシステムの設定
 
-**Overview**
+**推定所要時間**：30分
 
-In this prerequisite lab, you will set up the foundational components
-necessary for an AI-driven workflow that can retrieve enterprise
-knowledge and automatically create support tickets. The focus is on
-preparing a searchable knowledge base, enabling AI agents to query that
-knowledge using an MCP (Model Context Protocol) tool, and integrating a
-ticketing system for downstream action.
+**概要**
 
-By completing these tasks, you will establish the core infrastructure
-that allows agents to:
+この前提条件ラボでは、企業の知識を取得し、サポートチケットを自動作成できるAI駆動型ワークフローに必要な基礎コンポーネントを設定します。検索可能なナレッジベースを準備し、AIエージェントがMCP（Model
+Context
+Protocol）ツールを使用してその知識を照会できるようにし、下流のアクションのためのチケットシステムを統合することに重点を置きます。
 
-- Retrieve relevant information from indexed data
+これらのタスクを完了すると、エージェントが次のことを実行できるコアインフラストラクチャが確立されます。
 
-- Use that information contextually during conversations or workflows
+- インデックスデータから関連情報を取得する
 
-- Escalate issues by creating tickets in an external service
+- 会話やワークフロー中にその情報を状況に応じて使用する
 
-This setup ensures that subsequent labs run smoothly and reflect a
-real-world enterprise scenario.
+- 外部サービスでチケットを作成して問題をエスカレーションする
 
-Lab Objectives
+この設定により、後続のラボがスムーズに実行され、実際の企業シナリオが反映されます。
 
-You'll perform the following tasks in this lab.
+ラボの目的
 
-- Task 1: Prepare Knowledge Index
+このラボでは次のタスクを実行します。
 
-- Task 2: Setting up Freshworks for Ticket Management
+- タスク1: ナレッジインデックスを準備する
 
-## Task 1: Create the Azure resources
+- タスク2: チケット管理用のFreshworksの設定
 
-In this task, you will create all the Azure resources that are required
-to perform this lab.
+## タスク 1: Azure リソースを作成する
 
-### Task 1.1: Create Storage account
+このタスクでは、このラボを実行するために必要なすべての Azure
+リソースを作成します。
 
-1.  Login to the Azure portal at +++https://portal.azure.com+++ using
-    the below credentials and select Storage accounts.
+### タスク 1.1: ストレージ アカウントを作成する
 
-	- Username - +++@lab.CloudPortalCredential(User1).Username+++
+1.  以下の資格情報を使用して、+++https://portal.azure.com+++ の Azure
+    ポータルにログインし、Storage accountsを選択します。
 
-	- TAP - +++@lab.CloudPortalCredential(User1).AccessToken+++
+- Username - +++@lab.CloudPortalCredential(User1).Username+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image1.png)
+- TAP - <+++@lab.CloudPortalCredential(User1).TAP>+++
 
-2.  Select for **Storage Accounts** and Select **Create**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image1.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image2.png)
+2.  **Create**を選択します。
 
-3.  Enter the below details and select **Review + create**. Select
-    Create in the next screen.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image2.png)
 
-	- Storage account name - +++aistorage@lab.LabInstance.Id+++
+3.  以下の詳細を入力し、
+    **Review+create**を選択します。次の画面でCreateを選択します。
 
-    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+- Storage account name - +++aistorage@lab.LabInstance.Id+++
 
-	- Preferred storage type – Select **Azure Blob Storage or Azure Data
-	  Lake Storage Gen2**
+- Preferred storage type – **Azure Blob Storage または Azure Data Lake
+  Storage Gen2**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image3.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image3.png)
+>
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image4.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image4.png)
+4.  リソースが作成されたら、 **Go to resource**を選択します。
 
-4.  Once the resource is created, select **Go to resource**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image5.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image5.png)
+5.  **Upload**を選択し、 **Create
+    new**を選択して新しいコンテナを作成します。「+++ **datasets**
+    +++」という名前を付け、 **「OK」**を選択します。
 
-5.  Select **Upload**, select **Create new** to create a new container.
-    Name it as +++**datasets**+++ and then select **Ok**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image6.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image6.png)
+![A screenshot of a login box AI-generated content may be
+incorrect.](./media/image7.png)
 
-    ![A screenshot of a login box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image7.png)
+6.  **Browse for files**を選択し、 **C:\Labfiles\Day 2**からポリシー
+    ファイルを選択して、**Upload**をクリックします。
 
-6.  Select **Browse for files**, select the policy files from
-    **C:\Labfiles\Day 3** and click **Upload**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image8.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image8.png)
+![A screenshot of a upload box AI-generated content may be
+incorrect.](./media/image9.png)
 
-    ![A screenshot of a upload box AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image9.png)
+これで、ストレージ アカウントが正常に作成され、ポリシー
+ドキュメントが読み込まれました。
 
-Now, the Storage account is create successfully and loaded with the
-policy documents.
+### タスク1.2: Foundryリソースを作成する
 
-### Task 1.2: Create Foundry resource
+このタスクでは、Microsoft Foundry にアクセスするために必要な Foundry
+リソースを作成します。
 
-In this task, you will create a Foundry resource which is required to
-access the Microsoft Foundry.
+1.  Azure ポータル (+++https://portal.azure.com+++) のホーム
+    ページから、 **Foundry**を選択します。
 
-1.  From the Home page of the Azure
-    portal (+++https://portal.azure.com+++), select **Foundry**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image10.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image10.png)
+2.  **Foundry**を選択し、 **Create**を選択して、Foundry
+    リソースを作成します。
 
-2.  Select **Foundry** from the left pane, and then select **Create** to
-    create the Foundry resource.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image11.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image11.png)
+3.  以下の詳細を入力し、**Review + create**を選択します。
 
-3.  Enter the below details and select **Review + create**.
+- Name – <+++agentic-@lab.LabInstance.Id>+++
 
-	- Resource Group - **@lab.CloudResourceGroup(AgenticAI).Name**
-    
-    - Name – +++agentic-@lab.LabInstance.Id+++
+- Default project name – <+++agentic-ai-project-@lab.LabInstance.Id>+++
 
-    - Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image12.png)
 
-	- Default project name – +++agentic-ai-project-@lab.LabInstance.Id+++
+4.  **Create**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image12.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image13.png)
 
-4.  Select **Create** once validated.
+5.  リソースが作成されたことを確認します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image13.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image14.png)
 
-5.  Ensure that the resource is created.
+6.  [**agentic-ai-project-@lab.LabInstance.Id**](mailto:agentic-ai-project-@lab.LabInstance.Id)を開きます。
+    **Go to Foundry portal**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image14.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image15.png)
 
-6.  Open the **agentic-ai-project-@lab.LabInstance.Id** and select
-    **Go to Foundry portal**.
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image16.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image15.png)
+7.  Microsoft Foundry の左側のペインで、Models +
+    endpointsを選択します。+ **Deploy model** -\> **Deploy base
+    model**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image16.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image17.png)
 
-7.  In the Microsoft Foundry, select Models + endpoints from the left
-    pane. Select + **Deploy model** -\+ **Deploy base model**.
+8.  +++gpt-4o-mini+++
+    を検索して選択し、Confirmをクリックしてモデルをデプロイします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image17.png)
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image18.png)
 
-8.  Search for +++gpt-4o-mini+++, select it and click on Confirm to
-    deploy the model.
+9.  デプロイ ウィンドウで**Deploy**を選択します。
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image18.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image19.png)
 
-9.  Select **Deploy** in the deployment window.
+10. 同様に、 +++text-embedding-ada-002+++ を検索してデプロイします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image19.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image20.png)
 
-10. Similarly, search for +++text-embedding-ada-002+++ and deploy it.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image21.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image20.png)
+このタスクでは、Foundry
+リソースを正常に作成し、そこにチャットと埋め込みモデルをデプロイしました。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image21.png)
+### タスク 1.3: Application insightsを作成する
 
-In this task, you have successfully created the Foundry resource and
-deployed a chat and an embedding model in it.
+このタスクでは、監視に必要な Application Insights リソースを作成します。
 
-### Task 1.3: Create Application insights
+1.  Azure ポータルのホーム
+    ページで**Subscriptions**を選択し、割り当てられたサブスクリプションを選択します。
 
-In this task, you will create an Application insights resource, which is
-required for monitoring.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image22.png)
 
-1.  From the Home page of the Azure portal (+++https://portal.azure.com+++), select **Subscriptions** and
-    select the assigned subscription.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image23.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image22.png)
+2.  左側のペインから**Resource providers**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image23.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image24.png)
 
-2.  Select **Resource providers** from the left pane.
+3.  +++Operational+++を検索し、**Microsoft.OperationalInsights**の横にある
+    3 つのドットを選択して、 **Register** をクリックします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image24.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image25.png)
 
-3.  Search for +++Operational+++, select the 3 dots next to
-    **Microsoft.OperationalInsights** and click **Register**.
+4.  Microsoft Foundry の左側のペインから、**Monitoring**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image25.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image26.png)
 
-4.  From the left pane of the Microsoft Foundry, select **Monitoring**.
+5.  **Create New**
+    -\>を選択し、名前を<+++agent-insights-@lab.LabInstance.Id> +++
+    として入力し、 **Create**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image26.png)
+![A screenshot of a application AI-generated content may be
+incorrect.](./media/image27.png)
 
-5.  Select **Create New** -\+ provide the name as
-    +++agent-insights-@lab.LabInstance.Id+++ and then select
-    **Create**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image28.png)
 
-    ![A screenshot of a application AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image27.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image29.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image28.png)
+このタスクでは、Application Insight リソースを作成しました。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image29.png)
+### タスク 1.4: 検索リソースを作成する
 
-In this task, you have created the Application Insight resource.
+AIエージェントが企業の質問に正確に回答するには、信頼できるデータソースにアクセスする必要があります。Azure
+AI
+Searchは、ポリシー、契約書、マニュアルなどのドキュメントにインデックスを付けることで、Retrieval-Augmented
+Generation（RAG）を実現します。インデックスは検索可能なカタログのように機能し、コンテンツをチャンクに分割し、メタデータを追加することで、エージェントが会話中に適切な情報を取得できるようにします。
 
-### Task 1.4: Create Search resource
+このタスクでは、Azure AI Search
+を使用してアップロードされたドキュメントにインデックスを付け、検索可能なナレッジ
+ベースを作成します。
 
-Before an AI Agent can answer enterprise questions accurately, it must
-access trusted data sources. Azure AI Search enables Retrieval-Augmented
-Generation (RAG) by indexing documents such as policies, contracts, and
-manuals. An index acts like a searchable catalog that breaks content
-into chunks, adds metadata, and enables the agent to retrieve the right
-information during a conversation.
+1.  Azure ポータルのホーム ページで、 **Foundry**を選択します。
 
-In this task, index the uploaded documents using Azure AI Search to
-create a searchable knowledge base.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image30.png)
 
-1.  From the Home page of the Azure portal, select **Foundry**.
+2.  左側のペインから**AI Search**を選択し、 **\[+ Create\]**
+    を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image30.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image31.png)
 
-2.  Select **AI Search** from the left pane and then select **+
-    Create.**
+3.  以下の詳細を入力し、 **Review + create**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image31.png)
+- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
 
-3.  Enter the below details, select **Review + create**.
+- Region - East US2
 
-    - Resource Group - **@lab.CloudResourceGroup(AgenticAI).Name**
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image32.png)
 
-	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
+4.  **Create**を選択します。リソースが作成されたら、Go to
+    resourceを選択します。
 
-	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image33.png)
 
-    - Pricing Tier - **Standard**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image34.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image32.png)
+5.  **Import data (new)**を選択します。
 
-4.  Select **Create** once the validation passes. Select Go to resource
-    once the resource is created.
+![A screenshot of a search engine AI-generated content may be
+incorrect.](./media/image35.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image33.png)
+6.  **Choose data source**で**Azure Blob Storage** を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image34.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image36.png)
 
-5.  Select **Import data (new)**.
+7.  次のペインでは、取得ベースのエージェントを構築するため、
+    **RAG**オプションを選択します。
 
-    >[!Alert] If instructed to try the **New** import data wizard, select **try now**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image37.png)
 
-    ![A screenshot of a search engine AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image35.png)
+> それぞれのオプションの意味は次のとおりです。
 
-6.  Select the **Azure Blob Storage** under **Choose data source**.
+1.  **キーワード検索：**正確なキーワードに基づく従来の検索エクスペリエンスに使用されます。テキストをインデックス化することで、ユーザーはAIによる推論を必要とせず、キーワードマッチングによって情報を検索できます。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image36.png)
+2.  **RAG (Retrieval-Augmented Generation):**ドキュメント検索と AI
+    生成を組み合わせます。テキスト (および単純な OCR 画像)
+    を取り込むことで、AI
+    エージェントが根拠のあるコンテキスト認識型の回答を提供できるようになります。
 
-7.  In the next pane, select the **RAG** option as we are building a
-    retrieval-based agent.
+3.  **マルチモーダルRAG：**
+    RAGを拡張し、図、表、ワークフロー、グラフなどの複雑な視覚コンテンツを処理できるようにします。AIがテキストと視覚要素の両方を解釈し、より豊かで洞察に基づいた応答を提供できるようになります。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image37.png)
+&nbsp;
 
-	- Here is what each of these options for:
+8.  **Storage account**で<aistorage@lab.LabInstance.Id>を選択し、
+    **\[Blob Container\] の下で**と**datasetsを選択して、Next**
+    を選択します。
 
-	1.  **Keyword Search:** Used for traditional search experiences based on
-		exact keywords. It indexes text so users can find information
-		through keyword matching, without AI reasoning.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image38.png)
 
-	2.  **RAG (Retrieval-Augmented Generation):** Combines document
-		retrieval with AI generation.It ingests text (and simple OCR images)
-		so an AI agent can provide grounded, context-aware answers.
+9.  以下の詳細を選択し、 **Next**を選択します。
 
-	3.  **Multimodal RAG:** Extends RAG to handle complex visual content
-		like diagrams, tables, workflows, or charts. It enables AI to
-		interpret both text and visual elements for richer, insight-based
-		responses.
+- Kind – Azure AI Foundry (Preview)
 
-8.  Select the **aistorage@lab.LabInstance.Id** under **Storage account**
-    and **datasets** **under Blob container, Acknowledge the addditional costs  and select **Next**.
+- Azure AI Foundry/Hub Project –
+  <agentic-ai-project-@lab.LabInstance.Id>
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image38.png)
+- Model deployment – text-embedding-002-ada
 
-9.  Select the below details and select **Next**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image39.png)
 
-	- Kind – Azure AI Foundry (Preview)
+10. 次の画面で**Next**を選択し、 **Review and
+    create**画面が表示されるまで続けます。
 
-	- Azure AI Foundry/Hub project – **agentic-ai-project-@lab.LabInstance.Id**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image40.png)
 
-	- Model deployment – **text-embedding-002-ada**
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image41.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image39.png)
+11. **Review and create**画面で**Create**を選択します。
 
-10. Select **Next** in the next screens until the **Review and create**
-    screen appears.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image42.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image40.png)
+12. 作成成功ダイアログでC**lose**を選択します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image41.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image43.png)
 
-11. Select **Create** in the **Review and create** screen.
+データセットをAzure AI
+Searchに取り込み、検索可能なインデックスを作成しました。次のタスクでは、AIエージェントを作成し、このインデックスをナレッジソースとして接続します。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image42.png)
+# タスク2: チケット管理用のFreshworksの設定
 
-12. Select **Close** in the Create succeeded dialog.
+このタスクでは、Freshworks
+をセットアップして構成し、マルチ・エージェント
+システムのチケット管理とエンタープライズ統合を有効にします。
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image43.png)
+**Freshworksは**、カスタマーサポート業務の改善とユーザー満足度の向上を目的として設計されたクラウドベースのカスタマーサービスおよびエンゲージメントプラットフォームです。チケット管理、ライブチャット、ヘルプセンター構築、カスタマーセルフサービスのためのツールスイートを提供しています。Freshworksはオムニチャネルコミュニケーションをサポートし、メール、チャット、電話、ソーシャルメディアを通じた顧客とのインタラクションを一元管理できるインターフェースを提供します。自動化機能により、ワークフローの効率化、チケットの割り当て、パフォーマンス追跡のための分析機能を提供します。それでは、Freshworksアカウントの設定を行いましょう。
 
-You’ve successfully ingested the dataset into Azure AI Search and
-created a searchable index. In the next task, you’ll create an AI agent
-and connect this index as its knowledge source.
+1.  URL をコピーし、VM 内のブラウザの新しいタブに貼り付けて、
+    **Freshworks**ポータルを開きます。
 
-# Task 2: Setting up Freshworks for Ticket Management
+    - URL:
 
-In this task, you will set up and configure Freshworks to enable ticket
-management and an enterprise integration for your multi-agent system.
+> +++https://www.freshworks.com/freshdesk/lp/home/?tactic_id=3387224&utm_source=google-adwords&utm_medium=FD-Search-Brand-India&utm_campaign=FD-Search-Brand-India&utm_term=freshdesk&device=c&matchtype=e&network=g&gclid=EAIaIQobChMIuOK90qvLjQMV_dQWBR3JAi9VEAAYASAAEgK87_D_BwE&audience=kwd-30002131023&ad_id=282519464145&gad_source=1&gad_campaignid=671502402+++
 
-**Freshworks** is a cloud-based customer service and engagement platform
-designed to improve customer support operations and enhance user
-satisfaction. It offers a suite of tools for ticket management, live
-chat, help center creation, and customer self-service. Freshworks
-supports omnichannel communication, enabling businesses to manage
-customer interactions across email, chat, phone, and social media from a
-centralized interface. Its automation features help streamline
-workflows, assign tickets, and provide analytics for performance
-tracking. Now you will set up the Freshworks account.
+2.  ポータルで**Start free
+    trial** を選択して、無料トライアルを開始します。
 
-1.  Copy the URL and paste it in a new tab in your browser inside the VM
-    to open the **Freshworks** portal.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image44.png)
 
-    - URL: +++https://www.freshworks.com/freshdesk/lp/home/?tactic_id=3387224&utm_source=google-adwords&utm_medium=FD-Search-Brand-India&utm_campaign=FD-Search-Brand-India&utm_term=freshdesk&device=c&matchtype=e&network=g&gclid=EAIaIQobChMIuOK90qvLjQMV_dQWBR3JAi9VEAAYASAAEgK87_D_BwE&audience=kwd-30002131023&ad_id=282519464145&gad_source=1&gad_campaignid=671502402+++
+3.  次のペインで、以下の詳細を入力して、**Try it free
+    (6)**をクリックします。
 
-2.  In the portal, select **Start free trial** to start the free trial.
+    - **First name:** LODS
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image44.png)
+    - **Last name:** User1
 
-3.  In the next pane, provide these details and click on **Try it free
-   **:
+    &nbsp;
 
-    - **First name:** +++LODS+++
+    - **Work
+      email:** **+++@lab.CloudPortalCredential(User1).Username+++**
 
-    - **Last name:** +++User1+++
+    &nbsp;
 
-    - **Work email:** +++@lab.CloudPortalCredential(User1).Username+++
-    
-    - **Company name:** +++Zava+++
+    - **Company name:** Zava
 
-    - **Organization size:** Select **1-10**
+    - **Organization size:** Select **1-10**
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image45.png)
+> ![A screenshot of a computer AI-generated content may be
+> incorrect.](./media/image45.png)
 
-4.  In the next pane, provide these details and click on **Next**:
+4.  次のペインで、以下の詳細を入力し、 **Next（4）**をクリックします。
 
-    - **What industry are you from ?:** from the list, select **Software and internet**
+    - **What industry are you from ?:** リストから**Software and
+      internet (1)**を選択してください
 
-    - **How many employees are there in your company?:** select **1-10**
+    - **How many employees are there in your company?:** **1-10
+      (2)**を選択します
 
-    - select **I'm trying customer service software for the first time**
+    - **I'm trying customer service software for the first time
+      (3)**を選択します
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image46.png)
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image46.png)
 
-5.  Once done, copy the URL given and paste it in a new tab in your
-    browser inside VM to open **Outlook**.
+5.  完了したら、指定された URL をコピーし、VM
+    内のブラウザの新しいタブに貼り付けて**Outlook** を開きます。
 
-    - URL: +++https://go.microsoft.com/fwlink/p/?LinkID=2125442&clcid=0x409&culture=en-us&country=us+++
+    - URL:
 
-6.  In the pick an account pane, select the account that you are
-    assigned for this lab.
+> +++https://go.microsoft.com/fwlink/p/?LinkID=2125442&clcid=0x409&culture=en-us&country=us+++
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image47.png)
+6.  アカウントの選択ペインで、このラボに割り当てられているアカウントを選択します。
 
-7.  In the Freshworks verification email, open and click on **Activate
-    Account**.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image47.png)
 
-    ![A screenshot of a computer screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image48.png)
+7.  Freshworks の確認メールを開いて、 **Activate
+    Account**をクリックします。
 
-	>[!Note]: If you're unable to locate the activation email from
-	Freshworks, please wait a few minutes, as there might be a delay in
-	email delivery. If the email doesn't arrive after some time, consider
-	reinitiating the steps to activate your free trial in a new
-	private/incognito window. Additionally, check your spam or junk folder,
-	as the email might have been filtered there.
+> ![A screenshot of a computer screen AI-generated content may be
+> incorrect.](./media/image48.png)
 
-8.  In the next pane, provide **password** as +++@lab.VirtualMachine(DPAI-061-VM).Password+++ and provide the
-    same password for **Confirm password**. Click on **Activate your account**.
+**注：**
+Freshworksからのアクティベーションメールが見つからない場合は、メールの配信に遅延が発生している可能性があるため、数分お待ちください。しばらく経ってもメールが届かない場合は、新しいプライベートウィンドウまたはシークレットウィンドウで無料トライアルのアクティベーション手順を再度実行することを検討してください。また、メールがスパムフォルダまたは迷惑メールフォルダに振り分けられている可能性がありますので、ご確認ください。
 
-    ![A screenshot of a login screen AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image49.png)
+8.  次のパネルで、 **Enter password（1）とConfirm
+    password（2）**に同じパスワードを入力します。 **Activate your
+    account（3）**をクリックします。
 
-9.  Once you are in the portal, click on the **Profile** icon in the
-    top right corner and select **Profile settings**.
+> ![A screenshot of a login screen AI-generated content may be
+> incorrect.](./media/image49.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image50.png)
+9.  ポータルに入ったら、右上隅にある**Profile（1）**アイコンをクリックし、**Profile
+    settings（2）**を選択します。
 
-10. In the profile page, click on **View API Key** to get the API Keys.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image50.png)
 
-    ![A screenshot of a web page AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image51.png)
+10. プロフィールページで、 **View API Key** をクリックしてAPI
+    キーを取得します。
 
-    >[!Note]: If you are unable to find this option, please minimize the
-screen size using **CTRL -**.
+![A screenshot of a web page AI-generated content may be
+incorrect.](./media/image51.png)
 
-11. In the next pane, complete the **CAPTCHA**.
+**注意:**このオプションが見つからない場合は、 **CTRL +
+-**を使用して画面サイズを最小化してください。
 
-    ![A screenshot of a chat AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image52.png)
+11. 次のペインで、 **CAPTCHA** を入力します。
 
-12. Please copy the API Key to a notepad, you will be using this
-    further.
+![A screenshot of a chat AI-generated content may be
+incorrect.](./media/image52.png)
 
-    ![A screenshot of a computer AI-generated content may be
-incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image53.png)
+12. API キーをメモ帳にコピーしてください。後で使用します。
 
-13. From the browser tab, please copy the **Account URL** as shown and
-    copy the value to Notepad. You will be using this further.
+![A screenshot of a computer AI-generated content may be
+incorrect.](./media/image53.png)
 
-    ![](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%2010/media/image54.png)
+13. ブラウザタブから、表示されている**Account
+    URL** をコピーし、その値をメモ帳にコピーしてください。この情報は後ほど使用します。
 
-**Summary**
+![](./media/image54.png)
 
-By completing this prerequisite lab, you have set up the essential
-foundation for an end-to-end agent workflow. You prepared a searchable
-knowledge index, enabled agents to query that data through an MCP tool
-built on **Azure AI Search**, and integrated **Freshworks** for
-automated ticket management.
+**まとめ**
 
-This foundation ensures that agents can retrieve accurate context, make
-informed decisions, and escalate issues efficiently preparing the
-environment for more advanced agent-driven scenarios in the upcoming
-labs.
+この前提条件ラボを完了することで、エンド・ツー・エンドのエージェントワークフローに不可欠な基盤を構築できました。検索可能なナレッジインデックスを準備し、エージェントが**Azure
+AI
+Search**上に構築されたMCPツールを通じてそのデータを照会できるようにし、チケット管理を自動化するために**Freshworks**を統合しました。
 
-You have successfully completed this lab. 
+この基盤により、エージェントは正確なコンテキストを取得し、情報に基づいた意思決定を行い、問題を効率的にエスカレートできるようになり、今後のラボでより高度なエージェント主導のシナリオに対応できる環境が整います。
+
+このラボは正常に完了しました。Next\>\>をクリックして次に進んでください。
