@@ -367,6 +367,8 @@ incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/
 	- Service name - +++ai-knowledge-@lab.LabInstance.Id+++
 
 	- Region - **@lab.CloudResourceGroup(AgenticAI).Location**
+    
+	> [!alert] If @lab.CloudResourceGroup(AgenticAI).Location is out of availble resources, change the location to **centralus**. 
 
     ![A screenshot of a computer AI-generated content may be
 incorrect.](https://raw.githubusercontent.com/technofocus-pte/aclrtagntcaidepth/refs/heads/main/Lab%205/media/image32.png)
@@ -603,13 +605,3 @@ documents, ingested them into Azure AI Search, and enabled RAG through
 Microsoft Agent Framework integration. By testing the agent and
 reviewing execution logs, you gained firsthand experience in how agents
 retrieve grounded information and generate enterprise-ready responses.
-
-
-
-
-
-
-
-
-
-
